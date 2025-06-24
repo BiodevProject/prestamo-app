@@ -3,22 +3,34 @@ package com.biovizion.prestamo911.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.Date;
+
 @Entity
-@Data
 @Table(name = "factura")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FacturaEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String date;
+    private Long id;
 
-    private String buyer;
+    private Date fechaEmision;
+    private Date fechaCancelado;
 
-    private String seller;
+    @ManyToOne
+    @JoinColumn(name = "comprador_id")
+    private UsuarioEntity comprador;
 
-    private String product;
-    private Integer price;
+    @ManyToOne
+    @JoinColumn(name = "creado_por")
+    private UsuarioEntity creadoPor;
+
+    private String estado;
 }

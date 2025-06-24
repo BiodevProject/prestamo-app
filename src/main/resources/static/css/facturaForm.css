@@ -141,11 +141,11 @@
     padding: 1.5rem;
     max-width: 94%;
   }
-  
+
   .panel-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
     gap: 1.25rem;
@@ -154,7 +154,7 @@
   .info-block {
     width: 100%;
   }
-  
+
   .panel-actions {
     flex-direction: column;  /* stack vertically */
     justify-content: flex-start; /* left aligned or center if you want */
@@ -172,22 +172,22 @@
     margin: 1rem auto;
     border-radius: 10px;
   }
-  
+
   .panel-header h1 {
     font-size: 1.35rem;
   }
-  
+
   .subheader {
     font-size: 0.875rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .info-block input,
   .form-select {
     padding: 0.7rem;
     font-size: 0.9rem;
   }
-  
+
   .btn {
     padding: 0.65rem 1rem;
     font-size: 0.85rem;

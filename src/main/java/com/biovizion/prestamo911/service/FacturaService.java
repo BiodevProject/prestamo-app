@@ -8,8 +8,8 @@ import com.biovizion.prestamo911.entities.FacturaEntity;
 public interface FacturaService {
     FacturaEntity save(FacturaEntity usuario);
     List<FacturaEntity> findAll();
-    Optional<FacturaEntity> findById(Integer id);
+    Optional<FacturaEntity> findById(Long id);
     public void update(FacturaEntity usuario);
-    public void delete(Integer id);
+    public void delete(Long id);
 }
 

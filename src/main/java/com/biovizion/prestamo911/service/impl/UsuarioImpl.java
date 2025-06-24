@@ -3,7 +3,7 @@ package com.biovizion.prestamo911.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.biovizion.prestamo911.DTO.UsuarioDTO;
+
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.repository.UsuarioRepository;
 import com.biovizion.prestamo911.service.UsuarioService;
@@ -27,7 +27,7 @@ public class UsuarioImpl implements UsuarioService {
     }
 
     @Override
-    public Optional<UsuarioEntity> findById(Integer id) {
+    public Optional<UsuarioEntity> findById(Long id) {
         return usuarioRepository.findById(id);
     }
 
@@ -37,7 +37,7 @@ public class UsuarioImpl implements UsuarioService {
     }
 
     @Override
-    public Optional<UsuarioEntity> get(Integer id) {
+    public Optional<UsuarioEntity> get(Long id) {
         return usuarioRepository.findById(id);
     }
 
@@ -48,7 +48,7 @@ public class UsuarioImpl implements UsuarioService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         usuarioRepository.deleteById(id);
 
     }

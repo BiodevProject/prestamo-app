@@ -32,31 +32,22 @@ public class UsuarioController {
 
     @GetMapping("/dashboard")
     public String ShowListaUsuarios(Model model) {
-
         List<UsuarioEntity> usuarios = usuarioService.findAll();
-
         model.addAttribute("usuarios", usuarios);
-
         return "usuario/userDashboard";
     }
     
     @GetMapping("/edit/{id}")
-    public String editUsuario(@PathVariable Integer id, Model model) {
-
+    public String editUsuario(@PathVariable Long id, Model model) {
         UsuarioEntity usuario = usuarioService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
         model.addAttribute("usuario", usuario);
-
         return "usuario/userEdit";
     }
 
     @PostMapping("/save")
     public String saveUsuario(@ModelAttribute UsuarioEntity usuario, Model model) {
-
         System.out.println("Guardando usuario: " + usuario.getEmail());
-
-
         if (usuarioService.findByEmail(usuario.getEmail()).isPresent()) {
             model.addAttribute("error", "El email ya está registrado");
             return "auth/registro";
@@ -68,7 +59,6 @@ public class UsuarioController {
         usuario.setRol("USER");
 
         usuarioService.save(usuario);
-
         return "redirect:/auth/login";
     }
 
@@ -76,17 +66,17 @@ public class UsuarioController {
     public String updateUsuario(@ModelAttribute UsuarioEntity usuario) {
 
         // Obtener el usuario existente y conservar la contraseña
-        UsuarioEntity usuarioExistente = usuarioService.findById(usuario.getIdUsuario())
+        UsuarioEntity usuarioExistente = usuarioService.findById(usuario.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         usuario.setPassword(usuarioExistente.getPassword());
 
         usuarioService.update(usuario);
-        return "redirect:/usuarios/edit/" + usuario.getIdUsuario();
+        return "redirect:/usuarios/dashboard";
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteUsuario(@PathVariable Integer id) {
+    public String deleteUsuario(@PathVariable Long id) {
         usuarioService.delete(id);
         return "redirect:/usuarios/dashboard";
     }

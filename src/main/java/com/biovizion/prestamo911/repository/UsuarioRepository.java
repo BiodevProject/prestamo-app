@@ -8,7 +8,7 @@ import com.biovizion.prestamo911.entities.UsuarioEntity;
 import java.util.Optional;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
+public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
 
     Optional<UsuarioEntity> findByEmail(String email);
 

@@ -4,19 +4,30 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-@AllArgsConstructor
-@NoArgsConstructor
+import jakarta.persistence.*;
+import lombok.*;
+
 @Entity
-@Data
 @Table(name = "usuario")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UsuarioEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idUsuario;
+    private Long id;
+
     private String nombre;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+
     private String celular;
-    private int edad;
+
+    private String direccion;
+
     private String rol;
 }

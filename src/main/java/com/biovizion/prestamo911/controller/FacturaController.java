@@ -28,6 +28,7 @@ public class FacturaController {
     public String FacturaForm() {
         return "factura/facturaForm";
     }
+
     @PostMapping("/save")
     public String saveUsuario(@ModelAttribute FacturaEntity factura, Model model) {
         if (facturaService.findById(factura.getId()).isPresent()) {
@@ -38,6 +39,8 @@ public class FacturaController {
         facturaService.save(factura);
         return "redirect:/factura/dashboard";
     }
+
+
     @GetMapping("/dashboard")
     public String facturaDashboard(Model model) {
         List<FacturaEntity> facturas = facturaService.findAll();
@@ -46,7 +49,7 @@ public class FacturaController {
         return "factura/facturaDashboard";
     }
     @GetMapping("/edit/{id}")
-    public String facturaEdit(@PathVariable Integer id, Model model){
+    public String facturaEdit(@PathVariable Long id, Model model){
         FacturaEntity factura = facturaService.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -60,7 +63,7 @@ public class FacturaController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteFactura(@PathVariable Integer id) {
+    public String deleteFactura(@PathVariable Long id) {
         facturaService.delete(id);
         return "redirect:/factura/dashboard";
     }
