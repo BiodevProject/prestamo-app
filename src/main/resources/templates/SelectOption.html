@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::content}, '/css/home.css')"
+      th:with="title='Inicio'">
+
+<div th:fragment="content">
+    <div class="button-container">
+        <a href="/home" class="btn-danger user-dashboard-button">
+            <i class="fas fa-users"></i> Biovizion
+        </a>
+        <a href="/usuarios/dashboard" class="btn-warning user-dashboard-button">
+            <i class="fas fa-users"></i> BioVac
+        </a>
+    </div>
+</div>
+</html>

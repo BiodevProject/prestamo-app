@@ -17,7 +17,7 @@ public interface UsuarioService {
     public void update(UsuarioEntity usuario);
     public void delete(Integer id);
 
-    List<UsuarioDTO> obtenerInfoUsuarios();
+
 
 }
 

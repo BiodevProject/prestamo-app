@@ -53,8 +53,4 @@ public class UsuarioImpl implements UsuarioService {
 
     }
 
-    @Override
-    public List<UsuarioDTO> obtenerInfoUsuarios() {
-        return usuarioRepository.obtenerInfoUsuarios();
-    }
 }

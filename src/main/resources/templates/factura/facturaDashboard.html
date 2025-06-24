@@ -27,8 +27,7 @@
 
       <!-- User Cards -->
       <div class="users-container" id="usersContainer">
-        <div class="user-card" th:each="usuario : ${usuarios}"
-             th:data-search="${usuario.nombre + ' ' + usuario.email + ' ' + usuario.rol}">
+        <div class="user-card" th:each="usuario : ${usuarios}" th:data-search="${usuario.nombre + ' ' + usuario.email + ' ' + usuario.rol}">
           <div class="user-info">
             <img src="/defaultPfp.png" class="avatar" alt="Avatar" />
 
