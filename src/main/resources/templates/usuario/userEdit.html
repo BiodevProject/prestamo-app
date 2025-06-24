@@ -1,69 +1,65 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="fragments/layout :: layout(~{::content}, '/css/userEdit.css')"
       th:with="title='Ficha de Usuario'">
-  <div th:fragment="content">
+<div th:fragment="content">
 
-    <section class="info-panel" style="margin-top: 150px">
-      <header class="panel-header">
-        <h1>Información del Usuario</h1>
-        <div class="subheader">
-          <p>ID del Usuario: <strong th:text="${usuario.idUsuario}">123</strong></p>
-          <nav class="breadcrumb">
-            <a href="/">Inicio</a> › 
-            <a href="/usuarios/dashboard">Usuarios</a> › 
-            <span class="current">Información</span>
-          </nav>
-        </div>
-      </header>
-
-      <div class="info-section">
-        <form th:action="@{/usuarios/update}" method="post" id="user-form">
-          <input type="hidden" name="idUsuario" th:value="${usuario.idUsuario}" />
-
-          <div class="info-grid">
-            <div class="info-block">
-              <label for="nombre">Nombre completo</label>
-              <input type="text" id="nombre" name="nombre" th:value="${usuario.nombre}" disabled required />
-            </div>
-            <div class="info-block">
-              <label for="email">Correo electrónico</label>
-              <input type="email" id="email" name="email" th:value="${usuario.email}" disabled required />
-            </div>
-            <div class="info-block">
-              <label for="celular">Número de celular</label>
-              <input type="text" id="celular" name="celular" th:value="${usuario.celular}" disabled required />
-            </div>
-            <div class="info-block">
-              <label for="edad">Edad</label>
-              <input type="number" id="edad" name="edad" th:value="${usuario.edad}" disabled required />
-            </div>
-            <div class="info-block">
-              <label for="rol">Rol en el sistema</label>
-              <input type="text" id="rol" name="rol" th:value="${usuario.rol}" disabled required />
-            </div>
-          </div>
-
-          <div class="panel-actions">
-            <button type="button" class="btn btn-primary" id="edit-btn">Editar Información</button>
-            <button type="submit" class="btn btn-success" id="save-btn" style="display: none;">Guardar Cambios</button>
-            <a href="/usuarios/dashboard" class="btn btn-secondary">Regresar</a>
-          </div>
-        </form>
+  <section class="info-panel" style="margin-top: 150px">
+    <header class="panel-header">
+      <h1>Información del Usuario</h1>
+      <div class="subheader">
+        <p>ID del Usuario: <strong th:text="${usuario.id}">123</strong></p>
+        <nav class="breadcrumb">
+          <a href="/">Inicio</a> ›
+          <a href="/usuarios/dashboard">Usuarios</a> ›
+          <span class="current">Información</span>
+        </nav>
       </div>
-    </section>
+    </header>
 
-    <script>
-      const editBtn = document.getElementById("edit-btn");
-      const saveBtn = document.getElementById("save-btn");
-      const form = document.getElementById("user-form");
-      const inputs = form.querySelectorAll("input:not([type='hidden'])");
+    <div class="info-section">
+      <form th:action="@{/usuarios/update}" method="post" id="user-form">
+        <input type="hidden" name="id" th:value="${usuario.id}" />
 
-      editBtn.addEventListener("click", () => {
-        inputs.forEach(input => input.removeAttribute("disabled"));
-        editBtn.style.display = "none";
-        saveBtn.style.display = "inline-block";
-      });
-    </script>
+        <div class="info-grid">
+          <div class="info-block">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" th:value="${usuario.nombre}" disabled required />
+          </div>
+          <div class="info-block">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" th:value="${usuario.email}" disabled required />
+          </div>
+          <div class="info-block">
+            <label for="celular">Número de celular</label>
+            <input type="text" id="celular" name="celular" th:value="${usuario.celular}" disabled required />
+          </div>
+          <div class="info-block">
+            <label for="rol">Rol en el sistema</label>
+            <input type="text" id="rol" name="rol" th:value="${usuario.rol}" disabled required />
+          </div>
+        </div>
 
-  </div>
+        <div class="panel-actions">
+          <button type="button" class="btn btn-primary" id="edit-btn">Editar Información</button>
+          <button type="submit" class="btn btn-success" id="save-btn" style="display: none;">Guardar Cambios</button>
+          <a href="/usuarios/dashboard" class="btn btn-secondary">Regresar</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const editBtn = document.getElementById("edit-btn");
+    const saveBtn = document.getElementById("save-btn");
+    const form = document.getElementById("user-form");
+    const inputs = form.querySelectorAll("input:not([type='hidden'])");
+
+    editBtn.addEventListener("click", () => {
+      inputs.forEach(input => input.removeAttribute("disabled"));
+      editBtn.style.display = "none";
+      saveBtn.style.display = "inline-block";
+    });
+  </script>
+
+</div>
 </html>
