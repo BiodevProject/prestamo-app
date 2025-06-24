@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::content}, '/css/home.css')"
+      th:with="title='Inicio'">
+
+  <div th:fragment="content">
+      <div class="button-container">
+          <a href="/usuarios/dashboard" class="btn-warning user-dashboard-button">
+            <i class="fas fa-users"></i> Administrar Usuarios
+          </a>
+      </div>
+  </div>
+</html>

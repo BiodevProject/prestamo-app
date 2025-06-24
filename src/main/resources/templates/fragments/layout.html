@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content, pageCss)">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title th:text="${title}">Springboot eCommerce</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+  <!-- Global styles -->
+  <link rel="stylesheet" th:href="@{/css/global.css}" />
+  <link rel="stylesheet" th:if="${pageCss != null}" th:href="@{${pageCss}}" />
+</head>
+<body>
+<!-- === Navbar === -->
+  <nav class="navbar-custom">
+    <div class="navbar-container">
+      <a class="brand" href="/">Spring eCommerce</a>
+      
+      <!-- Mobile menu button -->
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="menu">
+        <div class="dropdown">
+          <button class="dropdown-toggle">Admin</button>
+          <div class="dropdown-menu">
+            <a href="#">Productos</a>
+            <a href="#">Ordenes</a>
+            <a href="#">Usuarios</a>
+            <a href="#">Salir</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- /* JavaScript for mobile menu */ -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const menu = document.querySelector('.menu');
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        
+        // Toggle mobile menu
+        mobileMenuToggle.addEventListener('click', function() {
+          menu.classList.toggle('active');
+        });
+        
+        // Toggle dropdowns on mobile
+        dropdownToggles.forEach(toggle => {
+          toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+              e.preventDefault();
+              const dropdown = this.parentElement;
+              dropdown.classList.toggle('active');
+            }
+          });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (window.innerWidth <= 768 && 
+              !e.target.closest('.menu') && 
+              !e.target.closest('.mobile-menu-toggle')) {
+            menu.classList.remove('active');
+          }
+        });
+      });
+    </script>
+  </nav>
+
+<main class="layout-page">
+  <div th:insert="${content}"></div>
+</main>
+
+<footer>
+  &copy; Spring eCommerce 2020
+</footer>
+
+</body>
+</html>

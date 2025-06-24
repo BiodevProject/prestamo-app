@@ -1,0 +1,323 @@
+/* Container tweaks */
+.page-container {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #374151;
+}
+
+/* Header */
+.header {
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  white-space: nowrap;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.breadcrumb a {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  color: #2563eb;
+}
+
+.breadcrumb .current {
+  color: #9ca3af;
+}
+
+/* Users Container */
+.users-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* User Card */
+.user-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+  display: flex;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  flex-direction: column;
+}
+
+.user-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* User Info Layout */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Avatar */
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+/* User Details Container */
+.user-details-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Username + Role */
+.username-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.1rem;
+}
+
+.username {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.badge {
+  background-color: #2563eb;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  user-select: none;
+}
+
+/* User details */
+.user-details {
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.user-details p {
+  margin: 2px 0;
+}
+
+.user-info-element {
+  margin: 3px 0;
+}
+
+.label {
+  font-weight: 600;
+  color: #374151;
+  margin-right: 0.25rem;
+}
+
+/* Actions Container */
+.user-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+/* Buttons styles - better mobile touch targets */
+.btn {
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.btn-outline-primary:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn-outline-danger {
+  background-color: transparent;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc2626;
+  color: white;
+}
+
+/* Search Controls */
+.user-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+  min-width: 200px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.7rem 1rem 0.7rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+  background-color: #fff;
+}
+
+.search-btn {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .user-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    max-width: 100%;
+  }
+  
+  .btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .users-container {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.875rem;
+  }
+  
+  .user-card {
+    padding: 0.875rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-container {
+    max-width: 100%;
+    padding: 1.25rem 0.75rem;
+  }
+  
+  .header {
+    font-size: 1.5rem;
+  }
+  
+  .users-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .user-info {
+    gap: 0.875rem;
+  }
+  
+  .avatar {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .username {
+    font-size: 1.15rem;
+  }
+  
+  .user-details {
+    font-size: 0.825rem;
+  }
+  
+  .user-actions {
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    padding: 8px 12px;
+    min-width: auto;
+    flex: 1;
+  }
+}
+
+/* Very small devices (e.g., iPhone SE) */
+@media (max-width: 375px) {
+  .page-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .header {
+    font-size: 1.35rem;
+  }
+  
+  .breadcrumb {
+    font-size: 0.8rem;
+  }
+  
+  .user-card {
+    padding: 0.75rem;
+  }
+  
+  .btn {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+  }
+}
