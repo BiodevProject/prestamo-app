@@ -1,0 +1,69 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::content}, '/css/userEdit.css')"
+      th:with="title='Información de factura'">
+  <div th:fragment="content">
+
+    <section class="info-panel" style="margin-top: 150px">
+      <header class="panel-header">
+        <h1>Información de la Factura</h1>
+        <div class="subheader">
+          <p>ID de la Factura: <strong th:text="${factura.id}">123</strong></p>
+          <nav class="breadcrumb">
+            <a href="/">Inicio</a> › 
+            <a href="/factura/dashboard">Facturas</a> › 
+            <span class="current">Información</span>
+          </nav>
+        </div>
+      </header>
+
+      <div class="info-section">
+        <form th:action="@{/factura/update}" method="post" id="user-form">
+          <input type="hidden" name="id" th:value="${factura.id}" />
+
+          <div class="info-grid">
+            <div class="info-block">
+              <label for="date">Fecha de emision</label>
+              <input type="text" id="date" name="date" th:value="${factura.date}" disabled required />
+            </div>
+            <div class="info-block">
+              <label for="buyer">Comprador</label>
+              <input type="text" id="buyer" name="buyer" th:value="${factura.buyer}" disabled required />
+            </div>
+            <div class="info-block">
+              <label for="seller">Vendedor</label>
+              <input type="text" id="seller" name="seller" th:value="${factura.seller}" disabled required />
+            </div>
+            <div class="info-block">
+              <label for="product">Producto</label>
+              <input type="text" id="product" name="product" th:value="${factura.product}" disabled required />
+            </div>
+            <div class="info-block">
+              <label for="price">Precio</label>
+              <input type="text" id="price" name="price" th:value="${factura.price}" disabled required />
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-primary" id="edit-btn">Editar Información</button>
+            <button type="submit" class="btn btn-success" id="save-btn" style="display: none;">Guardar Cambios</button>
+            <a href="/factura/dashboard" class="btn btn-secondary">Regresar</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <script>
+      const editBtn = document.getElementById("edit-btn");
+      const saveBtn = document.getElementById("save-btn");
+      const form = document.getElementById("user-form");
+      const inputs = form.querySelectorAll("input:not([type='hidden'])");
+
+      editBtn.addEventListener("click", () => {
+        inputs.forEach(input => input.removeAttribute("disabled"));
+        editBtn.style.display = "none";
+        saveBtn.style.display = "inline-block";
+      });
+    </script>
+
+  </div>
+</html>
