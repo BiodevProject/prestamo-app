@@ -72,7 +72,7 @@ public class UsuarioController {
         usuario.setPassword(usuarioExistente.getPassword());
 
         usuarioService.update(usuario);
-        return "redirect:/usuarios/dashboard";
+        return "redirect:/usuarios/edit/" + usuario.getIdUsuario();
     }
 
     @PostMapping("/delete/{id}")
