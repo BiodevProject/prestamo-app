@@ -21,7 +21,10 @@ public class FacturaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "fecha_emision")
     private Date fechaEmision;
+
+    @Column(name = "fecha_cancelado")
     private Date fechaCancelado;
 
     @ManyToOne
