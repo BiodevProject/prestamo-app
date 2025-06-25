@@ -1,17 +1,235 @@
-/* Nuevos estilos para centrado perfecto */
-.button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 200px);
+/* Variables de diseño */
+
+body {
+    background: url('/images/login.webp') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    padding-top: 100px;
 }
-.user-dashboard-button {
-    width: 600px;
-    height: 100px;
-    font-size: 1.5rem;
-    padding: 15px 0;
-    margin: 10px 0;
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #f72585;
+    --dark-accent: #b5179e;
+    --light-bg: #f8f9fa;
+    --dark-text: #212529;
+    --light-text: #f8f9fa;
+    --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Estilos base */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    min-height: calc(100vh - 120px);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+}
+
+.dashboard-header {
+    margin-bottom: 4rem;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    color: var(--dark-text);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.dashboard-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grid de acciones */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Tarjetas de acción */
+.action-card {
+    position: relative;
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.85); /* <-- Cambio aquí */
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    z-index: 1;
+    backdrop-filter: blur(6px); /* <-- Agregado */
+}
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 100%);
+    z-index: -1;
+}
+
+.action-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.action-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+    color: white;
+}
+
+.action-card:hover .action-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.action-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--dark-text);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.action-content p {
+    color: #6c757d;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    transition: var(--transition);
+}
+
+.action-hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+    color: white;
+    font-weight: 500;
+}
+
+.action-card:hover .action-hover {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Tarjeta específica para gestión de usuarios */
+.user-management {
+    border-top: 4px solid var(--primary-color);
+}
+
+.user-management .action-icon {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+}
+
+.user-management .action-hover {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.user-management:hover {
+    border-color: rgba(67, 97, 238, 0.3);
+}
+
+.user-management:hover h3 {
+    color: var(--primary-color);
+}
+
+/* Tarjeta específica para gestión de facturas */
+.invoice-management {
+    border-top: 4px solid var(--accent-color);
+}
+
+.invoice-management .action-icon {
+    background: linear-gradient(135deg, var(--accent-color), var(--dark-accent));
+    box-shadow: 0 10px 20px rgba(247, 37, 133, 0.3);
+}
+
+.invoice-management .action-hover {
+    background: linear-gradient(135deg, var(--accent-color), var(--dark-accent));
+}
+
+.invoice-management:hover {
+    border-color: rgba(247, 37, 133, 0.3);
+}
+
+.invoice-management:hover h3 {
+    color: var(--accent-color);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-card {
+        padding: 2rem;
+        min-height: 200px;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.action-card {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.invoice-management {
+    animation-delay: 0.15s;
 }

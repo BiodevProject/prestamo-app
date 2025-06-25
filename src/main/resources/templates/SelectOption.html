@@ -1,16 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: layout(~{::content}, '/css/home.css')"
-      th:with="title='Inicio'">
+      th:replace="fragments/layout :: layout(~{::content}, '/css/select.css')"
+      th:with="title='SelectOption'">
 
 <div th:fragment="content">
-    <div class="button-container">
-        <a href="/home" class="btn-danger user-dashboard-button">
-            <i class="fas fa-users"></i> Biovizion
-        </a>
-        <a href="/usuarios/dashboard" class="btn-warning user-dashboard-button">
-            <i class="fas fa-users"></i> BioVac
-        </a>
+
+    <div class="selection-container">
+        <div class="selection-header">
+            <h1 class="selection-title">Selecciona una plataforma</h1>
+            <p class="selection-subtitle">Elige el sistema al que deseas acceder</p>
+        </div>
+
+        <div class="selection-cards">
+            <a href="/home" class="selection-card card-biovizion">
+                <div class="card-decoration"></div>
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Biovizion</h3>
+                <p>Sistema de visualización de datos biomédicos avanzados</p>
+                <div class="card-hover-content">
+                    <span>Explorar plataforma</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/usuarios/dashboard" class="selection-card card-biovac">
+                <div class="card-decoration"></div>
+                <div class="card-icon">
+                    <i class="fas fa-syringe"></i>
+                </div>
+                <h3>BioVac</h3>
+                <p>Plataforma integral de gestión de vacunación</p>
+                <div class="card-hover-content">
+                    <span>Explorar plataforma</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 </html>

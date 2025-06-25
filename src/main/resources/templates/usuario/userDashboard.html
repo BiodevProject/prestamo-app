@@ -1,14 +1,17 @@
-<html xmlns:th="http://www.thymeleaf.org" 
+<html xmlns:th="http://www.thymeleaf.org"
       th:replace="fragments/layout :: layout(~{::content}, '/css/userDashboard.css')"
       th:with="title='Usuarios'">
   <div th:fragment="content">
-    
+
     <!-- Page Content -->
     <div class="page-container" style="margin-top: 100px;">
-      <h1 class="header">Usuarios</h1>
+      <div class="header-container">
+        <h1 class="header">Usuarios</h1>
+      </div>
+
 
       <nav class="breadcrumb" aria-label="breadcrumb">
-        <a href="/">Inicio</a> › 
+        <a href="/">Inicio</a> ›
         <span class="current">Usuarios</span>
       </nav>
 
@@ -68,10 +71,10 @@
       document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('userSearch');
         const userCards = document.querySelectorAll('.user-card');
-        
+
         searchInput.addEventListener('input', function() {
           const searchTerm = this.value.toLowerCase();
-          
+
           userCards.forEach(card => {
             const searchData = card.getAttribute('data-search').toLowerCase();
             if (searchData.includes(searchTerm)) {
@@ -83,6 +86,6 @@
         });
       });
     </script>
-    
+
   </div>
 </html>

@@ -3,6 +3,7 @@ package com.biovizion.prestamo911.controller;
 
 import java.util.List;
 
+import com.biovizion.prestamo911.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,12 @@ public class FacturaController {
     @Autowired
     private FacturaService facturaService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping("/form")
     public String FacturaForm() {
+
         return "factura/facturaForm";
     }
 
