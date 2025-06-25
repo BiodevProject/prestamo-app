@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::content}, '/css/facturaForm.css')"
+      th:with="title='Productos'">
+  <div th:fragment="content">
+
+    <div class="page-container">
+      <div class="info-panel">
+        <header class="panel-header">
+          <h1>Registrar nueva producto</h1>
+          <div class="subheader">
+            <nav class="breadcrumb" aria-label="breadcrumb">
+              <a href="/">Inicio</a> › 
+              <a href="/producto/dashboard">Productos</a> › 
+              <span class="current">Registrar</span>
+            </nav>
+            Complete el formulario para registrar un nuevo producto en el sistema
+          </div>
+        </header>
+
+        <div class="info-section">
+          <form th:action="@{/producto/save}" method="post">
+            <div class="info-grid">
+
+              <div class="info-block">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required 
+                       placeholder="Ej: Naranja" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="descripcion">Descripción</label>
+                <input type="text" id="descripcion" name="descripcion" required 
+                       placeholder="Ej: Naranja Normal" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="precio">Precio por unidad</label>
+                <input type="text" id="precio" name="precio" required 
+                       placeholder="Ej: 1" autocomplete="off">
+              </div>
+
+            </div>
+
+            <div class="panel-actions" style="margin-top: 20px;">
+              <button type="submit" class="btn btn-primary">Registrar producto</button>
+              <a href="/producto/dashboard" class="btn btn-secondary">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</html>

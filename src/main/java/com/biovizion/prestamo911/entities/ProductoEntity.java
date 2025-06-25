@@ -14,6 +14,7 @@ public class ProductoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String nombre;
 
     @Column(columnDefinition = "TEXT")

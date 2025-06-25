@@ -15,12 +15,12 @@ public class HomeController {
 
     @GetMapping("/home")
     public String mostrarIndex() {
-        return "/home";
+        return "/home/home";
     }
 
     @GetMapping("/select")
     public String SelectoOption() {
-        return "/SelectOption";
+        return "/home/SelectOption";
     }
 
 }

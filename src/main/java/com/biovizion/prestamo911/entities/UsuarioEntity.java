@@ -3,10 +3,6 @@ package com.biovizion.prestamo911.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-
-import jakarta.persistence.*;
-import lombok.*;
-
 @Entity
 @Table(name = "usuario")
 @Data

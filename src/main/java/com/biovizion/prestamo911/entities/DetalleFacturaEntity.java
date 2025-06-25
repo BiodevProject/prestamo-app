@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "detallefactura")
+@Table(name = "factura_detalle")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,18 +22,8 @@ public class DetalleFacturaEntity {
     @JoinColumn(name = "producto_id")
     private ProductoEntity producto;
 
-    @Column(columnDefinition = "TEXT")
-    private String descripcion;
-
     private Integer cantidad;
 
+    @Column(name = "precio_unitario")
     private Double precioUnitario;
-
-    private Double descuento;
-
-    private Double iva;
-
-    private Double subtotal;
-
-    private Double total;
 }

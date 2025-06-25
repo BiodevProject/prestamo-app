@@ -22,27 +22,32 @@
 
           <div class="info-grid">
             <div class="info-block">
-              <label for="date">Fecha de emision</label>
-              <input type="text" id="date" name="date" th:value="${factura.date}" disabled required />
+              <label for="fechaEmision">Fecha de emision</label>
+              <input type="text" id="fechaEmision" name="fechaEmision" th:value="${factura.fechaEmision}" disabled required />
             </div>
             <div class="info-block">
-              <label for="buyer">Comprador</label>
-              <input type="text" id="buyer" name="buyer" th:value="${factura.buyer}" disabled required />
+              <label for="comprador">Comprador</label>
+              <input type="text" id="comprador" name="comprador" th:value="${factura.comprador.nombre}" disabled required />
             </div>
             <div class="info-block">
-              <label for="seller">Vendedor</label>
-              <input type="text" id="seller" name="seller" th:value="${factura.seller}" disabled required />
+              <label for="facturador">Vendedor</label>
+              <input type="text" id="facturador" name="facturador" th:value="${factura.facturador.nombre}" disabled required />
             </div>
             <div class="info-block">
-              <label for="product">Producto</label>
-              <input type="text" id="product" name="product" th:value="${factura.product}" disabled required />
-            </div>
-            <div class="info-block">
-              <label for="price">Precio</label>
-              <input type="text" id="price" name="price" th:value="${factura.price}" disabled required />
+              <label for="total">Total de compra</label>
+              <input type="text" id="total" name="total" th:value="${factura.total}" disabled required />
             </div>
           </div>
 
+          <ol>
+            <li th:each="detalle : ${detalles}">
+              <span th:text="${detalle.producto.nombre}">Product Name</span>
+              <span th:text="${detalle.cantidad}">Quantity</span>
+              <span th:text="${detalle.producto.precio}">Unit.</span>
+            </li>
+          </ol>
+
+          
           <div class="panel-actions">
             <button type="button" class="btn btn-primary" id="edit-btn">Editar Información</button>
             <button type="submit" class="btn btn-success" id="save-btn" style="display: none;">Guardar Cambios</button>

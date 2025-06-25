@@ -1,64 +1,60 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="fragments/layout :: layout(~{::content}, '/css/userDashboard.css')"
-      th:with="title='Facturas'">
+      th:with="title='Creditos'">
   <div th:fragment="content">
 
     <!-- Page Content -->
     <div class="page-container" style="margin-top: 100px;">
-      <h1 class="header">Facturas</h1>
+      <h1 class="header">Creditos</h1>
 
       <nav class="breadcrumb" aria-label="breadcrumb">
         <a href="/">Inicio</a> ›
-        <span class="current">Facturas</span>
+        <span class="current">Creditos</span>
       </nav>
 
       <!-- Search and Add User Row -->
       <div class="user-controls">
         <div class="search-container">
-          <input type="text" id="userSearch" placeholder="Buscar facturas..." class="search-input">
+          <input type="text" id="userSearch" placeholder="Buscar creditos..." class="search-input">
           <button type="button" class="search-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
             </svg>
           </button>
         </div>
-        <a class="btn btn-primary" href="/factura/form">Crear nueva factura</a>
+        <a class="btn btn-primary" href="/credito/form">Solicitar nuevo credito</a>
       </div>
 
       <!-- User Cards -->
       <div class="users-container" id="usersContainer">
-        <div class="user-card" th:each="factura : ${facturas}" th:data-search="${factura.id + ' ' + factura.fechaEmision + ' ' + factura.comprador.nombre + ' ' + factura.facturador.nombre + factura.total}">
+        <div class="user-card" th:each="credito : ${creditos}" th:data-search="${credito.id + ' ' + credito.usuarioSolicitud.nombres}">
           <div class="user-info">
             <div class="user-details-container">
               <div class="username-row">
-                <h2 class="username" th:text="${factura.id}">Id</h2>
+                <h2 class="username" th:text="${credito.usuarioSolicitud.nombres}">Nombre</h2>
               </div>
 
               <div class="user-details">
                 <p class="user-info-element">
-                  <span class="label">Fecha de emision</span>
-                  <span th:text="${factura.fechaEmision}">email@example.com</span>
+                  <span class="label">ID:</span>
+                  <span th:text="${credito.id}">000000000</span>
                 </p>
                 <p class="user-info-element">
-                  <span class="label">Comprador:</span>
-                  <span th:text="${factura.comprador.nombre}">000000000</span>
+                  <span class="label">Monto Solicitado:</span>
+                  <span th:text="${credito.monto + '$'}">000000000</span>
                 </p>
                 <p class="user-info-element">
-                  <span class="label">Facturador:</span>
-                  <span th:text="${factura.facturador.nombre}">000000000</span>
-                </p>
-                <p class="user-info-element">
-                  <span class="label">Total:</span>
-                  <span th:text="${factura.total + '$'}"></span>
+                  <span class="label">Plazo:</span>
+                  <span th:text="${credito.plazoMeses + ' meses'}">000000000</span>
                 </p>
               </div>
 
               <div class="user-actions">
-                <form th:onsubmit="'event.preventDefault(); window.location.href=\'' + @{/factura/edit/{id}(id=${factura.id})} + '\';'">
+                <form th:onsubmit="'event.preventDefault(); window.location.href=\'' + @{/credito/edit/{id}(id=${credito.id})} + '\';'">
                   <button type="submit" class="btn btn-outline-primary">Ver</button>
                 </form>
 
-                <form th:action="@{/factura/delete/{id}(id=${factura.id})}" method="post" onsubmit="return confirm('¿Eliminar factura?');">
+                <form th:action="@{/credito/delete/{id}(id=${credito.id})}" method="post" onsubmit="return confirm('¿Eliminar credito?');">
                   <button type="submit" class="btn btn-outline-danger">Eliminar</button>
                 </form>
               </div>
