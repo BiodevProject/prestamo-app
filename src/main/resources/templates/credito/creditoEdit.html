@@ -17,8 +17,8 @@
       </header>
 
       <div class="info-section">
-        <form th:action="@{/credito/update}" method="post" id="user-form">
-          <input type="hidden" name="id" th:value="${credito.id}" />
+        <form th:object="${credito}" th:action="@{/credito/update}" method="post" id="user-form">
+          <input type="hidden" th:field="*{id}" />
           
           <!-- Personal Information Section -->
           <div class="form-section">
@@ -26,27 +26,27 @@
             <div class="info-grid">
               <div class="info-block">
                 <label for="nombres">Nombres</label>
-                <input type="text" id="nombres" name="nombres" th:value="${credito.usuarioSolicitud.nombres}" disabled required />
+                <input type="text" id="nombres" th:field="*{usuarioSolicitud.nombres}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="dui">DUI</label>
-                <input type="text" id="dui" name="dui" th:value="${credito.usuarioSolicitud.dui}" disabled required />
+                <input type="text" id="dui" th:field="*{usuarioSolicitud.dui}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="nit">NIT</label>
-                <input type="text" id="nit" name="nit" th:value="${credito.usuarioSolicitud.nit}" disabled required />
+                <input type="text" id="nit" th:field="*{usuarioSolicitud.nit}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="fechaNacimiento">Fecha de nacimiento</label>
-                <input type="date" id="fechaNacimiento" name="fechaNacimiento" th:value="${credito.usuarioSolicitud.fechaNacimiento}" disabled required />
+                <input type="date" id="fechaNacimiento" th:field="*{usuarioSolicitud.fechaNacimiento}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="estadoCivil">Estado civil</label>
-                <select id="estadoCivil" name="estadoCivil" th:value="${credito.usuarioSolicitud.estadoCivil}" disabled class="form-select">
+                <select id="estadoCivil" th:field="*{usuarioSolicitud.estadoCivil}" class="form-select">
                   <option value="soltero">Soltero</option>
                   <option value="casado">Casado</option>
                   <option value="divorciado">Divorciado</option>
@@ -56,17 +56,17 @@
               
               <div class="info-block">
                 <label for="telefono">Teléfono celular</label>
-                <input type="tel" id="telefono" name="telefono" th:value="${credito.usuarioSolicitud.telefono}" disabled />
+                <input type="tel" id="telefono" th:field="*{usuarioSolicitud.telefono}" />
               </div>
               
               <div class="info-block">
                 <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" th:value="${credito.usuarioSolicitud.email}" disabled />
+                <input type="email" id="email" th:field="*{usuarioSolicitud.email}" />
               </div>
               
               <div class="info-block full-width">
                 <label for="direccion">Dirección</label>
-                <textarea id="direccion" name="direccion" th:text="${credito.usuarioSolicitud.direccion}" disabled class="form-textarea" rows="3"></textarea>
+                <textarea id="direccion" th:field="*{usuarioSolicitud.direccion}" class="form-textarea" rows="3"></textarea>
               </div>
             </div>
           </div>
@@ -77,22 +77,22 @@
             <div class="info-grid">
               <div class="info-block">
                 <label for="empresaTrabajo">Empresa donde trabaja</label>
-                <input type="text" id="empresaTrabajo" name="empresaTrabajo" th:value="${credito.usuarioSolicitud.empresaTrabajo}" disabled />
+                <input type="text" id="empresaTrabajo" th:field="*{usuarioSolicitud.empresaTrabajo}" />
               </div>
               
               <div class="info-block">
                 <label for="puesto">Puesto o cargo</label>
-                <input type="text" id="puesto" name="puesto" th:value="${credito.usuarioSolicitud.puesto}" disabled />
+                <input type="text" id="puesto" th:field="*{usuarioSolicitud.puesto}" />
               </div>
               
               <div class="info-block">
                 <label for="ingresoMensual">Ingresos mensuales</label>
-                <input type="number" id="ingresoMensual" name="ingresoMensual" th:value="${credito.usuarioSolicitud.ingresoMensual}" disabled />
+                <input type="number" id="ingresoMensual" th:field="*{usuarioSolicitud.ingresoMensual}" />
               </div>
               
               <div class="info-block">
                 <label for="tipoContrato">Tipo de contrato</label>
-                <select id="tipoContrato" name="tipoContrato" th:value="${credito.usuarioSolicitud.tipoContrato}" disabled class="form-select">
+                <select id="tipoContrato" th:field="*{usuarioSolicitud.tipoContrato}" class="form-select">
                   <option value="permanente">Permanente</option>
                   <option value="temporal">Temporal</option>
                   <option value="otro">Otro</option>
@@ -107,17 +107,17 @@
             <div class="info-grid">
               <div class="info-block">
                 <label for="monto">Monto solicitado ($)</label>
-                <input type="number" id="monto" name="monto" th:value="${credito.monto}" required />
+                <input type="number" id="monto" th:field="*{monto}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="plazoMeses">Plazo en meses</label>
-                <input type="number" id="plazoMeses" name="plazoMeses" th:value="${credito.plazoMeses}" required />
+                <input type="number" id="plazoMeses" th:field="*{plazoMeses}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="destino">Destino del crédito</label>
-                <select id="destino" name="destino" th:value="${credito.destino}" class="form-select">
+                <select id="destino" th:field="*{destino}" class="form-select">
                   <option value="consumo">Consumo personal</option>
                   <option value="negocio">Negocio</option>
                   <option value="compra">Compra de bienes</option>
@@ -128,7 +128,7 @@
               
               <div class="info-block">
                 <label for="formaDePago">Forma de pago</label>
-                <select id="formaDePago" name="formaDePago" th:value="${credito.formaDePago}" class="form-select">
+                <select id="formaDePago" th:field="*{formaDePago}" class="form-select">
                   <option value="quincenal">Quincenal</option>
                   <option value="mensual">Mensual</option>
                 </select>
@@ -142,32 +142,32 @@
             <div class="info-grid">
               <div class="info-block">
                 <label for="referencia1">Nombre referencia 1</label>
-                <input type="text" id="referencia1" name="referencia1" th:value="${credito.usuarioSolicitud.referencia1}" disabled />
+                <input type="text" id="referencia1" th:field="*{usuarioSolicitud.referencia1}" />
               </div>
               
               <div class="info-block">
                 <label for="telefonoReferencia1">Teléfono referencia 1</label>
-                <input type="tel" id="telefonoReferencia1" name="telefonoReferencia1" th:value="${credito.usuarioSolicitud.telefonoReferencia1}" disabled />
+                <input type="tel" id="telefonoReferencia1" th:field="*{usuarioSolicitud.telefonoReferencia1}" />
               </div>
               
               <div class="info-block">
                 <label for="parentesco1">Parentesco</label>
-                <input type="text" id="parentesco1" name="parentesco1" th:value="${credito.usuarioSolicitud.parentesco1}" disabled />
+                <input type="text" id="parentesco1" th:field="*{usuarioSolicitud.parentesco1}" />
               </div>
               
               <div class="info-block">
                 <label for="referencia2">Nombre referencia 2</label>
-                <input type="text" id="referencia2" name="referencia2" th:value="${credito.usuarioSolicitud.referencia2}" disabled />
+                <input type="text" id="referencia2" th:field="*{usuarioSolicitud.referencia2}" />
               </div>
               
               <div class="info-block">
                 <label for="telefonoReferencia2">Teléfono referencia 2</label>
-                <input type="tel" id="telefonoReferencia2" name="telefonoReferencia2" th:value="${credito.usuarioSolicitud.telefonoReferencia2}" disabled />
+                <input type="tel" id="telefonoReferencia2" th:field="*{usuarioSolicitud.telefonoReferencia2}" />
               </div>
               
               <div class="info-block">
                 <label for="parentesco2">Parentesco</label>
-                <input type="text" id="parentesco2" name="parentesco2" th:value="${credito.usuarioSolicitud.parentesco2}" disabled />
+                <input type="text" id="parentesco2" th:field="*{usuarioSolicitud.parentesco2}" />
               </div>
             </div>
           </div>
@@ -184,12 +184,13 @@
               
               <div class="info-block">
                 <label for="firma">Firma del solicitante</label>
-                <input type="text" id="firma" name="firma" th:value="${credito.usuarioSolicitud.firma}" disabled required />
+                <input type="text" id="firma" th:field="*{usuarioSolicitud.firma}" disabled required />
               </div>
               
               <div class="info-block">
                 <label for="fechaSolicitud">Fecha</label>
-                <input type="date" id="fechaSolicitud" name="fechaSolicitud" th:value="${credito.usuarioSolicitud.fechaSolicitud}" disabled required />
+                
+                <input type="date" id="fechaSolicitud" th:field="*{usuarioSolicitud.fechaSolicitud}" disabled required />
               </div>
             </div>
           </div>
@@ -215,6 +216,5 @@
         saveBtn.style.display = "inline-block";
       });
     </script>
-
   </div>
 </html>
