@@ -54,6 +54,7 @@ public class UsuarioSolicitudController {
         return "redirect:/usuarioSolicitud/edit/" + usuarioSolicitud.getId();
     }
 
+
     @PostMapping("/delete/{id}")
     public String usuarioSolicitudDelete(@PathVariable Long id) {
         usuarioSolicitudService.delete(id);

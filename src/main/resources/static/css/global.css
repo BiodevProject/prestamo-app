@@ -1,6 +1,6 @@
 /* === Layout === */
 html, body {
-  height: 100%;       /* allow body to fill viewport height */
+  height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -8,36 +8,34 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;   /* at least viewport height */
+  min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9fafb;
+  background: url('/images/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #1f2937;
 }
 
 main {
   flex-grow: 1;
+  padding-top: 72px; /* Compensa navbar fija */
 }
-.container{
+
+.container {
   max-width: 100%;
 }
 
 /* === Custom elements === */
-.btn{
+.btn {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.breadcrumb{
+.breadcrumb {
   display: flex;
   align-items: center;
-
   padding: 0.5rem 1rem;
-
 }
-
 
 /* === Navbar === */
 .navbar-custom {
@@ -46,11 +44,12 @@ main {
   top: 0;
   width: 100%;
   position: fixed;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   padding: 0.75rem 1.5rem;
-  z-index: 5;
+  z-index: 100;
 }
 
 .navbar-container {
@@ -62,13 +61,12 @@ main {
   position: relative;
 }
 
-/* Brand */
 .brand {
   font-size: 1.3rem;
   font-weight: 600;
-  color: #111827;
+  color: #ffffff;
   text-decoration: none;
-  z-index: 5; /* Above mobile menu */
+  z-index: 5;
 }
 
 /* Mobile Menu Button */
@@ -79,12 +77,18 @@ main {
   cursor: pointer;
   padding: 8px;
   z-index: 1001;
+  color: #fff;
 }
 
 /* Menu */
 .menu {
   display: flex;
   align-items: center;
+}
+
+.menu .btn-link {
+  color: #fff;
+  text-decoration: none;
 }
 
 .dropdown {
@@ -94,7 +98,7 @@ main {
 .dropdown-toggle {
   background: none;
   border: none;
-  color: #374151;
+  color: #e5e7eb;
   font-weight: 500;
   font-size: 0.95rem;
   cursor: pointer;
@@ -104,8 +108,8 @@ main {
 }
 
 .dropdown-toggle:hover {
-  background-color: #f3f4f6;
-  color: #2563eb;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .dropdown-menu {
@@ -113,9 +117,11 @@ main {
   position: absolute;
   right: 0;
   top: 110%;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0.5rem 0;
   min-width: 180px;
@@ -125,27 +131,27 @@ main {
 .dropdown-menu a {
   display: block;
   padding: 10px 16px;
-  color: #374151;
+  color: #f0f0f0;
   text-decoration: none;
   font-size: 0.9rem;
   transition: background-color 0.2s;
 }
 
 .dropdown-menu a:hover {
-  background-color: #f9fafb;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
-/* Show on hover */
 .dropdown:hover .dropdown-menu {
   display: block;
 }
 
-/* Responsive Styles */
+/* === Responsive Styles === */
 @media (max-width: 768px) {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .menu {
     position: fixed;
     top: 0;
@@ -153,52 +159,63 @@ main {
     width: 70%;
     max-width: 300px;
     height: 100vh;
-    background: white;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     flex-direction: column;
     align-items: flex-start;
     padding: 5rem 1.5rem 1.5rem;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     transition: right 0.3s ease;
     z-index: 1000;
   }
-  
+
   .menu.active {
     right: 0;
   }
-  
+
   .dropdown {
     width: 100%;
     margin: 0.5rem 0;
   }
-  
+
   .dropdown-toggle {
     width: 100%;
     text-align: left;
     padding: 12px 16px;
+    color: #f0f0f0;
   }
-  
+
   .dropdown-menu {
     position: static;
     width: 100%;
     box-shadow: none;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: none;
     padding: 0;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
-  
+
   .dropdown.active .dropdown-menu {
     display: block;
   }
-  
+
   .dropdown-menu a {
     padding: 12px 16px;
+    color: #f0f0f0;
+  }
+
+  .dropdown-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
   }
 }
 
 /* === Footer === */
 footer {
-  flex-shrink: 0;      /* do not shrink footer */
-
+  flex-shrink: 0;
   background-color: #111827;
   color: #d1d5db;
   text-align: center;

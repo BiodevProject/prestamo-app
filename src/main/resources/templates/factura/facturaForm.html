@@ -1,370 +1,376 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="fragments/layout :: layout(~{::content}, '/css/facturaForm.css')"
       th:with="title='Facturacion'">
-  <div th:fragment="content">
+<div th:fragment="content">
 
-    <div class="page-container">
-      <div class="invoice-container">
-        <header class="invoice-header">
-          <h1>Nueva Factura</h1>
-          <div class="invoice-subheader">
-            <nav class="breadcrumb" aria-label="breadcrumb">
-              <a href="/">Inicio</a> › 
-              <a href="/factura/dashboard">Facturas</a> › 
-              <span class="current">Nueva</span>
-            </nav>
-            <p>Complete los datos de la factura y agregue los productos</p>
-          </div>
-        </header>
-
-        <div class="invoice-form-section">
-          <form th:action="@{/factura/save}" method="post" id="factura-form">
-            <div class="invoice-client-info">
-              <h2 class="section-title">Información de la Factura</h2>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="comprador">Cliente</label>
-                  <select id="comprador" name="comprador.id" required class="form-control">
-                    <option value="">-- Seleccione cliente --</option>
-                    <option th:each="user : ${usuarios}" 
-                            th:value="${user.id}" 
-                            th:text="${user.nombre}"></option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="facturador">Facturador</label>
-                  <select id="facturador" name="facturador.id" required class="form-control">
-                    <option value="">-- Seleccione facturador --</option>
-                    <option th:each="user : ${usuarios}" 
-                            th:value="${user.id}" 
-                            th:text="${user.nombre}"></option>
-                  </select>
-                </div>
-              
-                <div class="form-group">
-                  <label for="fechaEmision">Fecha de emisión</label>
-                  <input type="date" id="fechaEmision" name="fechaEmision" required class="form-control">
-                </div>
-                
-                <div class="form-group">
-                  <label for="estado">Estado</label>
-                  <select id="estado" name="estado" required class="form-control">
-                    <option value="PENDIENTE">PENDIENTE</option>
-                    <option value="PAGADA">PAGADA</option>
-                    <option value="CANCELADA">CANCELADA</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="invoice-products-section">
-              <div class="section-header">
-                <h2 class="section-title">Productos/Servicios</h2>
-                <div class="product-actions">
-                  <button type="button" class="btn btn-outline" id="new-product-btn">
-                    <i class="icon-plus"></i> Nuevo producto
-                  </button>
-                  <button type="button" class="btn btn-outline" id="add-existing-product-btn">
-                    <i class="icon-list"></i> Producto existente
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Product popups -->
-              <div id="new-product-popup" class="modal-popup">
-                <div class="modal-content">
-                  <h4>Nuevo Producto</h4>
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="new-prod-nombre" class="form-control">
-                  </div>
-                  <div class="form-group">
-                    <label>Descripción</label>
-                    <input type="text" id="new-prod-desc" class="form-control">
-                  </div>
-                  <div class="form-group">
-                    <label>Precio Unitario</label>
-                    <input type="number" id="new-prod-precio" step="0.01" class="form-control">
-                  </div>
-                  <div class="modal-actions">
-                    <button type="button" id="save-new-product-btn" class="btn btn-primary">Guardar</button>
-                    <button type="button" id="cancel-new-product-btn" class="btn btn-outline">Cancelar</button>
-                  </div>
-                </div>
-              </div>
-
-              <div id="existing-product-popup" class="modal-popup">
-                <div class="modal-content">
-                  <h4>Seleccionar Producto Existente</h4>
-                  <div class="form-group">
-                    <select id="existing-product-select" class="form-control">
-                      <option value="">-- Selecciona un producto --</option>
-                      <option th:each="prod : ${productos}" 
-                              th:value="${prod.id}" 
-                              th:text="${prod.nombre} + ' - ' + ${prod.descripcion} + ' - $' + ${prod.precio}"></option>
-                    </select>
-                  </div>
-                  <div class="modal-actions">
-                    <button type="button" id="add-existing-prod-btn" class="btn btn-primary">Agregar</button>
-                    <button type="button" id="cancel-existing-prod-btn" class="btn btn-outline">Cancelar</button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Products table -->
-              <div class="products-table">
-                <div class="table-header">
-                  <div class="col-name">Producto</div>
-                  <div class="col-qty">Cantidad</div>
-                  <div class="col-desc">Descripción</div>
-                  <div class="col-price">Precio Unit.</div>
-                  <div class="col-total">Total</div>
-                  <div class="col-actions"></div>
-                </div>
-                
-                <div id="product-rows">
-                  <!-- Dynamic rows will be added here -->
-                </div>
-
-                <div class="table-summary">
-                  <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span id="subtotal">$0.00</span>
-                  </div>
-                  <div class="summary-row">
-                    <span>IVA (13%)</span>
-                    <span id="iva">$0.00</span>
-                  </div>
-                  <div class="summary-row total">
-                    <span>Total a Pagar</span>
-                    <span id="total">$0.00</span>
-                  </div>
-                </div>
-
-                <input type="hidden" name="subtotal" id="subtotal-input" />
-                <input type="hidden" name="iva" id="iva-input" />
-                <input type="hidden" name="total" id="total-input" />
-
-                <template id="product-row-template">
-                  <div class="table-row">
-                    <div class="col-name"><input type="text" class="nombre" readonly /></div>
-                    <div class="col-qty"><input type="number" class="product-qty" value="1" min="1"/></div>
-                    <div class="col-desc"><input type="text" class="descripcion" readonly /></div>
-                    <div class="col-price"><input type="number" class="precio" value="0.00" step="0.01" readonly /></div>
-                    <div class="col-total"><span class="total-price">$0.00</span></div>
-                    <div class="col-actions">
-                      <button type="button" class="btn-icon delete-product-btn" title="Eliminar">
-                        <i class="icon-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                </template>
-              </div>
-            </div>
-
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-lg">
-                <i class="icon-save"></i> Guardar Factura
-              </button>
-              <a href="/factura/dashboard" class="btn btn-outline btn-lg">
-                <i class="icon-cancel"></i> Cancelar
-              </a>
-            </div>
-          </form>
+  <div class="page-container">
+    <div class="invoice-container">
+      <header class="invoice-header">
+        <h1>Nueva Factura</h1>
+        <div class="invoice-subheader">
+          <nav class="breadcrumb" aria-label="breadcrumb">
+            <a href="/">Inicio</a> ›
+            <a href="/factura/dashboard">Facturas</a> ›
+            <span class="current">Nueva</span>
+          </nav>
+          <p>Complete los datos de la factura y agregue los productos</p>
         </div>
+      </header>
+
+      <div class="invoice-form-section">
+        <form th:action="@{/factura/save}" method="post" id="factura-form">
+          <div class="invoice-client-info">
+            <h2 class="section-title">Información de la Factura</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="comprador">Cliente</label>
+                <select id="comprador" name="comprador.id" required class="form-control">
+                  <option value="">-- Seleccione cliente --</option>
+                  <option th:each="user : ${usuarios}"
+                          th:value="${user.id}"
+                          th:text="${user.nombre}"></option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="facturador">Facturador</label>
+                <select id="facturador" name="facturador.id" required class="form-control"  >
+                  <option value="">-- Seleccione facturador --</option>
+                  <option th:each="user : ${usuarios}"
+                          th:value="${user.id}"
+                          th:text="${user.nombre}"></option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="fechaEmision">Fecha de emisión</label>
+                <input type="date" id="fechaEmision" name="fechaEmision" required class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label for="estado">Estado</label>
+                <select id="estado" name="estado" required class="form-control">
+                  <option value="PENDIENTE">PENDIENTE</option>
+                  <option value="PAGADA">PAGADA</option>
+                  <option value="CANCELADA">CANCELADA</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="invoice-products-section">
+            <div class="section-header">
+              <h2 class="section-title">Productos/Servicios</h2>
+              <div class="product-actions">
+                <button type="button" class="btn btn-outline" id="new-product-btn">
+                  <i class="icon-plus"></i> Nuevo producto
+                </button>
+                <button type="button" class="btn btn-outline" id="add-existing-product-btn">
+                  <i class="icon-list"></i> Producto existente
+                </button>
+              </div>
+            </div>
+
+            <!-- Product popups -->
+            <div id="new-product-popup" class="modal-popup">
+              <div class="modal-content">
+                <h4>Nuevo Producto</h4>
+                <div class="form-group">
+                  <label>Nombre</label>
+                  <input type="text" id="new-prod-nombre" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Descripción</label>
+                  <input type="text" id="new-prod-desc" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Precio Unitario</label>
+                  <input type="number" id="new-prod-precio" step="0.01" class="form-control">
+                </div>
+                <div class="modal-actions">
+                  <button type="button" id="save-new-product-btn" class="btn btn-primary">Guardar</button>
+                  <button type="button" id="cancel-new-product-btn" class="btn btn-outline">Cancelar</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="existing-product-popup" class="modal-popup">
+              <div class="modal-content">
+                <h4>Seleccionar Producto Existente</h4>
+                <div class="form-group">
+                  <select id="existing-product-select" class="form-control">
+                    <option value="">-- Selecciona un producto --</option>
+                    <option th:each="prod : ${productos}"
+                            th:value="${prod.id}"
+                            th:text="${prod.nombre} + ' - ' + ${prod.descripcion} + ' - $' + ${prod.precio}"></option>
+                  </select>
+                </div>
+                <div class="modal-actions">
+                  <button type="button" id="add-existing-prod-btn" class="btn btn-primary">Agregar</button>
+                  <button type="button" id="cancel-existing-prod-btn" class="btn btn-outline">Cancelar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Products table -->
+            <div class="products-table">
+              <div class="table-header">
+                <div class="col-name">Producto</div>
+                <div class="col-qty">Cantidad</div>
+                <div class="col-desc">Descripción</div>
+                <div class="col-price">Precio Unit.</div>
+                <div class="col-total">Total</div>
+                <div class="col-actions"></div>
+              </div>
+
+              <div id="product-rows">
+                <!-- Dynamic rows will be added here -->
+              </div>
+
+              <div class="table-summary">
+                <div class="summary-row">
+                  <span>Subtotal</span>
+                  <span id="subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                  <span>IVA (13%)</span>
+                  <span id="iva">$0.00</span>
+                </div>
+                <div class="summary-row total">
+                  <span>Total a Pagar</span>
+                  <span id="total">$0.00</span>
+                </div>
+              </div>
+
+              <input type="hidden" name="subtotal" id="subtotal-input" />
+              <input type="hidden" name="iva" id="iva-input" />
+              <input type="hidden" name="total" id="total-input" />
+
+              <template id="product-row-template">
+                <div class="table-row">
+                  <div class="col-name"><input type="text" class="nombre" readonly /></div>
+                  <div class="col-qty"><input type="number" class="product-qty" value="1" min="1"/></div>
+                  <div class="col-desc"><input type="text" class="descripcion" readonly /></div>
+                  <div class="col-price"><input type="number" class="precio" value="0.00" step="0.01" readonly /></div>
+                  <div class="col-total"><span class="total-price">$0.00</span></div>
+                  <div class="col-actions">
+                    <button type="button" class="btn-icon delete-product-btn" title="Eliminar">
+                      <i class="icon-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="icon-save"></i> Guardar Factura
+            </button>
+            <a href="/factura/dashboard" class="btn btn-outline btn-lg">
+              <i class="icon-cancel"></i> Cancelar
+            </a>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
 
-    <script>
-      const newProductBtn = document.getElementById('new-product-btn');
-      const newProductPopup = document.getElementById('new-product-popup');
-      const saveNewProductBtn = document.getElementById('save-new-product-btn');
-      const cancelNewProductBtn = document.getElementById('cancel-new-product-btn');
+  <script>
+    const newProductBtn = document.getElementById('new-product-btn');
+    const newProductPopup = document.getElementById('new-product-popup');
+    const saveNewProductBtn = document.getElementById('save-new-product-btn');
+    const cancelNewProductBtn = document.getElementById('cancel-new-product-btn');
 
-      const addExistingProductBtn = document.getElementById('add-existing-product-btn');
-      const existingProductPopup = document.getElementById('existing-product-popup');
-      const cancelExistingProductBtn = document.getElementById('cancel-existing-prod-btn');
-      const addExistingProdBtn = document.getElementById('add-existing-prod-btn');
-      const existingProductSelect = document.getElementById('existing-product-select');
+    const addExistingProductBtn = document.getElementById('add-existing-product-btn');
+    const existingProductPopup = document.getElementById('existing-product-popup');
+    const cancelExistingProductBtn = document.getElementById('cancel-existing-prod-btn');
+    const addExistingProdBtn = document.getElementById('add-existing-prod-btn');
+    const existingProductSelect = document.getElementById('existing-product-select');
 
-      const productRowsContainer = document.getElementById('product-rows');
-      const template = document.getElementById('product-row-template');
+    const productRowsContainer = document.getElementById('product-rows');
+    const template = document.getElementById('product-row-template');
 
-      let productIndex = 0;
+    let productIndex = 0;
 
-      function recalculateTotals() {
-        let subtotal = 0;
-        document.querySelectorAll('#product-rows .table-row').forEach(row => {
-          const qty = parseFloat(row.querySelector('.product-qty')?.value) || 0;
-          const price = parseFloat(row.querySelector('.precio')?.value) || 0;
-          const total = qty * price;
-          subtotal += total;
-          const totalCell = row.querySelector('.total-price');
-          totalCell.textContent = `$${total.toFixed(2)}`;
+    function recalculateTotals() {
+      let subtotal = 0;
+      document.querySelectorAll('#product-rows .table-row').forEach(row => {
+        const qty = parseFloat(row.querySelector('.product-qty')?.value) || 0;
+        const price = parseFloat(row.querySelector('.precio')?.value) || 0;
+        const total = qty * price;
+        subtotal += total;
+        const totalCell = row.querySelector('.total-price');
+        totalCell.textContent = `$${total.toFixed(2)}`;
+      });
+      const iva = subtotal * 0.13;
+      const total = subtotal + iva;
+      document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('iva').textContent = iva.toFixed(2);
+      document.getElementById('total').textContent = total.toFixed(2);
+
+      // Update hidden inputs for form submission
+      document.getElementById('subtotal-input').value = subtotal.toFixed(2);
+      document.getElementById('iva-input').value = iva.toFixed(2);
+      document.getElementById('total-input').value = total.toFixed(2);
+    }
+
+    function addProductRow(nombre, descripcion, precio, productoId) {
+      const clone = template.content.cloneNode(true);
+      const row = clone.querySelector('.table-row');
+
+      row.querySelector('.nombre').value = nombre || '';
+      row.querySelector('.descripcion').value = descripcion || '';
+      row.querySelector('.precio').value = precio ? precio.toFixed(2) : '0.00';
+
+      // Create hidden inputs for form submission inside the row
+      const hiddenInputsContainer = document.createElement('div');
+      hiddenInputsContainer.style.display = 'none';
+
+      // producto.id
+      const inputProductoId = document.createElement('input');
+      inputProductoId.type = 'hidden';
+      inputProductoId.name = `detalles[${productIndex}].producto.id`;
+      inputProductoId.value = productoId || '';
+      hiddenInputsContainer.appendChild(inputProductoId);
+
+      // cantidad
+      const inputCantidad = document.createElement('input');
+      inputCantidad.type = 'number';
+      inputCantidad.name = `detalles[${productIndex}].cantidad`;
+      inputCantidad.value = row.querySelector('.product-qty').value || 1;
+      inputCantidad.min = 1;
+      inputCantidad.style.display = 'none';
+      hiddenInputsContainer.appendChild(inputCantidad);
+
+      // precioUnitario
+      const inputPrecio = document.createElement('input');
+      inputPrecio.type = 'number';
+      inputPrecio.name = `detalles[${productIndex}].precioUnitario`;
+      inputPrecio.value = precio ? precio.toFixed(2) : '0.00';
+      inputPrecio.step = '0.01';
+      inputPrecio.style.display = 'none';
+      hiddenInputsContainer.appendChild(inputPrecio);
+
+      row.appendChild(hiddenInputsContainer);
+
+      // Sync cantidad hidden input with visible qty input on change
+      const qtyInput = row.querySelector('.product-qty');
+      qtyInput.addEventListener('input', () => {
+        inputCantidad.value = qtyInput.value;
+        recalculateTotals();
+      });
+
+      // Delete button handler to remove row and re-index
+      row.querySelector('.delete-product-btn').addEventListener('click', () => {
+        row.remove();
+        recalculateTotals();
+        reindexProductRows();
+      });
+
+      productRowsContainer.appendChild(row);
+      recalculateTotals();
+      productIndex++;
+    }
+
+    function reindexProductRows() {
+      productIndex = 0;
+      document.querySelectorAll('#product-rows .table-row').forEach(row => {
+        row.querySelectorAll('input[type=hidden]').forEach(input => {
+          if (input.name.includes('producto.id'))
+            input.name = `detalles[${productIndex}].producto.id`;
+          else if (input.name.includes('cantidad'))
+            input.name = `detalles[${productIndex}].cantidad`;
+          else if (input.name.includes('precioUnitario'))
+            input.name = `detalles[${productIndex}].precioUnitario`;
         });
-        const iva = subtotal * 0.13;
-        const total = subtotal + iva;
-        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-        document.getElementById('iva').textContent = iva.toFixed(2);
-        document.getElementById('total').textContent = total.toFixed(2);
-
-        // Update hidden inputs for form submission
-        document.getElementById('subtotal-input').value = subtotal.toFixed(2);
-        document.getElementById('iva-input').value = iva.toFixed(2);
-        document.getElementById('total-input').value = total.toFixed(2);
-      }
-
-      function addProductRow(nombre, descripcion, precio, productoId) {
-        const clone = template.content.cloneNode(true);
-        const row = clone.querySelector('.table-row');
-
-        row.querySelector('.nombre').value = nombre || '';
-        row.querySelector('.descripcion').value = descripcion || '';
-        row.querySelector('.precio').value = precio ? precio.toFixed(2) : '0.00';
-
-        // Create hidden inputs for form submission inside the row
-        const hiddenInputsContainer = document.createElement('div');
-        hiddenInputsContainer.style.display = 'none';
-
-        // producto.id
-        const inputProductoId = document.createElement('input');
-        inputProductoId.type = 'hidden';
-        inputProductoId.name = `detalles[${productIndex}].producto.id`;
-        inputProductoId.value = productoId || '';
-        hiddenInputsContainer.appendChild(inputProductoId);
-
-        // cantidad
-        const inputCantidad = document.createElement('input');
-        inputCantidad.type = 'number';
-        inputCantidad.name = `detalles[${productIndex}].cantidad`;
-        inputCantidad.value = row.querySelector('.product-qty').value || 1;
-        inputCantidad.min = 1;
-        inputCantidad.style.display = 'none';
-        hiddenInputsContainer.appendChild(inputCantidad);
-
-        // precioUnitario
-        const inputPrecio = document.createElement('input');
-        inputPrecio.type = 'number';
-        inputPrecio.name = `detalles[${productIndex}].precioUnitario`;
-        inputPrecio.value = precio ? precio.toFixed(2) : '0.00';
-        inputPrecio.step = '0.01';
-        inputPrecio.style.display = 'none';
-        hiddenInputsContainer.appendChild(inputPrecio);
-
-        row.appendChild(hiddenInputsContainer);
-
-        // Sync cantidad hidden input with visible qty input on change
+        // Re-sync cantidad hidden input with visible qty input on change
         const qtyInput = row.querySelector('.product-qty');
+        const inputCantidad = row.querySelector('input[name^="detalles"][name$=".cantidad"]');
         qtyInput.addEventListener('input', () => {
           inputCantidad.value = qtyInput.value;
           recalculateTotals();
         });
-
-        // Delete button handler to remove row and re-index
-        row.querySelector('.delete-product-btn').addEventListener('click', () => {
-          row.remove();
-          recalculateTotals();
-          reindexProductRows();
-        });
-
-        productRowsContainer.appendChild(row);
-        recalculateTotals();
         productIndex++;
+      });
+    }
+
+    // Show new product popup, hide existing product popup
+    newProductBtn.addEventListener('click', () => {
+      newProductPopup.style.display = 'flex';
+      document.body.classList.add('modal-open');
+      existingProductPopup.style.display = 'none';
+    });
+
+    cancelNewProductBtn.addEventListener('click', () => {
+      newProductPopup.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      clearNewProductInputs();
+    });
+
+    saveNewProductBtn.addEventListener('click', () => {
+      const nombre = document.getElementById('new-prod-nombre').value.trim();
+      const descripcion = document.getElementById('new-prod-desc').value.trim();
+      const precio = parseFloat(document.getElementById('new-prod-precio').value);
+
+      if (!nombre || !descripcion || isNaN(precio)) {
+        alert('Por favor, complete todos los campos con valores válidos.');
+        return;
       }
 
-      function reindexProductRows() {
-        productIndex = 0;
-        document.querySelectorAll('#product-rows .table-row').forEach(row => {
-          row.querySelectorAll('input[type=hidden]').forEach(input => {
-            if (input.name.includes('producto.id'))
-              input.name = `detalles[${productIndex}].producto.id`;
-            else if (input.name.includes('cantidad'))
-              input.name = `detalles[${productIndex}].cantidad`;
-            else if (input.name.includes('precioUnitario'))
-              input.name = `detalles[${productIndex}].precioUnitario`;
-          });
-          // Re-sync cantidad hidden input with visible qty input on change
-          const qtyInput = row.querySelector('.product-qty');
-          const inputCantidad = row.querySelector('input[name^="detalles"][name$=".cantidad"]');
-          qtyInput.addEventListener('input', () => {
-            inputCantidad.value = qtyInput.value;
-            recalculateTotals();
-          });
-          productIndex++;
-        });
+      // For new products we don't have an ID; send empty or handle backend accordingly
+      addProductRow(nombre, descripcion, precio, '');
+
+      newProductPopup.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      clearNewProductInputs();
+    });
+
+    function clearNewProductInputs() {
+      document.getElementById('new-prod-nombre').value = '';
+      document.getElementById('new-prod-desc').value = '';
+      document.getElementById('new-prod-precio').value = '';
+    }
+
+    // Show existing product popup, hide new product popup
+    addExistingProductBtn.addEventListener('click', () => {
+      existingProductPopup.style.display = 'flex';
+      document.body.classList.add('modal-open');
+      newProductPopup.style.display = 'none';
+    });
+
+    cancelExistingProductBtn.addEventListener('click', () => {
+      existingProductPopup.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      existingProductSelect.value = '';
+    });
+
+    addExistingProdBtn.addEventListener('click', () => {
+      const selectedProductoId = existingProductSelect.value;
+      if (!selectedProductoId) {
+        alert('Seleccione un producto válido.');
+        return;
       }
 
-      // Show new product popup, hide existing product popup
-      newProductBtn.addEventListener('click', () => {
-        newProductPopup.style.display = 'block';
-        existingProductPopup.style.display = 'none';
-      });
-
-      cancelNewProductBtn.addEventListener('click', () => {
-        newProductPopup.style.display = 'none';
-        clearNewProductInputs();
-      });
-
-      saveNewProductBtn.addEventListener('click', () => {
-        const nombre = document.getElementById('new-prod-nombre').value.trim();
-        const descripcion = document.getElementById('new-prod-desc').value.trim();
-        const precio = parseFloat(document.getElementById('new-prod-precio').value);
-
-        if (!nombre || !descripcion || isNaN(precio)) {
-          alert('Por favor, complete todos los campos con valores válidos.');
-          return;
-        }
-
-        // For new products we don't have an ID; send empty or handle backend accordingly
-        addProductRow(nombre, descripcion, precio, '');
-
-        newProductPopup.style.display = 'none';
-        clearNewProductInputs();
-      });
-
-      function clearNewProductInputs() {
-        document.getElementById('new-prod-nombre').value = '';
-        document.getElementById('new-prod-desc').value = '';
-        document.getElementById('new-prod-precio').value = '';
+      const option = existingProductSelect.querySelector(`option[value="${selectedProductoId}"]`);
+      if (!option) {
+        alert('Producto no encontrado.');
+        return;
       }
 
-      // Show existing product popup, hide new product popup
-      addExistingProductBtn.addEventListener('click', () => {
-        existingProductPopup.style.display = 'block';
-        newProductPopup.style.display = 'none';
-      });
+      // Extract name, description, price from option text (assuming format: "nombre - descripción - $precio")
+      const parts = option.textContent.split(' - ');
+      const nombre = parts[0] || '';
+      const descripcion = parts[1] || '';
+      const precioStr = parts[2] ? parts[2].replace('$', '') : '0';
+      const precio = parseFloat(precioStr);
 
-      cancelExistingProductBtn.addEventListener('click', () => {
-        existingProductPopup.style.display = 'none';
-        existingProductSelect.value = '';
-      });
+      addProductRow(nombre, descripcion, precio, selectedProductoId);
+      existingProductPopup.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      existingProductSelect.value = '';
+    });
 
-      addExistingProdBtn.addEventListener('click', () => {
-        const selectedProductoId = existingProductSelect.value;
-        if (!selectedProductoId) {
-          alert('Seleccione un producto válido.');
-          return;
-        }
-
-        const option = existingProductSelect.querySelector(`option[value="${selectedProductoId}"]`);
-        if (!option) {
-          alert('Producto no encontrado.');
-          return;
-        }
-
-        // Extract name, description, price from option text (assuming format: "nombre - descripción - $precio")
-        const parts = option.textContent.split(' - ');
-        const nombre = parts[0] || '';
-        const descripcion = parts[1] || '';
-        const precioStr = parts[2] ? parts[2].replace('$', '') : '0';
-        const precio = parseFloat(precioStr);
-
-        addProductRow(nombre, descripcion, precio, selectedProductoId);
-        existingProductPopup.style.display = 'none';
-        existingProductSelect.value = '';
-      });
-
-    </script>
-  </div>
+  </script>
+</div>
 </html>

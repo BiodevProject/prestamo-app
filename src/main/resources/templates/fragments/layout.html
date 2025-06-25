@@ -24,7 +24,7 @@
 <body>
 
 <!-- === Navbar === -->
-<nav class="navbar-custom" th:if="${navbarHidden} != true">
+<nav class="navbar-custom" >
   <div class="navbar-container">
     <a class="brand" href="/">Prestamo911</a>
 
@@ -39,7 +39,10 @@
     </button>
 
     <div class="menu">
-      <button href="/auth/logout"> cerrrar sesion</button>
+      <form  th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit" class="btn btn-link">Cerrar sesión</button>
+      </form>
+
       <div class="dropdown">
         <button class="dropdown-toggle">Admin</button>
         <div class="dropdown-menu">
@@ -89,9 +92,7 @@
 </main>
 
 <!-- === Footer === -->
-<footer th:if="${footerHidden} != true">
-  &copy; Spring eCommerce 2020
-</footer>
+
 
 </body>
 </html>
