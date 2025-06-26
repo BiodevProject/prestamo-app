@@ -3,6 +3,7 @@ package com.biovizion.prestamo911.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.biovizion.prestamo911.entities.CreditoEntity;
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 
 public interface UsuarioService {
@@ -15,6 +16,8 @@ public interface UsuarioService {
     public Optional<UsuarioEntity> get(Long id);
     public void update(UsuarioEntity usuario);
     public void delete(Long id);
+
+
 
 
 

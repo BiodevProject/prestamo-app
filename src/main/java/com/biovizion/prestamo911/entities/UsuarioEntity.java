@@ -3,6 +3,9 @@ package com.biovizion.prestamo911.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "usuario")
 @Data
@@ -26,4 +29,7 @@ public class UsuarioEntity {
     private String direccion;
 
     private String rol;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<CreditoEntity> creditos = new ArrayList<>();
 }

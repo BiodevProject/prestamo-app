@@ -38,4 +38,14 @@ public class CreditoImpl implements CreditoService {
     public void delete(Long id) {
         creditoRepository.deleteById(id);
     }
+
+    @Override
+    public List<CreditoEntity> findPendientes() {
+        return creditoRepository.findPendientes();
+    }
+
+    @Override
+    public List<CreditoEntity> findAceptadas() {
+        return creditoRepository.findAceptadas();
+    }
 }

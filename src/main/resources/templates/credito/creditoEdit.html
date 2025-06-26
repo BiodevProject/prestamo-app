@@ -202,7 +202,13 @@
           </div>
         </form>
       </div>
+      <form th:action="@{/credito/aceptar/{id}(id=${credito.id})}" method="post" style="display:inline;">
+        <button type="submit" class="btn btn-warning">Aceptar crédito</button>
+      </form>
     </section>
+
+
+
 
     <script>
       const editBtn = document.getElementById("edit-btn");

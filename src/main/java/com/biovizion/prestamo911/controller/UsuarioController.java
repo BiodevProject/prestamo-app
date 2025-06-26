@@ -2,6 +2,8 @@ package com.biovizion.prestamo911.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,20 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @GetMapping("/userAccount")
+    public String redirectToUserEdit() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        UsuarioEntity usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+
+        // Aquí rediriges al panel real que muestra los datos personales
+        return "redirect:/usuarios/edit/" + usuario.getId();
+    }
+
+
+
     @GetMapping("/create")
     public String createUser(Model model) {
         model.addAttribute("usuario", new UsuarioEntity());
@@ -35,7 +51,19 @@ public class UsuarioController {
         model.addAttribute("usuarios", usuarios);
         return "usuario/userDashboard";
     }
-    
+
+    @GetMapping("/panel")
+    public String mostrarIndex() {
+        return "usuario/usuarioPanel";
+    }
+
+
+
+
+
+
+
+
     @GetMapping("/edit/{id}")
     public String editUsuario(@PathVariable Long id, Model model) {
         UsuarioEntity usuario = usuarioService.findById(id)

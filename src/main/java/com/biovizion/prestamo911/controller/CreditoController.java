@@ -2,8 +2,12 @@ package com.biovizion.prestamo911.controller;
 
 import java.util.List;
 
+import com.biovizion.prestamo911.entities.UsuarioEntity;
+import com.biovizion.prestamo911.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,9 @@ public class CreditoController {
     @Autowired
     private CreditoService creditoService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping("/form")
     public String creditoForm(Model model) {
         CreditoEntity credito = new CreditoEntity();
@@ -31,19 +38,46 @@ public class CreditoController {
         model.addAttribute("credito", credito);
         return "credito/creditoForm";
     }
+
     @PostMapping("/save")
     public String saveCredito(@ModelAttribute CreditoEntity credito) {
+
+        // Obtener la sesión actual
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // normalmente el email es el username
+
+        // Buscar el usuario desde tu servicio por su email
+        UsuarioEntity usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+
+
+        // Asociar el crédito al usuario autenticado
+        credito.setUsuario(usuario);
+
+        // Guardar el crédito
         creditoService.save(credito);
-        return "redirect:/credito/dashboard";
+
+        return "redirect:/usuario/panel";
     }
 
-    @GetMapping("/dashboard")
-    public String creditoDashboard(Model model) {
-        List<CreditoEntity> creditos = creditoService.findAll();
+
+    @GetMapping("/dashboardPendientes")
+    public String creditoDashboardPendientes(Model model) {
+        List<CreditoEntity> creditos = creditoService.findPendientes();
         model.addAttribute("creditos", creditos);
 
-        return "credito/creditoDashboard";
+        return "credito/creditoDashboardPendientes";
     }
+
+    @GetMapping("/dashboardAceptadas")
+    public String creditoDashboardAceptados(Model model) {
+        List<CreditoEntity> creditos = creditoService.findAceptadas();
+        model.addAttribute("creditos", creditos);
+
+        return "credito/creditoDashboardAceptadas";
+    }
+
+
     @GetMapping("/edit/{id}")
     public String creditoEdit(@PathVariable Long id, Model model){
         CreditoEntity credito = creditoService.findById(id)

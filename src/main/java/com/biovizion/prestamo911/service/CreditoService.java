@@ -11,4 +11,6 @@ public interface CreditoService {
     Optional<CreditoEntity> findById(Long id);
     public void update(CreditoEntity producto);
     public void delete(Long id);
+    List<CreditoEntity> findPendientes();
+    List<CreditoEntity> findAceptadas();
 }

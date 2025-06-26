@@ -16,6 +16,8 @@ public class CreditoEntity {
 
     private Double monto;
 
+    private String estado = "pendiente";
+
     @Column(name = "plazo_meses")
     private Integer plazoMeses;
 
@@ -24,8 +26,12 @@ public class CreditoEntity {
 
     @Column(name = "forma_de_pago")
     private String formaDePago;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private UsuarioEntity usuario;
     
-    @OneToOne(cascade = CascadeType.ALL)  // or @ManyToOne depending on your model
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_solicitud_id")
     private UsuarioSolicitudEntity usuarioSolicitud = new UsuarioSolicitudEntity();
 }

@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::content}, '/css/userEdit.css')"
+      th:with="title='Ficha de Usuario'">
+<div th:fragment="content">
+
+    <section class="info-panel" style="margin-top: 150px">
+        <header class="panel-header">
+            <h1>Información del Usuario</h1>
+            <div class="subheader">
+                <p>ID del Usuario: <strong th:text="${usuario.id}">123</strong></p>
+                <nav class="breadcrumb">
+                    <a href="/">Inicio</a> ›
+                    <a href="/usuarios/dashboard">Usuarios</a> ›
+                    <span class="current">Información</span>
+                </nav>
+            </div>
+        </header>
+
+        <div class="info-section">
+            <form th:action="@{/usuarios/update}" method="post" id="user-form">
+                <input type="hidden" name="id" th:value="${usuario.id}" />
+
+                <div class="info-grid">
+                    <div class="info-block">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" name="nombre" th:value="${usuario.nombre}" disabled required />
+                    </div>
+                    <div class="info-block">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" th:value="${usuario.email}" disabled required />
+                    </div>
+                    <div class="info-block">
+                        <label for="celular">Número de celular</label>
+                        <input type="text" id="celular" name="celular" th:value="${usuario.celular}" disabled required />
+                    </div>
+                    <div class="info-block">
+                        <label for="rol">Rol en el sistema</label>
+                        <select id="rol" name="rol" class="form-select" disabled required>
+                            <option value="" disabled>Seleccione un rol</option>
+                            <option value="USER" th:selected="${usuario.rol == 'USER'}">Usuario</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="panel-actions">
+                    <button type="button" class="btn btn-primary" id="edit-btn">Editar Información</button>
+                    <button type="submit" class="btn btn-success" id="save-btn" style="display: none;">Guardar Cambios</button>
+                    <a href="/usuarios/dashboard" class="btn btn-secondary">Regresar</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        const editBtn = document.getElementById("edit-btn");
+        const saveBtn = document.getElementById("save-btn");
+        const form = document.getElementById("user-form");
+        const inputs = form.querySelectorAll("input:not([type='hidden']), select");
+
+        editBtn.addEventListener("click", () => {
+            inputs.forEach(input => input.removeAttribute("disabled"));
+            editBtn.style.display = "none";
+            saveBtn.style.display = "inline-block";
+        });
+    </script>
+
+</div>
+</html>

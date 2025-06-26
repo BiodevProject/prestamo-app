@@ -1,225 +1,228 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="fragments/layout :: layout(~{::content}, '/css/creditoForm.css')"
       th:with="title='Solicitud de Crédito'">
-  <div th:fragment="content">
-    <!-- Main Content Container -->
-    <div class="page-container" style="margin-top: 100px;">
-      <!-- Registration Panel -->
-      <div class="info-panel">
-        <header class="panel-header">
-          <h1>Solicitud de Crédito</h1>
-          <div class="subheader">
-            <nav class="breadcrumb" aria-label="breadcrumb">
-              <a href="/">Inicio</a> › 
-              <a href="/credito/dashboard">Créditos</a> › 
-              <span class="current">Nueva solicitud</span>
-            </nav>
-            Complete el formulario para solicitar un crédito
-          </div>
-        </header>
-
-        <div class="info-section">
-          <form th:object="${credito}" th:action="@{/credito/save}" method="post" id="credito-form">
-            
-            <!-- Personal Information Section -->
-            <div class="form-section">
-              <h2 class="section-title">Información Personal</h2>
-              <div class="info-grid">
-                <div class="info-block">
-                  <label for="nombre">Nombre completo</label>
-                  <input type="text" id="nombre" th:field="*{usuarioSolicitud.nombres}" required 
-                         placeholder="Ej: Juan Pérez" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="dui">DUI</label>
-                  <input type="text" id="dui" th:field="*{usuarioSolicitud.dui}" required 
-                         placeholder="Ej: 12345678-9" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="nit">NIT</label>
-                  <input type="text" id="nit" th:field="*{usuarioSolicitud.nit}" required 
-                         placeholder="Ej: 1234-567890-123-4" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="fechaNacimiento">Fecha de nacimiento</label>
-                  <input type="date" id="fechaNacimiento" th:field="*{usuarioSolicitud.fechaNacimiento}" required>
-                </div>
-                
-                <div class="info-block">
-                  <label for="estadoCivil">Estado civil</label>
-                  <select id="estadoCivil" th:field="*{usuarioSolicitud.estadoCivil}" class="form-select">
-                    <option value="soltero">Soltero</option>
-                    <option value="casado">Casado</option>
-                    <option value="divorciado">Divorciado</option>
-                    <option value="viudo">Viudo</option>
-                  </select>
-                </div>
-                
-                <div class="info-block">
-                  <label for="telefono">Teléfono celular</label>
-                  <input type="tel" id="telefono" th:field="*{usuarioSolicitud.telefono}" 
-                         placeholder="Ej: 999888777" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="email">Correo electrónico</label>
-                  <input type="email" id="email" th:field="*{usuarioSolicitud.email}" 
-                         placeholder="Ej: usuario@example.com" autocomplete="off">
-                </div>
-                
-                <div class="info-block full-width">
-                  <label for="direccion">Dirección</label>
-                  <textarea id="direccion" th:field="*{usuarioSolicitud.direccion}" 
-                            class="form-textarea" rows="3"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- Work Information Section -->
-            <div class="form-section">
-              <h2 class="section-title">Información Laboral</h2>
-              <div class="info-grid">
-                <div class="info-block">
-                  <label for="empresaTrabajo">Empresa donde trabaja</label>
-                  <input type="text" id="empresaTrabajo" th:field="*{usuarioSolicitud.empresaTrabajo}" 
-                         placeholder="Nombre de la empresa" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="puesto">Puesto o cargo</label>
-                  <input type="text" id="puesto" th:field="*{usuarioSolicitud.puesto}" 
-                         placeholder="Ej: Gerente de ventas" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="ingresoMensual">Ingresos mensuales ($)</label>
-                  <input type="number" id="ingresoMensual" th:field="*{usuarioSolicitud.ingresoMensual}" 
-                         placeholder="Ej: 1500.00" step="0.01">
-                </div>
-                
-                <div class="info-block">
-                  <label for="tipoContrato">Tipo de contrato</label>
-                  <select id="tipoContrato" th:field="*{usuarioSolicitud.tipoContrato}" class="form-select">
-                    <option value="permanente">Permanente</option>
-                    <option value="temporal">Temporal</option>
-                    <option value="otro">Otro</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Credit Information Section -->
-            <div class="form-section">
-              <h2 class="section-title">Datos del Crédito</h2>
-              <div class="info-grid">
-                <div class="info-block">
-                  <label for="monto">Monto solicitado ($)</label>
-                  <input type="number" id="monto" th:field="*{monto}" required 
-                         placeholder="Ej: 5000.00" step="0.01">
-                </div>
-                
-                <div class="info-block">
-                  <label for="plazoMeses">Plazo en meses</label>
-                  <input type="number" id="plazoMeses" th:field="*{plazoMeses}" required 
-                         placeholder="Ej: 12" min="1">
-                </div>
-                
-                <div class="info-block">
-                  <label for="destino">Destino del crédito</label>
-                  <select id="destino" th:field="*{destino}" class="form-select">
-                    <option value="consumo">Consumo personal</option>
-                    <option value="negocio">Negocio</option>
-                    <option value="compra">Compra de bienes</option>
-                    <option value="deuda">Pago de deudas</option>
-                    <option value="otro">Otro</option>
-                  </select>
-                </div>
-                
-                <div class="info-block">
-                  <label for="formaDePago">Forma de pago</label>
-                  <select id="formaDePago" th:field="*{formaDePago}" class="form-select">
-                    <option value="quincenal">Quincenal</option>
-                    <option value="mensual">Mensual</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- References Section -->
-            <div class="form-section">
-              <h2 class="section-title">Referencias Personales</h2>
-              <div class="info-grid">
-                <div class="info-block">
-                  <label for="referencia1">Nombre referencia 1</label>
-                  <input type="text" id="referencia1" th:field="*{usuarioSolicitud.referencia1}" 
-                         placeholder="Nombre completo" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="telefonoReferencia1">Teléfono referencia 1</label>
-                  <input type="tel" id="telefonoReferencia1" th:field="*{usuarioSolicitud.telefonoReferencia1}" 
-                         placeholder="Ej: 999888777" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="parentesco1">Parentesco</label>
-                  <input type="text" id="parentesco1" th:field="*{usuarioSolicitud.parentesco1}" 
-                         placeholder="Ej: Familiar, Amigo" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="referencia2">Nombre referencia 2</label>
-                  <input type="text" id="referencia2" th:field="*{usuarioSolicitud.referencia2}" 
-                         placeholder="Nombre completo" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="telefonoReferencia2">Teléfono referencia 2</label>
-                  <input type="tel" id="telefonoReferencia2" th:field="*{usuarioSolicitud.telefonoReferencia2}" 
-                         placeholder="Ej: 999888777" autocomplete="off">
-                </div>
-                
-                <div class="info-block">
-                  <label for="parentesco2">Parentesco</label>
-                  <input type="text" id="parentesco2" th:field="*{usuarioSolicitud.parentesco2}" 
-                         placeholder="Ej: Familiar, Amigo" autocomplete="off">
-                </div>
-              </div>
-            </div>
-
-            <!-- Declaration Section -->
-            <div class="form-section">
-              <h2 class="section-title">Declaración</h2>
-              <div class="info-grid">
-                <div class="info-block full-width">
-                  <div class="declaration-text">
-                    <p>Firmando, declaro que la información proporcionada es verdadera y autorizo a la financiera a verificarla.</p>
-                  </div>
-                </div>
-                
-                <div class="info-block">
-                  <label for="firma">Firma del solicitante</label>
-                  <input type="text" id="firma" th:field="*{usuarioSolicitud.firma}" required 
-                         placeholder="Ingrese su firma">
-                </div>
-                
-                <div class="info-block">
-                  <label for="fechaSolicitud">Fecha</label>
-                  <input type="date" id="fechaSolicitud" th:field="*{usuarioSolicitud.fechaSolicitud}" required>
-                </div>
-              </div>
-            </div>
-
-            <div class="panel-actions">
-              <button type="submit" class="btn btn-primary">Enviar solicitud</button>
-              <a href="/credito/dashboard" class="btn btn-secondary">Cancelar</a>
-            </div>
-          </form>
+<div th:fragment="content">
+  <!-- Main Content Container -->
+  <div class="page-container" style="margin-top: 100px;">
+    <!-- Registration Panel -->
+    <div class="info-panel">
+      <header class="panel-header">
+        <h1>Solicitud de Crédito</h1>
+        <div class="subheader">
+          <nav class="breadcrumb" aria-label="breadcrumb">
+            <a href="/">Inicio</a> ›
+            <a href="/credito/dashboard">Créditos</a> ›
+            <span class="current">Nueva solicitud</span>
+          </nav>
+          Complete el formulario para solicitar un crédito
         </div>
+      </header>
+
+      <div class="info-section">
+        <form th:object="${credito}" th:action="@{/credito/save}" method="post" id="credito-form">
+
+          <!-- Campo oculto para estado -->
+          <input type="hidden" th:field="*{estado}" th:value="'pendiente'" />
+
+          <!-- Personal Information Section -->
+          <div class="form-section">
+            <h2 class="section-title">Información Personal</h2>
+            <div class="info-grid">
+              <div class="info-block">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" th:field="*{usuarioSolicitud.nombres}" required
+                       placeholder="Ej: Juan Pérez" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="dui">DUI</label>
+                <input type="text" id="dui" th:field="*{usuarioSolicitud.dui}" required
+                       placeholder="Ej: 12345678-9" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="nit">NIT</label>
+                <input type="text" id="nit" th:field="*{usuarioSolicitud.nit}" required
+                       placeholder="Ej: 1234-567890-123-4" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="fechaNacimiento">Fecha de nacimiento</label>
+                <input type="date" id="fechaNacimiento" th:field="*{usuarioSolicitud.fechaNacimiento}" required>
+              </div>
+
+              <div class="info-block">
+                <label for="estadoCivil">Estado civil</label>
+                <select id="estadoCivil" th:field="*{usuarioSolicitud.estadoCivil}" class="form-select">
+                  <option value="soltero">Soltero</option>
+                  <option value="casado">Casado</option>
+                  <option value="divorciado">Divorciado</option>
+                  <option value="viudo">Viudo</option>
+                </select>
+              </div>
+
+              <div class="info-block">
+                <label for="telefono">Teléfono celular</label>
+                <input type="tel" id="telefono" th:field="*{usuarioSolicitud.telefono}"
+                       placeholder="Ej: 999888777" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" th:field="*{usuarioSolicitud.email}"
+                       placeholder="Ej: usuario@example.com" autocomplete="off">
+              </div>
+
+              <div class="info-block full-width">
+                <label for="direccion">Dirección</label>
+                <textarea id="direccion" th:field="*{usuarioSolicitud.direccion}"
+                          class="form-textarea" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Work Information Section -->
+          <div class="form-section">
+            <h2 class="section-title">Información Laboral</h2>
+            <div class="info-grid">
+              <div class="info-block">
+                <label for="empresaTrabajo">Empresa donde trabaja</label>
+                <input type="text" id="empresaTrabajo" th:field="*{usuarioSolicitud.empresaTrabajo}"
+                       placeholder="Nombre de la empresa" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="puesto">Puesto o cargo</label>
+                <input type="text" id="puesto" th:field="*{usuarioSolicitud.puesto}"
+                       placeholder="Ej: Gerente de ventas" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="ingresoMensual">Ingresos mensuales ($)</label>
+                <input type="number" id="ingresoMensual" th:field="*{usuarioSolicitud.ingresoMensual}"
+                       placeholder="Ej: 1500.00" step="0.01">
+              </div>
+
+              <div class="info-block">
+                <label for="tipoContrato">Tipo de contrato</label>
+                <select id="tipoContrato" th:field="*{usuarioSolicitud.tipoContrato}" class="form-select">
+                  <option value="permanente">Permanente</option>
+                  <option value="temporal">Temporal</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Credit Information Section -->
+          <div class="form-section">
+            <h2 class="section-title">Datos del Crédito</h2>
+            <div class="info-grid">
+              <div class="info-block">
+                <label for="monto">Monto solicitado ($)</label>
+                <input type="number" id="monto" th:field="*{monto}" required
+                       placeholder="Ej: 5000.00" step="0.01">
+              </div>
+
+              <div class="info-block">
+                <label for="plazoMeses">Plazo en meses</label>
+                <input type="number" id="plazoMeses" th:field="*{plazoMeses}" required
+                       placeholder="Ej: 12" min="1">
+              </div>
+
+              <div class="info-block">
+                <label for="destino">Destino del crédito</label>
+                <select id="destino" th:field="*{destino}" class="form-select">
+                  <option value="consumo">Consumo personal</option>
+                  <option value="negocio">Negocio</option>
+                  <option value="compra">Compra de bienes</option>
+                  <option value="deuda">Pago de deudas</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <div class="info-block">
+                <label for="formaDePago">Forma de pago</label>
+                <select id="formaDePago" th:field="*{formaDePago}" class="form-select">
+                  <option value="quincenal">Quincenal</option>
+                  <option value="mensual">Mensual</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- References Section -->
+          <div class="form-section">
+            <h2 class="section-title">Referencias Personales</h2>
+            <div class="info-grid">
+              <div class="info-block">
+                <label for="referencia1">Nombre referencia 1</label>
+                <input type="text" id="referencia1" th:field="*{usuarioSolicitud.referencia1}"
+                       placeholder="Nombre completo" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="telefonoReferencia1">Teléfono referencia 1</label>
+                <input type="tel" id="telefonoReferencia1" th:field="*{usuarioSolicitud.telefonoReferencia1}"
+                       placeholder="Ej: 999888777" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="parentesco1">Parentesco</label>
+                <input type="text" id="parentesco1" th:field="*{usuarioSolicitud.parentesco1}"
+                       placeholder="Ej: Familiar, Amigo" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="referencia2">Nombre referencia 2</label>
+                <input type="text" id="referencia2" th:field="*{usuarioSolicitud.referencia2}"
+                       placeholder="Nombre completo" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="telefonoReferencia2">Teléfono referencia 2</label>
+                <input type="tel" id="telefonoReferencia2" th:field="*{usuarioSolicitud.telefonoReferencia2}"
+                       placeholder="Ej: 999888777" autocomplete="off">
+              </div>
+
+              <div class="info-block">
+                <label for="parentesco2">Parentesco</label>
+                <input type="text" id="parentesco2" th:field="*{usuarioSolicitud.parentesco2}"
+                       placeholder="Ej: Familiar, Amigo" autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+          <!-- Declaration Section -->
+          <div class="form-section">
+            <h2 class="section-title">Declaración</h2>
+            <div class="info-grid">
+              <div class="info-block full-width">
+                <div class="declaration-text">
+                  <p>Firmando, declaro que la información proporcionada es verdadera y autorizo a la financiera a verificarla.</p>
+                </div>
+              </div>
+
+              <div class="info-block">
+                <label for="firma">Firma del solicitante</label>
+                <input type="text" id="firma" th:field="*{usuarioSolicitud.firma}" required
+                       placeholder="Ingrese su firma">
+              </div>
+
+              <div class="info-block">
+                <label for="fechaSolicitud">Fecha</label>
+                <input type="date" id="fechaSolicitud" th:field="*{usuarioSolicitud.fechaSolicitud}" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button type="submit" class="btn btn-primary">Enviar solicitud</button>
+            <a href="/credito/dashboard" class="btn btn-secondary">Cancelar</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>
 </html>
