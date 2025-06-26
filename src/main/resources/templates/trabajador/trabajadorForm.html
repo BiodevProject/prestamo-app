@@ -8,21 +8,21 @@
       <!-- Registration Panel -->
       <div class="info-panel">
         <header class="panel-header">
-          <h1>Registrar nuevo usuario</h1>
+          <h1>Registrar nuevo trabajador</h1>
           <div class="subheader">
             <!-- Breadcrumb -->
             <nav class="breadcrumb" aria-label="breadcrumb">
               <a href="/">Inicio</a> › 
-              <a href="/usuarios/dashboard">Usuarios</a> › 
-              <span class="current">Registrar nuevo usuario</span>
+              <a href="/trabajador/dashboard">Trabajadores</a> › 
+              <span class="current">Registrar nuevo trabajador</span>
             </nav>
-            Complete el formulario para registrar un nuevo usuario en el sistema
+            Complete el formulario para registrar un nuevo trabajador en el sistema
           </div>
         </header>
 
         <div class="info-section">
 
-          <form th:action="@{/usuarios/save}" method="post">
+          <form th:action="@{/trabajador/save}" method="post">
             <div class="info-grid">
               <div class="info-block">
                 <label for="nombre">Nombre completo</label>
@@ -33,26 +33,15 @@
               <div class="info-block">
                 <label for="email">Correo electrónico</label>
                 <input type="email" id="email" name="email" required 
-                       placeholder="Ej: usuario@example.com" autocomplete="off">
-              </div>
-              
-              <div class="info-block">
-                <label for="celular">Número de celular</label>
-                <input type="tel" id="celular" name="celular" required 
-                       placeholder="Ej: 999888777" autocomplete="off">
-              </div>
-              
-              <div class="info-block">
-                <label for="edad">Edad</label>
-                <input type="number" id="edad" name="edad" required 
-                       placeholder="Ej: 25" min="18" max="120" autocomplete="off">
+                       placeholder="Ej: trabajador@example.com" autocomplete="off">
               </div>
               
               <div class="info-block">
                 <label for="rol">Rol en el sistema</label>
                 <select id="rol" name="rol" class="form-select" required>
                   <option value="" disabled>Seleccione un rol</option>
-                  <option value="USER" selected>Usuario</option>
+                  <option value="TRABAJADOR" selected>Trabajador</option>
+                  <option value="ADMIN">Administrador</option>
                 </select>
               </div>
               
@@ -64,8 +53,8 @@
             </div>
 
             <div class="panel-actions">
-              <button type="submit" class="btn btn-primary">Registrar usuario</button>
-              <a href="/usuarios/dashboard" class="btn btn-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Registrar trabajador</button>
+              <a href="/trabajador/dashboard" class="btn btn-secondary">Cancelar</a>
             </div>
           </form>
         </div>
