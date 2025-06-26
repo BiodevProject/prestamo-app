@@ -8,19 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("")
 public class HomeController {
-    @RequestMapping("")
-    public String vistahome() {
-        return "redirect:/home";
-    }
+
 
     @GetMapping("/home")
     public String mostrarIndex() {
         return "/home/home";
     }
 
-    @GetMapping("/select")
+    @GetMapping("/")
     public String SelectoOption() {
-        return "/home/SelectOption";
+        return "/home/landingPage";
     }
 
 }
