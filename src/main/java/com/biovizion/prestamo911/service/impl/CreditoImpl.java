@@ -48,4 +48,9 @@ public class CreditoImpl implements CreditoService {
     public List<CreditoEntity> findAceptadas() {
         return creditoRepository.findAceptadas();
     }
+
+    @Override
+    public List<CreditoEntity> findByUsuarioId(Long id) {
+        return creditoRepository.findByUsuarioId(id);
+    }
 }

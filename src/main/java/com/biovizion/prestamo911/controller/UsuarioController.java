@@ -1,9 +1,12 @@
 package com.biovizion.prestamo911.controller;
 
+import com.biovizion.prestamo911.entities.CreditoEntity;
+import com.biovizion.prestamo911.service.CreditoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.service.UsuarioService;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -25,16 +29,19 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/userAccount")
-    public String redirectToUserEdit() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
+    @Autowired
+    private CreditoService creditoService;
 
-        UsuarioEntity usuario = usuarioService.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
 
-        // Aquí rediriges al panel real que muestra los datos personales
-        return "redirect:/usuarios/edit/" + usuario.getId();
+    @GetMapping("/estadoDeCuenta")
+    public String EstadoDeCuenta(Model model, Principal principal) {
+        String emailUsuario = principal.getName();
+        UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
+        model.addAttribute("creditos", creditos);
+        return "usuario/estadoDeCuenta";
     }
 
 
@@ -60,6 +67,17 @@ public class UsuarioController {
 
 
 
+    @GetMapping("/userAccount")
+    public String redirectToUserEdit() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        UsuarioEntity usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+
+        // Aquí rediriges al panel real que muestra los datos personales
+        return "redirect:/usuarios/edit/" + usuario.getId();
+    }
 
 
 

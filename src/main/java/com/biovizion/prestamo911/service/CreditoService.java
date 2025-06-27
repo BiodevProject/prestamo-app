@@ -13,4 +13,5 @@ public interface CreditoService {
     public void delete(Long id);
     List<CreditoEntity> findPendientes();
     List<CreditoEntity> findAceptadas();
+    List<CreditoEntity> findByUsuarioId(Long id);
 }
