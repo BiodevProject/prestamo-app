@@ -81,12 +81,13 @@ public class HomeController {
         model.addAttribute("creditos", creditos);
         return "appDashboard/admin/creditosAceptados";
     }
-
-    // ADMIN: Credito Detalle
-    @GetMapping("/usuarioTemp/creditos/detalle/{id}")
-    public String adminCreditoDetalle(@PathVariable Long id, Model model) {
+    
+    // ADMIN: Credito Detalle Modal Content
+    @GetMapping("/usuarioTemp/creditos/detalle/{id}/modal")
+    public String adminCreditoDetalleModal(@PathVariable Long id, Model model) {
         CreditoEntity credito = creditoService.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        
         model.addAttribute("credito", credito);
         return "appDashboard/admin/creditoDetalle";
     }

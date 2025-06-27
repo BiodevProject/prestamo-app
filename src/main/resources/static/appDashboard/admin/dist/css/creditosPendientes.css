@@ -1,0 +1,76 @@
+/* Context Menu Styles */
+.context-menu {
+    position: fixed;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    min-width: 180px;
+    z-index: 9999;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: none;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+.context-menu-item:hover {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+}
+
+.context-menu-item:active {
+    background-color: #e9ecef;
+}
+
+.context-menu-item i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.context-menu-item.primary i {
+    color: #007bff;
+}
+
+.context-menu-item.success i {
+    color: #28a745;
+}
+
+.context-menu-item.danger i {
+    color: #dc3545;
+}
+
+.context-menu-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 4px 0;
+}
+
+/* Make table rows clickable */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+    background-color: #f8f9fa !important;
+}
+
+.clickable-row:active {
+    background-color: #e9ecef !important;
+} 

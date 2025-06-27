@@ -14,5 +14,4 @@ public interface CreditoRepository extends JpaRepository<CreditoEntity, Long> {
 
     @Query("SELECT c FROM CreditoEntity c WHERE LOWER(c.estado) = 'Aceptado'")
     List<CreditoEntity> findAceptadas();
-
 }

@@ -389,7 +389,7 @@
                       <td th:text="${credito.monto}">1000.00</td>
                       <td th:text="${credito.plazoMeses}">12</td>
                       <td th:text="${credito.estado}">aceptado</td>
-                      <td><a th:href="@{'/usuarioTemp/creditos/detalle/' + ${credito.id}}" class="btn btn-info btn-sm">Ver Detalles</a></td>
+                      <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
                     </tr>
                   </tbody>
                 </table>
@@ -415,6 +415,23 @@
             </div>
           </div>
         </section>
+      </div>
+      <!-- Modal for Credit Details -->
+      <div class="modal fade" id="creditoModal" tabindex="-1" aria-labelledby="creditoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="creditoModalLabel">Detalle de Crédito</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="creditoModalBody">
+              <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
       </div>
       <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -479,7 +496,7 @@
             <td>${credito.monto}</td>
             <td>${credito.plazo}</td>
             <td>${credito.estado}</td>
-            <td><a href="/usuarioTemp/creditos/detalle/${credito.id}" class="btn btn-info btn-sm">Ver Detalles</a></td>
+            <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
           `;
           tbody.appendChild(row);
         });
@@ -511,6 +528,26 @@
           updateTable();
           updatePagination();
         }
+      }
+      
+      function showCreditoDetails(creditoId) {
+        // Show loading state
+        document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+        
+        // Show the modal
+        var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
+        modal.show();
+        
+        // Fetch credit details via AJAX
+        fetch(`/usuarioTemp/creditos/detalle/${creditoId}/modal`)
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('creditoModalBody').innerHTML = html;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('creditoModalBody').innerHTML = '<div class="alert alert-danger">Error al cargar los detalles del crédito</div>';
+          });
       }
     </script>
   </body>
