@@ -477,8 +477,8 @@ button {
 
 .read_more {
      font-size: 17px;
-     background-color: transparent;
-     border: #ffca56 solid 2px;
+     background-color: transparent !important;
+     border: 2px solid #ffca56 !important;
      color: #ffca56 !important;
      padding: 13px 0px;
      width: 100%;
@@ -490,10 +490,11 @@ button {
 }
 
 .read_more:hover {
-     background: #02246a;
-     color: #fff;
+     background: #02246a !important;
+     color: #fff !important;
      transition: ease-in all 0.5s;
 }
+
 
 
 /** team section **/
@@ -628,15 +629,25 @@ button {
      display: block;
      margin-top: 50px;
      background-color: transparent;
-     border: #48ca95 solid 2px;
-     color: #48ca95 !important;
+     border: #ffca56 solid 2px;      /* Cambiado a amarillo */
+     color: #ffca56 !important;      /* Cambiado a amarillo */
      max-width: 232px;
      padding: 15px 0;
 }
 
 .services .read_more:hover {
-     background: #48ca95;
-     color: #000 !important;
+     background: #ffca56;             /* Cambiado a amarillo */
+     color: #ffffff !important;
+}
+
+
+.read_more.btn-large {
+     display: inline-block;
+     padding: 15px 50px;
+     font-size: 1.4rem;
+     margin: 0;
+     min-width: 300px;  /* aumentá el ancho mínimo */
+     text-align: center;
 }
 
 

@@ -32,7 +32,10 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/vendor/**",
                                 "/api/public/**",
-                                "/"
+                                "/",
+                                "/mainPage/**",
+                                "/appDashboard/**"
+
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -40,7 +43,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/select", true)
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
