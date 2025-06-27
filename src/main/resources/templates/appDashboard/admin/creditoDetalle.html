@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Crédito</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="/appDashboard/admin/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="/appDashboard/admin/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .card { margin: 30px auto; max-width: 800px; }
+        .card-header { background: #007bff; color: #fff; }
+        .table th { width: 30%; }
+    </style>
+</head>
+<body class="skin-blue">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="/usuarioTemp/creditos/pendientes" class="logo"><b>Admin</b>LTE</a>
+    </header>
+    <div class="content-wrapper" style="min-height:100vh;">
+        <section class="content-header">
+            <h1>Detalle de Crédito</h1>
+        </section>
+        <section class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Información del Crédito</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th>ID</th><td th:text="${credito.id}"></td></tr>
+                        <tr><th>Monto</th><td th:text="${credito.monto}"></td></tr>
+                        <tr><th>Estado</th><td th:text="${credito.estado}"></td></tr>
+                        <tr><th>Plazo (meses)</th><td th:text="${credito.plazoMeses}"></td></tr>
+                        <tr><th>Destino</th><td th:text="${credito.destino}"></td></tr>
+                        <tr><th>Forma de Pago</th><td th:text="${credito.formaDePago}"></td></tr>
+                    </table>
+                    <h5 class="mt-4">Usuario Asociado</h5>
+                    <table class="table table-bordered">
+                        <tr><th>Nombre</th><td th:text="${credito.usuario != null ? credito.usuario.nombre : 'N/A'}"></td></tr>
+                        <tr><th>Email</th><td th:text="${credito.usuario != null ? credito.usuario.email : 'N/A'}"></td></tr>
+                        <tr><th>Celular</th><td th:text="${credito.usuario != null ? credito.usuario.celular : 'N/A'}"></td></tr>
+                        <tr><th>Dirección</th><td th:text="${credito.usuario != null ? credito.usuario.direccion : 'N/A'}"></td></tr>
+                    </table>
+                    <h5 class="mt-4">Datos de Solicitud</h5>
+                    <table class="table table-bordered">
+                        <tr><th>Nombres</th><td th:text="${credito.usuarioSolicitud.nombres}"></td></tr>
+                        <tr><th>Apellidos</th><td th:text="${credito.usuarioSolicitud.apellidos}"></td></tr>
+                        <tr><th>DUI</th><td th:text="${credito.usuarioSolicitud.dui}"></td></tr>
+                        <tr><th>NIT</th><td th:text="${credito.usuarioSolicitud.nit}"></td></tr>
+                        <tr><th>Fecha de Nacimiento</th><td th:text="${credito.usuarioSolicitud.fechaNacimiento}"></td></tr>
+                        <tr><th>Estado Civil</th><td th:text="${credito.usuarioSolicitud.estadoCivil}"></td></tr>
+                        <tr><th>Teléfono</th><td th:text="${credito.usuarioSolicitud.telefono}"></td></tr>
+                        <tr><th>Email</th><td th:text="${credito.usuarioSolicitud.email}"></td></tr>
+                        <tr><th>Dirección</th><td th:text="${credito.usuarioSolicitud.direccion}"></td></tr>
+                        <tr><th>Empresa Trabajo</th><td th:text="${credito.usuarioSolicitud.empresaTrabajo}"></td></tr>
+                        <tr><th>Puesto</th><td th:text="${credito.usuarioSolicitud.puesto}"></td></tr>
+                        <tr><th>Ingreso Mensual</th><td th:text="${credito.usuarioSolicitud.ingresoMensual}"></td></tr>
+                        <tr><th>Tipo Contrato</th><td th:text="${credito.usuarioSolicitud.tipoContrato}"></td></tr>
+                        <tr><th>Referencia 1</th><td th:text="${credito.usuarioSolicitud.referencia1}"></td></tr>
+                        <tr><th>Teléfono Referencia 1</th><td th:text="${credito.usuarioSolicitud.telefonoReferencia1}"></td></tr>
+                        <tr><th>Parentesco 1</th><td th:text="${credito.usuarioSolicitud.parentesco1}"></td></tr>
+                        <tr><th>Referencia 2</th><td th:text="${credito.usuarioSolicitud.referencia2}"></td></tr>
+                        <tr><th>Teléfono Referencia 2</th><td th:text="${credito.usuarioSolicitud.telefonoReferencia2}"></td></tr>
+                        <tr><th>Parentesco 2</th><td th:text="${credito.usuarioSolicitud.parentesco2}"></td></tr>
+                        <tr><th>Firma</th><td th:text="${credito.usuarioSolicitud.firma}"></td></tr>
+                        <tr><th>Fecha Solicitud</th><td th:text="${credito.usuarioSolicitud.fechaSolicitud}"></td></tr>
+                    </table>
+                    <a href="javascript:history.back()" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Volver</a>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 2.0
+        </div>
+        <strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

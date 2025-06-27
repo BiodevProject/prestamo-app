@@ -2,13 +2,18 @@ package com.biovizion.prestamo911.controller;
 
 import com.biovizion.prestamo911.entities.TrabajadorEntity;
 import com.biovizion.prestamo911.entities.UsuarioEntity;
+import com.biovizion.prestamo911.entities.CreditoEntity;
 import com.biovizion.prestamo911.service.TrabajadorService;
 import com.biovizion.prestamo911.service.UsuarioService;
+import com.biovizion.prestamo911.service.CreditoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,6 +26,9 @@ public class HomeController {
     
     @Autowired
     private TrabajadorService trabajadorService;
+
+    @Autowired
+    private CreditoService creditoService;
 
     @GetMapping("/home")
     public String mostrarIndex() {
@@ -56,5 +64,30 @@ public class HomeController {
         List<TrabajadorEntity> trabajadores = trabajadorService.findAll();
         model.addAttribute("trabajadores", trabajadores);
         return "/appDashboard/admin/trabajadores";
+    }
+
+    // ADMIN: Creditos Pendientes
+    @GetMapping("/usuarioTemp/creditos/pendientes")
+    public String adminCreditosPendientes(Model model) {
+        List<CreditoEntity> creditos = creditoService.findPendientes();
+        model.addAttribute("creditos", creditos);
+        return "appDashboard/admin/creditosPendientes";
+    }
+
+    // ADMIN: Creditos Aceptados
+    @GetMapping("/usuarioTemp/creditos/aceptados")
+    public String adminCreditosAceptados(Model model) {
+        List<CreditoEntity> creditos = creditoService.findAceptadas();
+        model.addAttribute("creditos", creditos);
+        return "appDashboard/admin/creditosAceptados";
+    }
+
+    // ADMIN: Credito Detalle
+    @GetMapping("/usuarioTemp/creditos/detalle/{id}")
+    public String adminCreditoDetalle(@PathVariable Long id, Model model) {
+        CreditoEntity credito = creditoService.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        model.addAttribute("credito", credito);
+        return "appDashboard/admin/creditoDetalle";
     }
 }
