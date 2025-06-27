@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{appDashboard/user/layout :: layout(
+          pageTitle='Trabajadores',
+          pageSubtitle='No disponible para usuarios',
+          activePage='',
+          content=~{::content},
+          pageCss=~{::css},
+          pageScripts=~{::scripts}
+      )}">
+<head>
+    <th:block th:fragment="css">
+        <link href="/appDashboard/admin/dist/css/creditosPendientes.css" rel="stylesheet" type="text/css" />
+        <style>
+            .search-container { margin-bottom: 20px; }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<div th:fragment="content">
+    <div class="container mt-4">
+        <h2>Esta sección no está disponible para usuarios.</h2>
+    </div>
+</div>
+
+<th:block th:fragment="scripts">
+    <script>
+        function filterTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("workerTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let display = "none";
+                const td = tr[i].getElementsByTagName("td");
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        display = "";
+                        break;
+                    }
+                }
+                tr[i].style.display = display;
+            }
+        }
+    </script>
+</th:block>
+
+</body>
+</html> 

@@ -1,554 +1,99 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8">
-    <title>AdminLTE 2 | Créditos Aceptados</title>
-    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-    <!-- Bootstrap 5 latest from CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />    
-    <!-- FontAwesome latest from CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" type="text/css" />
-    <!-- Ionicons latest from CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />    
-    <!-- Theme style -->
-    <link href="/appDashboard/admin/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
-    <link href="/appDashboard/admin/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
-    <!-- iCheck latest from CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/flat/blue.css" rel="stylesheet" type="text/css" />
-    <!-- Custom styles for sidebar user panel -->
-    <style>
-      .user-panel p { color: #fff !important; font-weight: 500; }
-      .user-panel a { color: #ccc !important; }
-      .user-panel a:hover { color: #fff !important; }
-      .search-container { margin-bottom: 20px; }
-      .pagination-container { margin-top: 20px; text-align: center; }
-      .pagination-container button { margin: 0 5px; }
-    </style>
-  </head>
-  <body class="skin-blue">
-    <div class="wrapper">
-      <header class="main-header">
-        <!-- Logo -->
-        <a href="index.html" class="logo"><b>Admin</b>LTE</a>
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-expand-lg navbar-static-top" role="navigation">
-          <!-- Sidebar toggle button-->
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target=".sidebar-offcanvas" role="button">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="navbar-custom-menu ms-auto">
-            <ul class="navbar-nav">
-              <!-- Messages: style can be found in dropdown.less-->
-              <li class="nav-item dropdown messages-menu">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <i class="fas fa-envelope"></i>
-                  <span class="badge bg-success">4</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">You have 4 messages</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- start message -->
-                        <a href="#" class="dropdown-item">
-                          <div class="d-flex">
-                            <img src="/appDashboard/admin/dist/img/user2-160x160.jpg" class="rounded-circle me-2" alt="User Image" style="width: 40px; height: 40px;"/>
-                            <div>
-                              <h6 class="mb-0">
-                                Support Team
-                                <small class="text-muted"><i class="fas fa-clock"></i> 5 mins</small>
-                              </h6>
-                              <p class="mb-0">Why not buy a new awesome theme?</p>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end message -->
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <div class="d-flex">
-                            <img src="/appDashboard/admin/dist/img/user3-128x128.jpg" class="rounded-circle me-2" alt="user image" style="width: 40px; height: 40px;"/>
-                            <div>
-                              <h6 class="mb-0">
-                                AdminLTE Design Team
-                                <small class="text-muted"><i class="fas fa-clock"></i> 2 hours</small>
-                              </h6>
-                              <p class="mb-0">Why not buy a new awesome theme?</p>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <div class="d-flex">
-                            <img src="/appDashboard/admin/dist/img/user4-128x128.jpg" class="rounded-circle me-2" alt="user image" style="width: 40px; height: 40px;"/>
-                            <div>
-                              <h6 class="mb-0">
-                                Developers
-                                <small class="text-muted"><i class="fas fa-clock"></i> Today</small>
-                              </h6>
-                              <p class="mb-0">Why not buy a new awesome theme?</p>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <div class="d-flex">
-                            <img src="/appDashboard/admin/dist/img/user3-128x128.jpg" class="rounded-circle me-2" alt="user image" style="width: 40px; height: 40px;"/>
-                            <div>
-                              <h6 class="mb-0">
-                                Sales Department
-                                <small class="text-muted"><i class="fas fa-clock"></i> Yesterday</small>
-                              </h6>
-                              <p class="mb-0">Why not buy a new awesome theme?</p>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <div class="d-flex">
-                            <img src="/appDashboard/admin/dist/img/user4-128x128.jpg" class="rounded-circle me-2" alt="user image" style="width: 40px; height: 40px;"/>
-                            <div>
-                              <h6 class="mb-0">
-                                Reviewers
-                                <small class="text-muted"><i class="fas fa-clock"></i> 2 days</small>
-                              </h6>
-                              <p class="mb-0">Why not buy a new awesome theme?</p>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">See All Messages</a></li>
-                </ul>
-              </li>
-              <!-- Notifications: style can be found in dropdown.less -->
-              <li class="nav-item dropdown notifications-menu">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <i class="fas fa-bell"></i>
-                  <span class="badge bg-warning">10</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">You have 10 notifications</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <i class="fas fa-users text-info"></i> 5 new members joined today
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <i class="fas fa-warning text-warning"></i> Very long description here that may not fit into the page and may cause design problems
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <i class="fas fa-users text-danger"></i> 5 new members joined
-                        </a>
-                      </li>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{appDashboard/admin/layout :: layout(
+          pageTitle='Créditos Aceptados',
+          pageSubtitle='Listado de créditos aprobados',
+          activePage='creditosAceptados',
+          content=~{::content},
+          pageCss=~{::css},
+          pageScripts=~{::scripts}
+      )}">
 
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <i class="fas fa-shopping-cart text-success"></i> 25 sales made
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" class="dropdown-item">
-                          <i class="fas fa-user text-danger"></i> You changed your username
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">View all</a></li>
-                </ul>
-              </li>
-              <!-- Tasks: style can be found in dropdown.less -->
-              <li class="nav-item dropdown tasks-menu">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <i class="fas fa-flag"></i>
-                  <span class="badge bg-danger">9</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">You have 9 tasks</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- Task item -->
-                        <a href="#" class="dropdown-item">
-                          <h6 class="mb-0">
-                            Design some buttons
-                            <small class="float-end">20%</small>
-                          </h6>
-                          <div class="progress" style="height: 5px;">
-                            <div class="progress-bar bg-info" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="visually-hidden">20% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#" class="dropdown-item">
-                          <h6 class="mb-0">
-                            Create a nice theme
-                            <small class="float-end">40%</small>
-                          </h6>
-                          <div class="progress" style="height: 5px;">
-                            <div class="progress-bar bg-success" style="width: 40%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="visually-hidden">40% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#" class="dropdown-item">
-                          <h6 class="mb-0">
-                            Some task I need to do
-                            <small class="float-end">60%</small>
-                          </h6>
-                          <div class="progress" style="height: 5px;">
-                            <div class="progress-bar bg-warning" style="width: 60%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="visually-hidden">60% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#" class="dropdown-item">
-                          <h6 class="mb-0">
-                            Make beautiful transitions
-                            <small class="float-end">80%</small>
-                          </h6>
-                          <div class="progress" style="height: 5px;">
-                            <div class="progress-bar bg-danger" style="width: 80%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="visually-hidden">80% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                    </ul>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">View all tasks</a></li>
-                </ul>
-              </li>
-              <!-- User Account: style can be found in dropdown.less -->
-              <li class="nav-item dropdown user user-menu">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <img src="/appDashboard/admin/dist/img/user2-160x160.jpg" class="rounded-circle me-2" alt="User Image" style="width: 30px; height: 30px;"/>
-                  <span class="d-none d-md-inline">Alexander Pierce</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <!-- User image -->
-                  <li class="dropdown-header">
-                    <img src="/appDashboard/admin/dist/img/user2-160x160.jpg" class="rounded-circle" alt="User Image" style="width: 90px; height: 90px;" />
-                    <p>
-                      Alexander Pierce - Web Developer
-                      <small>Member since Nov. 2012</small>
-                    </p>
-                  </li>
-                  <!-- Menu Body -->
-                  <li class="dropdown-body">
-                    <div class="row">
-                      <div class="col-4 text-center">
-                        <a href="#">Followers</a>
-                      </div>
-                      <div class="col-4 text-center">
-                        <a href="#">Sales</a>
-                      </div>
-                      <div class="col-4 text-center">
-                        <a href="#">Friends</a>
-                      </div>
-                    </div>
-                    <!-- /.row -->
-                  </li>
-                  <!-- Menu Footer-->
-                  <li class="dropdown-footer">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </header>
-      <!-- Left side column. contains the logo and sidebar -->
-      <aside class="main-sidebar">
-        <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-          <!-- Sidebar user panel -->
-          <div class="user-panel">
-            <div class="d-flex">
-              <div class="me-3">
-                <img src="/appDashboard/admin/dist/img/user2-160x160.jpg" class="rounded-circle" alt="User Image" style="width: 40px; height: 40px;" />
-              </div>
-              <div>
-                <p class="mb-0">Alexander Pierce</p>
-                <a href="#" class="text-decoration-none"><i class="fas fa-circle text-success"></i> Online</a>
-              </div>
-            </div>
-          </div>
-          <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Search..."/>
-              <button type='submit' name='search' id='search-btn' class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
-            </div>
-          </form>
-          <!-- /.search form -->
-          <!-- sidebar menu: : style can be found in sidebar.less -->
-          <ul class="sidebar-menu">
-            <li class="header">MAIN NAVIGATION</li>
-            <li class="treeview">
-              <a href="/usuarioTemp/dashboard" class="nav-link">
-                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
-              </a>
-            </li>
-            
-            <li class="active treeview">
-              <a href="#" class="nav-link">
-                <i class="fas fa-money-check-alt"></i> <span>Creditos</span> <i class="fas fa-angle-left float-end"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="/usuarioTemp/creditos/pendientes" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Nuevas</a></li>
-                <li class="active"><a href="/usuarioTemp/creditos/aceptados" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Aceptadas</a></li>
-              </ul>
-            </li>
-            
-            <li>
-              <a href="/usuarioTemp/usuarios" class="nav-link">
-                <i class="fas fa-users"></i> <span>Usuarios</span>
-              </a>
-            </li>
-            <li>
-              <a href="/usuarioTemp/trabajadores" class="nav-link">
-                <i class="fas fa-user-tie"></i> <span>Trabajadores</span>
-              </a>
-            </li>
+<head>
+    <th:block th:fragment="css">
+        <link href="/appDashboard/admin/dist/css/creditosPendientes.css" rel="stylesheet" type="text/css" />
+        <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
+        <style>
+            .search-container { margin-bottom: 20px; }
+            .pagination-container { margin-top: 20px; text-align: center; }
+            .pagination-container button { margin: 0 5px; }
+        </style>
+    </th:block>
+</head>
 
-            <li>
-              <a href="pages/calendar.html" class="nav-link">
-                <i class="fas fa-calendar"></i> <span>Calendar</span>
-                <small class="badge bg-danger float-end">3</small>
-              </a>
-            </li>
-          </ul>
-        </section>
-        <!-- /.sidebar -->
-      </aside>
-      <div class="content-wrapper">
-        <section class="content-header">
-          <h1>Créditos Aceptados<small>Gestión de créditos aceptados</small></h1>
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/usuarioTemp/dashboard"><i class="fas fa-tachometer-alt"></i> Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Créditos Aceptados</li>
-            </ol>
-          </nav>
-        </section>
-        <section class="content">
-          <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs" id="creditosTabs" role="tablist">
-              <li class="nav-item" role="presentation">
+<body>
+
+<div th:fragment="content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" id="creditosTabs" role="tablist">
+            <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="creditos-tab" type="button" role="tab">Créditos Aceptados</button>
-              </li>
-            </ul>
-            <div class="tab-content" id="creditosTabsContent">
-              <div class="search-container">
+            </li>
+        </ul>
+        <div class="tab-content" id="creditosTabsContent">
+            <div class="search-container">
                 <div class="input-group">
-                  <input type="text" id="searchInput" class="form-control" placeholder="Buscar créditos..." onkeyup="filterTable()">
-                  <span class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">
-                      <i class="fas fa-search"></i>
-                    </button>
-                  </span>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar créditos..." onkeyup="filterTable()">
+                    <span class="input-group-append"><button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button></span>
                 </div>
-              </div>
-              <div class="box-body table-responsive no-padding">
+            </div>
+            <div class="box-body table-responsive no-padding">
                 <table class="table table-hover" id="creditoTable">
-                  <thead>
-                    <tr id="tableHeaders">
-                      <th>ID</th>
-                      <th>Usuario</th>
-                      <th>Monto</th>
-                      <th>Plazo (meses)</th>
-                      <th>Estado</th>
-                      <th></th>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Monto</th>
+                        <th>Plazo (meses)</th>
+                        <th>Estado</th>
+                        <th></th>
                     </tr>
-                  </thead>
-                  <tbody id="creditoTableBody">
-                    <tr th:each="credito, stat : ${creditos}" th:if="${stat.index < 5}">
-                      <td th:text="${credito.id}">1</td>
-                      <td th:text="${credito.usuario != null ? credito.usuario.nombre : 'N/A'}">Usuario</td>
-                      <td th:text="${credito.monto}">1000.00</td>
-                      <td th:text="${credito.plazoMeses}">12</td>
-                      <td th:text="${credito.estado}">aceptado</td>
-                      <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
-                    </tr>
-                  </tbody>
+                    </thead>
+                    <tbody id="creditoTableBody"></tbody>
                 </table>
-                <!-- Hidden div to store credito data for JS filtering -->
                 <div id="creditoData" style="display: none;"
                      th:each="credito : ${creditos}"
                      th:data-id="${credito.id}"
-                     th:data-usuario="${credito.usuario != null ? credito.usuario.nombre : 'N/A'}"
-                     th:data-monto="${credito.monto}"
+                     th:data-usuario="${credito.usuario?.nombre}"
+                     th:data-monto="${#numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}"
                      th:data-plazo="${credito.plazoMeses}"
                      th:data-estado="${credito.estado}">
                 </div>
+
                 <div class="pagination-container">
-                  <button class="btn btn-primary" onclick="previousPage()" id="prevBtn">
-                    <i class="fas fa-chevron-left"></i> Anterior
-                  </button>
-                  <span id="pageInfo">Página 1 de <span id="totalPages">1</span></span>
-                  <button class="btn btn-primary" onclick="nextPage()" id="nextBtn">
-                    Siguiente <i class="fas fa-chevron-right"></i>
-                  </button>
+                    <button class="btn btn-primary" onclick="previousPage()" id="prevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <span id="pageInfo">Página 1 de <span id="totalPages">1</span></span>
+                    <button class="btn btn-primary" onclick="nextPage()" id="nextBtn">Siguiente <i class="fas fa-chevron-right"></i></button>
                 </div>
-              </div>
             </div>
-          </div>
-        </section>
-      </div>
-      <!-- Modal for Credit Details -->
-      <div class="modal fade" id="creditoModal" tabindex="-1" aria-labelledby="creditoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="creditoModalLabel">Detalle de Crédito</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="creditoModalBody">
-              <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-          </div>
         </div>
-      </div>
-      <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-          <b>Version</b> 2.0
-        </div>
-        <strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.
-      </footer>
     </div>
-    <!-- JS libraries and filtering/pagination script -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" type="text/javascript"></script>
-    <script>$.widget.bridge('uibutton', $.ui.button);</script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-    <script>
-      var allCreditos = [];
-      var currentPage = 1;
-      var creditosPerPage = 5;
-      var filteredData = [];
-      document.addEventListener('DOMContentLoaded', function() {
-        loadCreditoData();
-        updateTable();
-        updatePagination();
-      });
-      function loadCreditoData() {
-        var creditoDataDivs = document.querySelectorAll('#creditoData');
-        allCreditos = [];
-        creditoDataDivs.forEach(function(div) {
-          allCreditos.push({
-            id: div.getAttribute('data-id'),
-            usuario: div.getAttribute('data-usuario') || '',
-            monto: div.getAttribute('data-monto') || '',
-            plazo: div.getAttribute('data-plazo') || '',
-            estado: div.getAttribute('data-estado') || ''
-          });
-        });
-        filteredData = [...allCreditos];
-      }
-      function filterTable() {
-        var input = document.getElementById("searchInput");
-        var filter = input.value.toLowerCase();
-        filteredData = allCreditos.filter(function(credito) {
-          return credito.usuario.toLowerCase().includes(filter) ||
-                 credito.monto.toLowerCase().includes(filter) ||
-                 credito.plazo.toLowerCase().includes(filter) ||
-                 credito.estado.toLowerCase().includes(filter);
-        });
-        currentPage = 1;
-        updateTable();
-        updatePagination();
-      }
-      function updateTable() {
-        var tbody = document.getElementById("creditoTableBody");
-        var startIndex = (currentPage - 1) * creditosPerPage;
-        var endIndex = startIndex + creditosPerPage;
-        var pageCreditos = filteredData.slice(startIndex, endIndex);
-        tbody.innerHTML = '';
-        pageCreditos.forEach(function(credito) {
-          var row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${credito.id}</td>
-            <td>${credito.usuario}</td>
-            <td>${credito.monto}</td>
-            <td>${credito.plazo}</td>
-            <td>${credito.estado}</td>
-            <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
-          `;
-          tbody.appendChild(row);
-        });
-      }
-      function updatePagination() {
-        var totalPages = Math.ceil(filteredData.length / creditosPerPage);
-        var pageInfo = document.getElementById("pageInfo");
-        var totalPagesSpan = document.getElementById("totalPages");
-        var prevBtn = document.getElementById("prevBtn");
-        var nextBtn = document.getElementById("nextBtn");
-        pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-        totalPagesSpan.textContent = totalPages;
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages;
-        if (prevBtn.disabled) { prevBtn.classList.add('disabled'); } else { prevBtn.classList.remove('disabled'); }
-        if (nextBtn.disabled) { nextBtn.classList.add('disabled'); } else { nextBtn.classList.remove('disabled'); }
-      }
-      function previousPage() {
-        if (currentPage > 1) {
-          currentPage--;
-          updateTable();
-          updatePagination();
-        }
-      }
-      function nextPage() {
-        var totalPages = Math.ceil(filteredData.length / creditosPerPage);
-        if (currentPage < totalPages) {
-          currentPage++;
-          updateTable();
-          updatePagination();
-        }
-      }
-      
-      function showCreditoDetails(creditoId) {
-        // Show loading state
-        document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-        
-        // Show the modal
-        var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
-        modal.show();
-        
-        // Fetch credit details via AJAX
-        fetch(`/usuarioTemp/creditos/detalle/${creditoId}/modal`)
-          .then(response => response.text())
-          .then(html => {
-            document.getElementById('creditoModalBody').innerHTML = html;
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('creditoModalBody').innerHTML = '<div class="alert alert-danger">Error al cargar los detalles del crédito</div>';
-          });
-      }
-    </script>
-  </body>
+
+    <!-- Modal for Credit Details -->
+    <div class="modal fade" id="creditoModal" tabindex="-1" aria-labelledby="creditoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #F4F6F9; border-radius: 15px;">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title" id="creditoModalLabel" style="font-weight: 600; color: #333;">Detalle de Crédito</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="creditoModalBody"></div>
+                <div class="modal-footer" style="border-top: none;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
+    </div>
+</div>
+
+<th:block th:fragment="scripts">
+    <script src="/appDashboard/admin/dist/js/creditosAceptados.js" type="text/javascript"></script>
+</th:block>
+
+</body>
 </html> 

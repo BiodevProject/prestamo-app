@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{appDashboard/user/layout :: layout(
+          pageTitle='Detalle de Crédito',
+          pageSubtitle='Detalle de tu solicitud',
+          activePage='estadoCreditos',
+          content=~{::content},
+          pageCss=~{::css},
+          pageScripts=~{::scripts}
+      )}">
 <head>
     <meta charset="UTF-8">
     <title>Detalle de Crédito</title>
     <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div class="credito-detail">
+    <div th:fragment="content" class="credito-detail">
         <!-- Credit Summary -->
         <div class="section-card full-width">
             <div class="section-header" onclick="toggleSection('credit-summary')">

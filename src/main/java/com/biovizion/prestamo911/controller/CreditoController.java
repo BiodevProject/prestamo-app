@@ -57,7 +57,7 @@ public class CreditoController {
         // Guardar el crédito
         creditoService.save(credito);
 
-        return "redirect:/usuario/panel";
+        return "redirect:/usuario/estadoDeCreditos";
     }
 
 
@@ -96,5 +96,16 @@ public class CreditoController {
     public String creditoDelete(@PathVariable Long id) {
         creditoService.delete(id);
         return "redirect:/credito/dashboard";
+    }
+
+    @PostMapping("/accept/{id}")
+    public String acceptCredito(@PathVariable Long id) {
+        CreditoEntity credito = creditoService.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        
+        credito.setEstado("aceptado");
+        creditoService.update(credito);
+        
+        return "redirect:/adminTemp/creditos/pendientes";
     }
 }

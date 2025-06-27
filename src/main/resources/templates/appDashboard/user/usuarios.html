@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{appDashboard/user/layout :: layout(
+          pageTitle='Cuenta',
+          pageSubtitle='Tu información de usuario',
+          activePage='cuenta',
+          content=~{::content},
+          pageCss=~{::css},
+          pageScripts=~{::scripts}
+      )}">
+<head>
+    <th:block th:fragment="css">
+        <link href="/appDashboard/admin/dist/css/creditosPendientes.css" rel="stylesheet" type="text/css" />
+        <style>
+            .search-container { margin-bottom: 20px; }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<div th:fragment="content">
+    <div class="container mt-4">
+        <h2>Editar Cuenta</h2>
+        <form th:action="@{/usuarios/update}" th:object="${usuario}" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+            <div class="mb-3">
+                <label for="celular" class="form-label">Celular</label>
+                <input type="text" class="form-control" id="celular" th:field="*{celular}">
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección</label>
+                <input type="text" class="form-control" id="direccion" th:field="*{direccion}">
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+
+<th:block th:fragment="scripts">
+    <script>
+        function filterTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("userTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let display = "none";
+                const td = tr[i].getElementsByTagName("td");
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        display = "";
+                        break;
+                    }
+                }
+                tr[i].style.display = display;
+            }
+        }
+    </script>
+</th:block>
+
+</body>
+</html> 

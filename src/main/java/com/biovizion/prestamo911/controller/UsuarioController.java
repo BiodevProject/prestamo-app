@@ -14,15 +14,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
+import com.biovizion.prestamo911.entities.UsuarioSolicitudEntity;
 import com.biovizion.prestamo911.service.UsuarioService;
+import com.biovizion.prestamo911.service.UsuarioSolicitudService;
 
 import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/usuarios")
+@RequestMapping("/usuario")
 public class UsuarioController {
 
+    @Autowired
+    private UsuarioSolicitudService usuarioSolicitudService;
     @Autowired
     private UsuarioService usuarioService;
 
@@ -33,42 +37,68 @@ public class UsuarioController {
     private CreditoService creditoService;
 
 
-    @GetMapping("/estadoDeCuenta")
-    public String EstadoDeCuenta(Model model, Principal principal) {
+    
+    @GetMapping("/create")
+    public String createUser(Model model) {
+        model.addAttribute("usuario", new UsuarioEntity());
+        return "auth/register";
+    }
+    
+    @GetMapping("/dashboard")
+    public String ShowListaUsuarios(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        
+        List<UsuarioEntity> usuarios = usuarioService.findAll();
+        model.addAttribute("usuarios", usuarios);
+        return "appDashboard/user/index";
+    }
+
+    @GetMapping("/solicitarCredito")
+    public String solicitarCreditoForm(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        model.addAttribute("credito", new com.biovizion.prestamo911.entities.CreditoEntity());
+        return "appDashboard/user/solicitarCredito";
+    }
+    
+    @GetMapping("/estadoDeCreditos")
+    public String estadoDeCreditos(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        
         String emailUsuario = principal.getName();
         UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
         model.addAttribute("creditos", creditos);
-        return "usuario/estadoDeCuenta";
+        return "appDashboard/user/creditosPendientes";
     }
+    
+    @GetMapping("/creditos/detalle/{id}/modal")
+    public String creditoDetalleModal(@PathVariable Long id, Model model, Principal principal) {
+        String emailUsuario = principal.getName();
+        UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-
-
-    @GetMapping("/create")
-    public String createUser(Model model) {
-        model.addAttribute("usuario", new UsuarioEntity());
-        return "auth/register";
+        CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        
+        // Verify that the credit belongs to the current user
+        if (!credito.getUsuario().getId().equals(usuario.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para ver este crédito");
+        }
+        
+        model.addAttribute("credito", credito);
+        return "appDashboard/user/creditoDetalle :: content";
     }
-
-    @GetMapping("/dashboard")
-    public String ShowListaUsuarios(Model model) {
-        List<UsuarioEntity> usuarios = usuarioService.findAll();
-        model.addAttribute("usuarios", usuarios);
-        return "usuario/userDashboard";
-    }
-
-    @GetMapping("/panel")
-    public String mostrarIndex() {
-        return "usuario/usuarioPanel";
-    }
-
-
-
-
-    @GetMapping("/userAccount")
-    public String redirectToUserEdit() {
+    
+    @GetMapping("/cuenta")
+    public String redirectToUserEdit(Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
@@ -76,14 +106,15 @@ public class UsuarioController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
 
         // Aquí rediriges al panel real que muestra los datos personales
-        return "redirect:/usuarios/edit/" + usuario.getId();
+        return "redirect:/usuario/edit/" + usuario.getId();
     }
 
-
-
-
     @GetMapping("/edit/{id}")
-    public String editUsuario(@PathVariable Long id, Model model) {
+    public String editUsuario(@PathVariable Long id, Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        
         UsuarioEntity usuario = usuarioService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         model.addAttribute("usuario", usuario);
@@ -124,5 +155,21 @@ public class UsuarioController {
     public String deleteUsuario(@PathVariable Long id) {
         usuarioService.delete(id);
         return "redirect:/usuarios/dashboard";
+    }
+
+    // Helper method to get current user's name
+    private String getCurrentUserName(Principal principal) {
+        if (principal == null) {
+            return "Usuario";
+        }
+        
+        try {
+            String email = principal.getName();
+            UsuarioEntity usuario = usuarioService.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+            return usuario.getNombre() != null ? usuario.getNombre() : email;
+        } catch (Exception e) {
+            return principal.getName();
+        }
     }
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{appDashboard/admin/layout :: layout(
-          pageTitle='Créditos Pendientes',
-          pageSubtitle='Gestión de créditos pendientes',
-          activePage='creditosPendientes',
+      th:replace="~{appDashboard/user/layout :: layout(
+          pageTitle='Créditos Aceptados',
+          pageSubtitle='Tus créditos aprobados',
+          activePage='estadoCreditos',
           content=~{::content},
           pageCss=~{::css},
           pageScripts=~{::scripts}
@@ -17,24 +17,6 @@
             .search-container { margin-bottom: 20px; }
             .pagination-container { margin-top: 20px; text-align: center; }
             .pagination-container button { margin: 0 5px; }
-            
-            /* Pagination button styling */
-            .pagination-container button:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            
-            .pagination-container button:not(:disabled) {
-                cursor: pointer;
-                pointer-events: auto;
-            }
-            
-            .pagination-container button.disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
         </style>
     </th:block>
 </head>
@@ -45,7 +27,7 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="creditosTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="creditos-tab" type="button" role="tab">Créditos Pendientes</button>
+                <button class="nav-link active" id="creditos-tab" type="button" role="tab">Créditos Aceptados</button>
             </li>
         </ul>
         <div class="tab-content" id="creditosTabsContent">
@@ -60,15 +42,20 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Usuario</th>
                         <th>Monto</th>
                         <th>Plazo (meses)</th>
                         <th>Estado</th>
-                        <th></th>
+                        <th>Fecha Solicitud</th>
                     </tr>
                     </thead>
                     <tbody id="creditoTableBody">
-                    <!-- Data will be populated by JS -->
+                    <tr th:each="credito : ${creditos}">
+                        <td th:text="${credito.id}"></td>
+                        <td th:text="${#numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}"></td>
+                        <td th:text="${credito.plazoMeses}"></td>
+                        <td th:text="${credito.estado}"></td>
+                        <td th:text="${credito.usuarioSolicitud?.fechaSolicitud}"></td>
+                    </tr>
                     </tbody>
                 </table>
                 <div id="creditoData" style="display: none;"
@@ -82,7 +69,7 @@
 
                 <div class="pagination-container">
                     <button class="btn btn-primary" onclick="previousPage()" id="prevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
-                    <span id="pageInfo">Página 1 de </span><span id="totalPages">1</span>
+                    <span id="pageInfo">Página 1 de <span id="totalPages">1</span></span>
                     <button class="btn btn-primary" onclick="nextPage()" id="nextBtn">Siguiente <i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
@@ -97,33 +84,17 @@
                     <h5 class="modal-title" id="creditoModalLabel" style="font-weight: 600; color: #333;">Detalle de Crédito</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="creditoModalBody">
-                    <!-- AJAX content will be loaded here -->
-                </div>
+                <div class="modal-body" id="creditoModalBody"></div>
                 <div class="modal-footer" style="border-top: none;">
-                    <button type="button" class="btn btn-success" onclick="modalAceptarCredito()" style="border-radius: 20px;">
-                        <i class="fas fa-check"></i> Aceptar
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="modalDeclinarCredito()" style="border-radius: 20px;">
-                        <i class="fas fa-times"></i> Declinar
-                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Context Menu -->
-    <div class="context-menu" id="contextMenu">
-        <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
-        <div class="context-menu-divider"></div>
-        <button class="context-menu-item success" onclick="contextMenuAceptarCredito()"><i class="fas fa-check"></i> Aceptar Crédito</button>
-        <button class="context-menu-item danger" onclick="contextMenuDeclinarCredito()"><i class="fas fa-times"></i> Declinar Crédito</button>
-    </div>
 </div>
 
 <th:block th:fragment="scripts">
-    <script src="/appDashboard/admin/dist/js/creditosPendientes.js" type="text/javascript"></script>
+    <script src="/appDashboard/admin/dist/js/creditosAceptados.js" type="text/javascript"></script>
 </th:block>
 
 </body>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{appDashboard/user/layout :: layout(
+          pageTitle='Solicitar Crédito',
+          pageSubtitle='Formulario de solicitud de crédito',
+          activePage='solicitarCredito',
+          content=~{::content},
+          pageCss=~{::css},
+          pageScripts=~{::scripts}
+      )}">
+<head>
+    <th:block th:fragment="css">
+        <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
+        <style>
+            .solicitar-credito-form .section-card {
+                margin-bottom: 32px;
+            }
+            .solicitar-credito-form .sections-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .solicitar-credito-form .section-card.full-width {
+                width: 100%;
+            }
+            .solicitar-credito-form .info-item input,
+            .solicitar-credito-form .info-item select,
+            .solicitar-credito-form .info-item textarea {
+                margin-top: 4px;
+                border-radius: 4px;
+                border: 1px solid #e9ecef;
+                padding: 8px 12px;
+                font-size: 15px;
+                background: #fff;
+                width: 100%;
+            }
+            .solicitar-credito-form .info-item input:focus,
+            .solicitar-credito-form .info-item select:focus,
+            .solicitar-credito-form .info-item textarea:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 0 2px #e8f4fd;
+            }
+            .solicitar-credito-form .btn-primary {
+                font-size: 17px;
+                padding: 12px 36px;
+                border-radius: 24px;
+                margin-top: 18px;
+            }
+            /* Make reference info-grid vertical */
+            .solicitar-credito-form .reference-info-vertical {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<div th:fragment="content" class="credito-detail solicitar-credito-form">
+    <form th:action="@{/credito/save}" th:object="${credito}" method="post" autocomplete="off">
+        <input type="hidden" th:field="*{estado}" th:value="'pendiente'" />
+
+        <!-- Resumen del Crédito -->
+        <div class="section-card full-width">
+            <div class="section-header">
+                <div class="section-header-left">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Resumen del Crédito
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="summary-grid">
+                    <div class="summary-item financial-field monto-highlight">
+                        <div class="summary-label">Monto Solicitado</div>
+                        <input type="number" step="0.01" th:field="*{monto}" required class="summary-value" placeholder="$0.00">
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Plazo (meses)</div>
+                        <input type="number" th:field="*{plazoMeses}" required class="summary-value" placeholder="12">
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Destino</div>
+                        <select th:field="*{destino}" class="summary-value">
+                            <option value="consumo">Consumo personal</option>
+                            <option value="negocio">Negocio</option>
+                            <option value="compra">Compra de bienes</option>
+                            <option value="deuda">Pago de deudas</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Forma de Pago</div>
+                        <select th:field="*{formaDePago}" class="summary-value">
+                            <option value="quincenal">Quincenal</option>
+                            <option value="mensual">Mensual</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sections-grid">
+            <!-- Información Personal -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <i class="fas fa-user"></i>
+                        Información Personal
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid">
+                        <div class="info-item important-field">
+                            <span class="info-label">Nombres</span>
+                            <input type="text" th:field="*{usuarioSolicitud.nombres}" required placeholder="Ej: Juan Carlos">
+                        </div>
+                        <div class="info-item important-field">
+                            <span class="info-label">Apellidos</span>
+                            <input type="text" th:field="*{usuarioSolicitud.apellidos}" required placeholder="Ej: Pérez González">
+                        </div>
+                        <div class="info-item important-field">
+                            <span class="info-label">Número de DUI</span>
+                            <input type="text" th:field="*{usuarioSolicitud.dui}" required placeholder="12345678-9">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Número de NIT</span>
+                            <input type="text" th:field="*{usuarioSolicitud.nit}" required placeholder="1234-567890-123-4">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Nacimiento</span>
+                            <input type="date" th:field="*{usuarioSolicitud.fechaNacimiento}" required>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Estado Civil</span>
+                            <input type="text" th:field="*{usuarioSolicitud.estadoCivil}" required placeholder="Ej: Soltero">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Teléfono</span>
+                            <input type="text" th:field="*{usuarioSolicitud.telefono}" required placeholder="Ej: 999888777">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <input type="email" th:field="*{usuarioSolicitud.email}" required placeholder="usuario@email.com">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Dirección</span>
+                            <input type="text" th:field="*{usuarioSolicitud.direccion}" required placeholder="Ej: San Salvador, El Salvador">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Laboral -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <i class="fas fa-briefcase"></i>
+                        Información Laboral
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Empresa de Trabajo</span>
+                            <input type="text" th:field="*{usuarioSolicitud.empresaTrabajo}" required placeholder="Nombre de la empresa">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Puesto</span>
+                            <input type="text" th:field="*{usuarioSolicitud.puesto}" required placeholder="Ej: Desarrollador">
+                        </div>
+                        <div class="info-item financial-field">
+                            <span class="info-label">Ingreso Mensual</span>
+                            <input type="number" step="0.01" th:field="*{usuarioSolicitud.ingresoMensual}" required placeholder="Ej: 1500.00">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Contrato</span>
+                            <input type="text" th:field="*{usuarioSolicitud.tipoContrato}" required placeholder="Ej: Permanente">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referencias Personales -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <i class="fas fa-users"></i>
+                        Referencias Personales
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid reference-info-vertical">
+                        <div class="info-item">
+                            <span class="info-label">Referencia 1 (Nombre)</span>
+                            <input type="text" th:field="*{usuarioSolicitud.referencia1}" required placeholder="Nombre completo">
+                            <span class="info-label" style="margin-top: 6px;">Teléfono</span>
+                            <input type="text" th:field="*{usuarioSolicitud.telefonoReferencia1}" required placeholder="Ej: 999888777">
+                            <span class="info-label" style="margin-top: 6px;">Parentesco</span>
+                            <input type="text" th:field="*{usuarioSolicitud.parentesco1}" required placeholder="Ej: Familiar, Amigo">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Referencia 2 (Nombre)</span>
+                            <input type="text" th:field="*{usuarioSolicitud.referencia2}" required placeholder="Nombre completo">
+                            <span class="info-label" style="margin-top: 6px;">Teléfono</span>
+                            <input type="text" th:field="*{usuarioSolicitud.telefonoReferencia2}" required placeholder="Ej: 999888777">
+                            <span class="info-label" style="margin-top: 6px;">Parentesco</span>
+                            <input type="text" th:field="*{usuarioSolicitud.parentesco2}" required placeholder="Ej: Familiar, Amigo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Declaración y Firma -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <i class="fas fa-clipboard-check"></i>
+                        Declaración y Firma
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Firma</span>
+                            <input type="text" th:field="*{usuarioSolicitud.firma}" required placeholder="Ej: Juan C. Pérez">
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Solicitud</span>
+                            <input type="date" th:field="*{usuarioSolicitud.fechaSolicitud}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center">
+            <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        </div>
+    </form>
+</div>
+</body>
+</html> 

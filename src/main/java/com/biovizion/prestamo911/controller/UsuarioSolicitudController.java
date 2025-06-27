@@ -22,15 +22,10 @@ public class UsuarioSolicitudController {
     @Autowired
     private UsuarioSolicitudService usuarioSolicitudService;
 
-    @GetMapping("/form")
-    public String usuarioSolicitudForm(Model model) {
-        return "usuarioSolicitud/usuarioSolicitudForm";
-    }
-
     @PostMapping("/save")
     public String usuarioSolicitudSave(@ModelAttribute UsuarioSolicitudEntity usuarioSolicitud, Model model) {
         usuarioSolicitudService.save(usuarioSolicitud);
-        return "redirect:/usuarioSolicitud/dashboard";
+        return "redirect:/usuario/estadoDeCreditos";
     }
 
     @GetMapping("/dashboard")

@@ -5,14 +5,84 @@ var filteredData = [];
 var selectedCreditoId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to ensure all elements are rendered
-    setTimeout(function() {
-        loadCreditoData();
-        updateTable();
-        updatePagination();
-        setupContextMenu();
-    }, 100);
+    loadCreditoData();
+    updateTable();
+    updatePagination();
+    setupContextMenu();
 });
+
+function setupContextMenu() {
+    // Hide context menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.context-menu') && !e.target.closest('.clickable-row')) {
+            hideContextMenu();
+        }
+    });
+    
+    // Hide context menu on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideContextMenu();
+        }
+    });
+}
+
+function showContextMenu(e, creditoId) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    selectedCreditoId = creditoId;
+    const contextMenu = document.getElementById('contextMenu');
+    
+    // Position the context menu
+    contextMenu.style.left = e.pageX + 'px';
+    contextMenu.style.top = e.pageY + 'px';
+    contextMenu.style.display = 'block';
+    
+    // Ensure menu doesn't go off-screen
+    const rect = contextMenu.getBoundingClientRect();
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    
+    if (rect.right > windowWidth) {
+        contextMenu.style.left = (e.pageX - rect.width) + 'px';
+    }
+    
+    if (rect.bottom > windowHeight) {
+        contextMenu.style.top = (e.pageY - rect.height) + 'px';
+    }
+}
+
+function hideContextMenu() {
+    const contextMenu = document.getElementById('contextMenu');
+    contextMenu.style.display = 'none';
+    selectedCreditoId = null;
+}
+
+function contextMenuVerDetalles() {
+    if (selectedCreditoId) {
+        showCreditoDetails(selectedCreditoId);
+        hideContextMenu();
+    }
+}
+
+function contextMenuAceptarCredito() {
+    if (selectedCreditoId) {
+        console.log('Aceptar crédito:', selectedCreditoId);
+        // TODO: Implement accept credit functionality
+        alert('Función de aceptar crédito será implementada próximamente');
+        hideContextMenu();
+    }
+}
+
+function contextMenuDeclinarCredito() {
+    if (selectedCreditoId) {
+        console.log('Declinar crédito:', selectedCreditoId);
+        // TODO: Implement decline credit functionality
+        alert('Función de declinar crédito será implementada próximamente');
+        hideContextMenu();
+    }
+}
 
 function loadCreditoData() {
     var creditoDataDivs = document.querySelectorAll('#creditoData');
@@ -84,79 +154,32 @@ function updatePagination() {
     var totalPagesSpan = document.getElementById("totalPages");
     var prevBtn = document.getElementById("prevBtn");
     var nextBtn = document.getElementById("nextBtn");
-    
-    // Check if all required elements exist
-    if (!pageInfo || !totalPagesSpan || !prevBtn || !nextBtn) {
-        console.error("Pagination elements not found:", {
-            pageInfo: !!pageInfo,
-            totalPagesSpan: !!totalPagesSpan,
-            prevBtn: !!prevBtn,
-            nextBtn: !!nextBtn
-        });
-        return;
-    }
-    
-    // Ensure currentPage doesn't exceed totalPages
-    if (currentPage > totalPages && totalPages > 0) {
-        currentPage = totalPages;
-    }
-    
-    // Update the page info text (now just "Página X de ")
-    pageInfo.textContent = `Página ${currentPage} de `;
+    pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
     totalPagesSpan.textContent = totalPages;
-    
-    // Update button states
-    var isFirstPage = currentPage <= 1;
-    var isLastPage = currentPage >= totalPages;
-    
-    prevBtn.disabled = isFirstPage;
-    nextBtn.disabled = isLastPage;
-    
-    // Update CSS classes for styling
-    if (isFirstPage) {
-        prevBtn.classList.add('disabled');
-    } else {
-        prevBtn.classList.remove('disabled');
-    }
-    
-    if (isLastPage) {
-        nextBtn.classList.add('disabled');
-    } else {
-        nextBtn.classList.remove('disabled');
-    }
-    
-    console.log(`Pagination: Page ${currentPage} of ${totalPages}, Prev disabled: ${isFirstPage}, Next disabled: ${isLastPage}`);
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+    if (prevBtn.disabled) { prevBtn.classList.add('disabled'); } else { prevBtn.classList.remove('disabled'); }
+    if (nextBtn.disabled) { nextBtn.classList.add('disabled'); } else { nextBtn.classList.remove('disabled'); }
 }
 
 function previousPage() {
-    console.log(`Previous page clicked. Current page: ${currentPage}`);
     if (currentPage > 1) {
         currentPage--;
-        console.log(`Going to page: ${currentPage}`);
         updateTable();
         updatePagination();
-    } else {
-        console.log('Already on first page');
     }
 }
 
 function nextPage() {
     var totalPages = Math.ceil(filteredData.length / creditosPerPage);
-    console.log(`Next page clicked. Current page: ${currentPage}, Total pages: ${totalPages}`);
     if (currentPage < totalPages) {
         currentPage++;
-        console.log(`Going to page: ${currentPage}`);
         updateTable();
         updatePagination();
-    } else {
-        console.log('Already on last page');
     }
 }
 
 function showCreditoDetails(creditoId) {
-    // Set the selected credit ID for modal buttons
-    selectedCreditoId = creditoId;
-    
     // Show loading state
     document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
     
@@ -278,136 +301,5 @@ function initializeModalSections() {
         creditSummaryContent.style.paddingBottom = '20px';
         creditSummaryContent.style.overflow = 'visible';
         console.log('Expanded credit summary');
-    }
-}
-
-function setupContextMenu() {
-    // Hide context menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.context-menu') && !e.target.closest('.clickable-row')) {
-            hideContextMenu();
-        }
-    });
-    
-    // Hide context menu on escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            hideContextMenu();
-        }
-    });
-}
-
-function showContextMenu(e, creditoId) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    selectedCreditoId = creditoId;
-    const contextMenu = document.getElementById('contextMenu');
-    
-    // Position the context menu
-    contextMenu.style.left = e.pageX + 'px';
-    contextMenu.style.top = e.pageY + 'px';
-    contextMenu.style.display = 'block';
-    
-    // Ensure menu doesn't go off-screen
-    const rect = contextMenu.getBoundingClientRect();
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    
-    if (rect.right > windowWidth) {
-        contextMenu.style.left = (e.pageX - rect.width) + 'px';
-    }
-    
-    if (rect.bottom > windowHeight) {
-        contextMenu.style.top = (e.pageY - rect.height) + 'px';
-    }
-}
-
-function hideContextMenu() {
-    const contextMenu = document.getElementById('contextMenu');
-    contextMenu.style.display = 'none';
-    selectedCreditoId = null;
-}
-
-function contextMenuVerDetalles() {
-    if (selectedCreditoId) {
-        showCreditoDetails(selectedCreditoId);
-        hideContextMenu();
-    }
-}
-
-function contextMenuAceptarCredito() {
-    if (selectedCreditoId) {
-        // Show confirmation dialog
-        if (confirm('¿Está seguro de que desea aceptar este crédito?')) {
-            // Make POST request to accept the credit
-            fetch(`/credito/accept/${selectedCreditoId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Refresh the page to show updated data
-                    window.location.reload();
-                } else {
-                    alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-            });
-        }
-        hideContextMenu();
-    }
-}
-
-function contextMenuDeclinarCredito() {
-    if (selectedCreditoId) {
-        console.log('Declinar crédito:', selectedCreditoId);
-        // TODO: Implement decline credit functionality
-        alert('Función de declinar crédito será implementada próximamente');
-        hideContextMenu();
-    }
-}
-
-// Modal functions for Accept and Decline buttons
-function modalAceptarCredito() {
-    if (selectedCreditoId) {
-        // Show confirmation dialog
-        if (confirm('¿Está seguro de que desea aceptar este crédito?')) {
-            // Make POST request to accept the credit
-            fetch(`/credito/accept/${selectedCreditoId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Close the modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('creditoModal'));
-                    modal.hide();
-                    // Refresh the page to show updated data
-                    window.location.reload();
-                } else {
-                    alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-            });
-        }
-    }
-}
-
-function modalDeclinarCredito() {
-    if (selectedCreditoId) {
-        console.log('Declinar crédito desde modal:', selectedCreditoId);
-        // TODO: Implement decline credit functionality
-        alert('Función de declinar crédito será implementada próximamente');
     }
 } 
