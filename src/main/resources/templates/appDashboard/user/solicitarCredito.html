@@ -112,47 +112,70 @@
             </div>
         </div>
 
-        <!-- Información Laboral and Referencias Personales Side by Side -->
-        <div class="form-grid">
-            <!-- Información Laboral -->
-            <div class="section-card">
-                <div class="section-header">
-                    <div class="section-header-left">
-                        <i class="fas fa-briefcase"></i>
-                        Información Laboral
+        <!-- Información Laboral, Declaración y Firma (left) + Referencias Personales (right) -->
+        <div class="form-grid" style="align-items: stretch;">
+            <!-- Left column: stack Información Laboral and Declaración y Firma -->
+            <div style="display: flex; flex-direction: column; gap: 24px; flex: 1; min-width: 0;">
+                <!-- Información Laboral -->
+                <div class="section-card" style="flex: 1 1 auto;">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-briefcase"></i>
+                            Información Laboral
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Empresa de Trabajo</span>
+                                <input type="text" th:field="*{usuarioSolicitud.empresaTrabajo}" required placeholder="Nombre de la empresa">
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Puesto</span>
+                                <input type="text" th:field="*{usuarioSolicitud.puesto}" required placeholder="Ej: Desarrollador">
+                            </div>
+                            <div class="info-item financial-field">
+                                <span class="info-label">Ingreso Mensual</span>
+                                <input type="number" step="0.01" th:field="*{usuarioSolicitud.ingresoMensual}" required placeholder="Ej: 1500.00">
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tipo de Contrato</span>
+                                <input type="text" th:field="*{usuarioSolicitud.tipoContrato}" required placeholder="Ej: Permanente">
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="section-content">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Empresa de Trabajo</span>
-                            <input type="text" th:field="*{usuarioSolicitud.empresaTrabajo}" required placeholder="Nombre de la empresa">
+                <!-- Declaración y Firma -->
+                <div class="section-card" style="flex: 0 0 auto;">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-clipboard-check"></i>
+                            Declaración y Firma
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Puesto</span>
-                            <input type="text" th:field="*{usuarioSolicitud.puesto}" required placeholder="Ej: Desarrollador">
-                        </div>
-                        <div class="info-item financial-field">
-                            <span class="info-label">Ingreso Mensual</span>
-                            <input type="number" step="0.01" th:field="*{usuarioSolicitud.ingresoMensual}" required placeholder="Ej: 1500.00">
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Tipo de Contrato</span>
-                            <input type="text" th:field="*{usuarioSolicitud.tipoContrato}" required placeholder="Ej: Permanente">
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Firma</span>
+                                <input type="text" th:field="*{usuarioSolicitud.firma}" required placeholder="Ej: Juan C. Pérez">
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fecha de Solicitud</span>
+                                <input type="date" th:field="*{usuarioSolicitud.fechaSolicitud}" required>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Referencias Personales -->
-            <div class="section-card">
+            <!-- Right column: Referencias Personales -->
+            <div class="section-card" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: stretch;">
                 <div class="section-header">
                     <div class="section-header-left">
                         <i class="fas fa-users"></i>
                         Referencias Personales
                     </div>
                 </div>
-                <div class="section-content">
+                <div class="section-content" style="flex: 1 1 auto;">
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="info-label">Referencia 1 (Nombre)</span>
@@ -177,30 +200,6 @@
                         <div class="info-item">
                             <span class="info-label">Parentesco Referencia 2</span>
                             <input type="text" th:field="*{usuarioSolicitud.parentesco2}" required placeholder="Ej: Familiar, Amigo">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Declaración y Firma - Centered at Bottom -->
-        <div class="form-grid full-width">
-            <div class="section-card full-width">
-                <div class="section-header">
-                    <div class="section-header-left">
-                        <i class="fas fa-clipboard-check"></i>
-                        Declaración y Firma
-                    </div>
-                </div>
-                <div class="section-content">
-                    <div class="info-grid" style="max-width: 400px; margin: 0 auto;">
-                        <div class="info-item">
-                            <span class="info-label">Firma</span>
-                            <input type="text" th:field="*{usuarioSolicitud.firma}" required placeholder="Ej: Juan C. Pérez">
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Fecha de Solicitud</span>
-                            <input type="date" th:field="*{usuarioSolicitud.fechaSolicitud}" required>
                         </div>
                     </div>
                 </div>
