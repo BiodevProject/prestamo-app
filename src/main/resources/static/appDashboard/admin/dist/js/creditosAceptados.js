@@ -113,21 +113,44 @@ function filterTable() {
     updatePagination();
 }
 
+function getEstadoClass(estado) {
+    var estadoLower = estado.toLowerCase();
+    if (estadoLower === 'activo' || estadoLower === 'aceptado') {
+        return 'estado-activo';
+    } else if (estadoLower === 'pendiente') {
+        return 'estado-pendiente';
+    } else if (estadoLower === 'rechazado') {
+        return 'estado-rechazado';
+    }
+    return '';
+}
+
 function updateTable() {
     var tbody = document.getElementById("creditoTableBody");
     var startIndex = (currentPage - 1) * creditosPerPage;
     var endIndex = startIndex + creditosPerPage;
     var pageCreditos = filteredData.slice(startIndex, endIndex);
     tbody.innerHTML = '';
+    
+    if (pageCreditos.length === 0) {
+        var emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="5" class="text-center">No hay créditos para mostrar</td>';
+        tbody.appendChild(emptyRow);
+        return;
+    }
+    
     pageCreditos.forEach(function(credito) {
         var row = document.createElement('tr');
         row.className = 'clickable-row';
+        
+        var estadoClass = getEstadoClass(credito.estado);
+        var estadoDisplay = credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
+        
         row.innerHTML = `
-            <td>${credito.id}</td>
+            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
             <td>${credito.usuario}</td>
             <td>${credito.monto}</td>
             <td>${credito.plazo}</td>
-            <td>${credito.estado}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
         `;
         

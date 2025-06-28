@@ -43,21 +43,44 @@ function filterTable() {
     updatePagination();
 }
 
+function getEstadoClass(estado) {
+    var estadoLower = estado.toLowerCase();
+    if (estadoLower === 'activo' || estadoLower === 'aceptado') {
+        return 'estado-activo';
+    } else if (estadoLower === 'pendiente') {
+        return 'estado-pendiente';
+    } else if (estadoLower === 'rechazado') {
+        return 'estado-rechazado';
+    }
+    return '';
+}
+
 function updateTable() {
     var tbody = document.getElementById("creditoTableBody");
     var startIndex = (currentPage - 1) * creditosPerPage;
     var endIndex = startIndex + creditosPerPage;
     var pageCreditos = filteredData.slice(startIndex, endIndex);
     tbody.innerHTML = '';
+    
+    if (pageCreditos.length === 0) {
+        var emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="5" class="text-center">No hay créditos para mostrar</td>';
+        tbody.appendChild(emptyRow);
+        return;
+    }
+    
     pageCreditos.forEach(function(credito) {
         var row = document.createElement('tr');
         row.className = 'clickable-row';
+        
+        var estadoClass = getEstadoClass(credito.estado);
+        var estadoDisplay = credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
+        
         row.innerHTML = `
-            <td>${credito.id}</td>
+            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
             <td>${credito.usuario}</td>
             <td>${credito.monto}</td>
             <td>${credito.plazo}</td>
-            <td>${credito.estado}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
         `;
         
@@ -338,28 +361,13 @@ function contextMenuVerDetalles() {
 
 function contextMenuAceptarCredito() {
     if (selectedCreditoId) {
-        // Show confirmation dialog
-        if (confirm('¿Está seguro de que desea aceptar este crédito?')) {
-            // Make POST request to accept the credit
-            fetch(`/credito/accept/${selectedCreditoId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Refresh the page to show updated data
-                    window.location.reload();
-                } else {
-                    alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-            });
-        }
+        // Set the creditoId in the hidden input of the new modal
+        document.getElementById('creditoIdInput').value = selectedCreditoId;
+        
+        // Show the financial charges modal
+        var financialModal = new bootstrap.Modal(document.getElementById('cargosFinancierosModal'));
+        financialModal.show();
+
         hideContextMenu();
     }
 }
@@ -376,31 +384,16 @@ function contextMenuDeclinarCredito() {
 // Modal functions for Accept and Decline buttons
 function modalAceptarCredito() {
     if (selectedCreditoId) {
-        // Show confirmation dialog
-        if (confirm('¿Está seguro de que desea aceptar este crédito?')) {
-            // Make POST request to accept the credit
-            fetch(`/credito/accept/${selectedCreditoId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Close the modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('creditoModal'));
-                    modal.hide();
-                    // Refresh the page to show updated data
-                    window.location.reload();
-                } else {
-                    alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al aceptar el crédito. Por favor, intente nuevamente.');
-            });
-        }
+        // Set the creditoId in the hidden input of the new modal
+        document.getElementById('creditoIdInput').value = selectedCreditoId;
+        
+        // Hide the details modal
+        var detailsModal = bootstrap.Modal.getInstance(document.getElementById('creditoModal'));
+        detailsModal.hide();
+
+        // Show the financial charges modal
+        var financialModal = new bootstrap.Modal(document.getElementById('cargosFinancierosModal'));
+        financialModal.show();
     }
 }
 

@@ -11,31 +11,8 @@
 
 <head>
     <th:block th:fragment="css">
-        <link href="/appDashboard/admin/dist/css/creditosPendientes.css" rel="stylesheet" type="text/css" />
+        <link href="/appDashboard/shared/css/creditos.css" rel="stylesheet" type="text/css" />
         <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
-        <style>
-            .search-container { margin-bottom: 20px; }
-            .pagination-container { margin-top: 20px; text-align: center; }
-            .pagination-container button { margin: 0 5px; }
-            
-            /* Pagination button styling */
-            .pagination-container button:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            
-            .pagination-container button:not(:disabled) {
-                cursor: pointer;
-                pointer-events: auto;
-            }
-            
-            .pagination-container button.disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-        </style>
     </th:block>
 </head>
 
@@ -59,11 +36,10 @@
                 <table class="table table-hover" id="creditoTable">
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Estado</th>
                         <th>Usuario</th>
                         <th>Monto</th>
                         <th>Plazo (meses)</th>
-                        <th>Estado</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -119,6 +95,58 @@
         <div class="context-menu-divider"></div>
         <button class="context-menu-item success" onclick="contextMenuAceptarCredito()"><i class="fas fa-check"></i> Aceptar Crédito</button>
         <button class="context-menu-item danger" onclick="contextMenuDeclinarCredito()"><i class="fas fa-times"></i> Declinar Crédito</button>
+    </div>
+    
+    <!-- Modal for Financial Charges -->
+    <div class="modal fade" id="cargosFinancierosModal" tabindex="-1" aria-labelledby="cargosFinancierosModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #F4F6F9; border-radius: 15px;">
+                <form th:action="@{/credito/accept-with-charges}" method="post">
+                    <div class="modal-header" style="border-bottom: none;">
+                        <h5 class="modal-title" id="cargosFinancierosModalLabel" style="font-weight: 600; color: #333;">Configurar Cargos Financieros</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="creditoIdInput" name="creditoId" value="">
+                        
+                        <div class="credito-detail">
+                            <div class="section-card full-width">
+                                <div class="section-header">
+                                    <div class="section-header-left">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                        Cargos Financieros
+                                    </div>
+                                </div>
+                                <div class="section-content">
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Porcentaje de Interés (%)</span>
+                                            <input type="number" class="form-control" id="porcentajeInteres" name="porcentajeInteres" step="0.01" required>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Porcentaje de Mora (%)</span>
+                                            <input type="number" class="form-control" id="porcentajeMora" name="porcentajeMora" step="0.01" required>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Porcentaje de IVA (%)</span>
+                                            <input type="number" class="form-control" id="porcentajeIva" name="porcentajeIva" step="0.01" required>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Comisión Fija</span>
+                                            <input type="number" class="form-control" id="comisionFija" name="comisionFija" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top: none;">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="border-radius: 20px;">Aceptar y Calcular</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

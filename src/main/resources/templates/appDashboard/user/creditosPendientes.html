@@ -11,82 +11,8 @@
 
 <head>
     <th:block th:fragment="css">
-        <link href="/appDashboard/admin/dist/css/creditosPendientes.css" rel="stylesheet" type="text/css" />
+        <link href="/appDashboard/shared/css/creditos.css" rel="stylesheet" type="text/css" />
         <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
-        <style>
-            .search-container { margin-bottom: 20px; }
-            .pagination-container { margin-top: 20px; text-align: center; }
-            .pagination-container button { margin: 0 5px; }
-            
-            /* Pagination button styling */
-            .pagination-container button:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            
-            .pagination-container button:not(:disabled) {
-                cursor: pointer;
-                pointer-events: auto;
-            }
-            
-            .pagination-container button.disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            
-            /* Tab styling */
-            .nav-tabs .nav-link {
-                color: #6c757d;
-                border: none;
-                border-bottom: 2px solid transparent;
-                padding: 10px 20px;
-                margin-right: 5px;
-                border-radius: 5px 5px 0 0;
-                transition: all 0.3s ease;
-            }
-            
-            .nav-tabs .nav-link:hover {
-                color: #495057;
-                background-color: #f8f9fa;
-            }
-            
-            .nav-tabs .nav-link.active {
-                color: #007bff;
-                background-color: #fff;
-                border-bottom: 2px solid #007bff;
-                font-weight: 600;
-            }
-            
-            /* Estado color styling */
-            .estado-activo {
-                background-color: #d4edda !important;
-                color: #155724 !important;
-                font-weight: 600;
-                padding: 4px 8px;
-                border-radius: 4px;
-                display: inline-block;
-            }
-            
-            .estado-pendiente {
-                background-color: #fff3cd !important;
-                color: #856404 !important;
-                font-weight: 600;
-                padding: 4px 8px;
-                border-radius: 4px;
-                display: inline-block;
-            }
-            
-            .estado-rechazado {
-                background-color: #f8d7da !important;
-                color: #721c24 !important;
-                font-weight: 600;
-                padding: 4px 8px;
-                border-radius: 4px;
-                display: inline-block;
-            }
-        </style>
     </th:block>
 </head>
 
@@ -116,10 +42,9 @@
                 <table class="table table-hover" id="creditoTable">
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Estado</th>
                         <th>Monto</th>
                         <th>Plazo (meses)</th>
-                        <th>Estado</th>
                         <th>Fecha Solicitud</th>
                         <th></th>
                     </tr>
@@ -130,10 +55,10 @@
                 </table>
                 <div id="creditoData" style="display: none;"
                      th:each="credito : ${creditos}"
+                     th:data-estado="${credito.estado}"
                      th:data-id="${credito.id}"
                      th:data-monto="${#numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}"
                      th:data-plazo="${credito.plazoMeses}"
-                     th:data-estado="${credito.estado}"
                      th:data-fecha="${credito.usuarioSolicitud?.fechaSolicitud}">
                 </div>
 

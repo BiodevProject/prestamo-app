@@ -1,6 +1,8 @@
 package com.biovizion.prestamo911.controller;
 
 import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.service.UsuarioService;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.biovizion.prestamo911.entities.CreditoEntity;
@@ -106,6 +109,48 @@ public class CreditoController {
         credito.setEstado("aceptado");
         creditoService.update(credito);
         
+        return "redirect:/admin/creditos/pendientes";
+    }
+
+    @PostMapping("/accept-with-charges")
+    public String acceptWithCharges(@RequestParam("creditoId") Long creditoId,
+                                    @RequestParam("porcentajeInteres") BigDecimal porcentajeInteres,
+                                    @RequestParam("porcentajeMora") BigDecimal porcentajeMora,
+                                    @RequestParam("porcentajeIva") BigDecimal porcentajeIva,
+                                    @RequestParam("comisionFija") BigDecimal comisionFija) {
+
+        CreditoEntity credito = creditoService.findById(creditoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Credito not found"));
+
+        // Set admin-configurable values
+        credito.setPorcentajeInteres(porcentajeInteres);
+        credito.setPorcentajeMora(porcentajeMora);
+        credito.setPorcentajeIva(porcentajeIva);
+        credito.setComisionFija(comisionFija);
+
+        // Perform calculations
+        BigDecimal monto = credito.getMonto();
+        BigDecimal cien = new BigDecimal("100");
+
+        BigDecimal interes = monto.multiply(porcentajeInteres.divide(cien, 2, RoundingMode.HALF_UP));
+        BigDecimal mora = monto.multiply(porcentajeMora.divide(cien, 2, RoundingMode.HALF_UP));
+
+        BigDecimal subtotal = monto.add(interes).add(mora).add(comisionFija);
+        BigDecimal iva = subtotal.multiply(porcentajeIva.divide(cien, 2, RoundingMode.HALF_UP));
+        
+        BigDecimal total = subtotal.add(iva);
+
+        // Set calculated values
+        credito.setInteres(interes.setScale(2, RoundingMode.HALF_UP));
+        credito.setMora(mora.setScale(2, RoundingMode.HALF_UP));
+        credito.setIva(iva.setScale(2, RoundingMode.HALF_UP));
+        credito.setTotal(total.setScale(2, RoundingMode.HALF_UP));
+        
+        // Update estado
+        credito.setEstado("aceptado");
+
+        creditoService.save(credito);
+
         return "redirect:/admin/creditos/pendientes";
     }
 }

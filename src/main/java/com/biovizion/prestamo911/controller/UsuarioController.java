@@ -94,7 +94,7 @@ public class UsuarioController {
         }
         
         model.addAttribute("credito", credito);
-        return "appDashboard/user/creditoDetalle :: content";
+        return "appDashboard/user/creditoDetalleModal";
     }
     
     @GetMapping("/cuenta")

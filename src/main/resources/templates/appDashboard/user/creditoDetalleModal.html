@@ -14,7 +14,7 @@
             <div class="summary-grid">
                 <div class="summary-item financial-field monto-highlight">
                     <div class="summary-label">Monto Solicitado</div>
-                    <div class="summary-value" th:text="${'$' + credito.monto}">$1,000.00</div>
+                    <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}">$1,000.00</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-label">Identificador</div>
@@ -30,16 +30,47 @@
                     <div class="summary-label">Plazo</div>
                     <div class="summary-value" th:text="${credito.plazoMeses + ' meses'}">12 meses</div>
                 </div>
-            </div>
-            
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">Destino del Crédito</span>
-                    <span class="info-value" th:text="${credito.destino != null ? credito.destino : 'No especificado'}">Personal</span>
+                <!-- Calculated Financial Amounts -->
+                <div th:if="${credito.interes != null}" class="summary-item financial-field">
+                    <div class="summary-label">Monto Interés</div>
+                    <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.interes, 1, 'COMMA', 2, 'POINT')}"></div>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Forma de Pago</span>
-                    <span class="info-value" th:text="${credito.formaDePago != null ? credito.formaDePago : 'No especificado'}">Mensual</span>
+                <div th:if="${credito.mora != null}" class="summary-item financial-field">
+                    <div class="summary-label">Monto Mora</div>
+                    <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.mora, 1, 'COMMA', 2, 'POINT')}"></div>
+                </div>
+                <div th:if="${credito.iva != null}" class="summary-item financial-field">
+                    <div class="summary-label">Monto IVA</div>
+                    <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.iva, 1, 'COMMA', 2, 'POINT')}"></div>
+                </div>
+                <div th:if="${credito.total != null}" class="summary-item financial-field total-highlight">
+                    <div class="summary-label">Monto Total</div>
+                    <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.total, 1, 'COMMA', 2, 'POINT')}"></div>
+                </div>
+            </div>
+
+            <!-- Financial Charges Details -->
+            <div th:if="${credito.porcentajeInteres != null}">
+                <hr class="my-3">
+                <h6 class="text-muted mb-3">Cargos Financieros</h6>
+                <div class="detail-grid">
+                    <!-- Configurable Percentages -->
+                    <div class="detail-item">
+                        <div class="detail-label">Porcentaje Interés</div>
+                        <div class="detail-value" th:text="${#numbers.formatDecimal(credito.porcentajeInteres, 1, 2) + '%'}"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Porcentaje Mora</div>
+                        <div class="detail-value" th:text="${#numbers.formatDecimal(credito.porcentajeMora, 1, 2) + '%'}"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Porcentaje IVA</div>
+                        <div class="detail-value" th:text="${#numbers.formatDecimal(credito.porcentajeIva, 1, 2) + '%'}"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Comisión Fija</div>
+                        <div class="detail-value" th:text="${'$' + #numbers.formatDecimal(credito.comisionFija, 1, 'COMMA', 2, 'POINT')}"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -202,6 +233,31 @@
                             <span style="font-size: 12px; color: #6c757d;">Dirección de la solicitud</span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Details - Full Width Section -->
+    <div class="section-card full-width">
+        <div class="section-header" onclick="toggleSection('credit-details')">
+            <div class="section-header-left">
+                <i class="fas fa-info-circle"></i>
+                Detalles del Crédito
+            </div>
+            <button class="section-toggle collapsed" id="credit-details-toggle">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div class="section-content" id="credit-details-content" style="max-height: 0px; padding-top: 0px; padding-bottom: 0px; overflow: hidden;">
+            <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="info-item">
+                    <span class="info-label">Destino del Crédito</span>
+                    <span class="info-value" th:text="${credito.destino != null ? credito.destino : 'No especificado'}">Personal</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Forma de Pago</span>
+                    <span class="info-value" th:text="${credito.formaDePago != null ? credito.formaDePago : 'No especificado'}">Mensual</span>
                 </div>
             </div>
         </div>

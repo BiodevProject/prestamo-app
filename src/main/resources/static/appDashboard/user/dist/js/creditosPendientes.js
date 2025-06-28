@@ -65,7 +65,7 @@ function filterDataByTab() {
             });
             break;
         default:
-            filteredData = [...allCreditos];
+    filteredData = [...allCreditos];
     }
 }
 
@@ -110,7 +110,7 @@ function updateTable() {
     
     if (pageCreditos.length === 0) {
         var emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay créditos en esta categoría</td>';
+        emptyRow.innerHTML = '<td colspan="5" class="text-center">No hay créditos en esta categoría</td>';
         tbody.appendChild(emptyRow);
         return;
     }
@@ -123,10 +123,9 @@ function updateTable() {
         var estadoDisplay = credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
         
         row.innerHTML = `
-            <td>${credito.id}</td>
+            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
             <td>${credito.monto}</td>
             <td>${credito.plazo}</td>
-            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
             <td>${credito.fecha}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
         `;

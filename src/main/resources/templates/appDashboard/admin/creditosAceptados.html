@@ -11,13 +11,8 @@
 
 <head>
     <th:block th:fragment="css">
-        <link href="/appDashboard/admin/dist/css/creditosPendientes.css" rel="stylesheet" type="text/css" />
+        <link href="/appDashboard/shared/css/creditos.css" rel="stylesheet" type="text/css" />
         <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
-        <style>
-            .search-container { margin-bottom: 20px; }
-            .pagination-container { margin-top: 20px; text-align: center; }
-            .pagination-container button { margin: 0 5px; }
-        </style>
     </th:block>
 </head>
 
@@ -41,11 +36,10 @@
                 <table class="table table-hover" id="creditoTable">
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Estado</th>
                         <th>Usuario</th>
                         <th>Monto</th>
                         <th>Plazo (meses)</th>
-                        <th>Estado</th>
                         <th></th>
                     </tr>
                     </thead>
