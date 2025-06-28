@@ -22,12 +22,17 @@
 
         <div class="info-section">
 
-          <form th:action="@{/usuarios/save}" method="post">
+          <form th:action="@{/usuario/save}" method="post">
             <div class="info-grid">
               <div class="info-block">
-                <label for="nombre">Nombre completo</label>
+                <label for="nombre">Nombres</label>
                 <input type="text" id="nombre" name="nombre" required
                        placeholder="Ej: Juan Pérez" autocomplete="off">
+              </div>
+              <div class="info-block">
+                <label for="apellido">Apellidos</label>
+                <input type="text" id="apellido" name="apellido" required
+                       placeholder="Ej: Pérez" autocomplete="off">
               </div>
 
               <div class="info-block">

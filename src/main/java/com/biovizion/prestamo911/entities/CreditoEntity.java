@@ -20,6 +20,9 @@ public class CreditoEntity {
     @Column(precision = 10, scale = 2)
     private BigDecimal monto;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal abono;
+
     private String estado = "pendiente";
 
     @Column(name = "plazo_meses")
@@ -27,6 +30,7 @@ public class CreditoEntity {
 
     @Column(columnDefinition = "TEXT")
     private String destino;
+
 
     @Column(name = "forma_de_pago")
     private String formaDePago;

@@ -78,7 +78,7 @@ public class UsuarioController {
         model.addAttribute("creditos", creditos);
         return "appDashboard/user/creditosPendientes";
     }
-    
+
     @GetMapping("/creditos/detalle/{id}/modal")
     public String creditoDetalleModal(@PathVariable Long id, Model model, Principal principal) {
         String emailUsuario = principal.getName();
@@ -129,14 +129,36 @@ public class UsuarioController {
             return "auth/registro";
         }
 
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        // Generar código único
+        String codigo;
+        int intentos = 0;
+        int maxIntentos = 10; // para evitar bucle infinito
+        do {
+            codigo = generarCodigo(usuario.getNombre(), usuario.getApellido());
+            intentos++;
+            if (intentos > maxIntentos) {
+                model.addAttribute("error", "No se pudo generar un código único, intente más tarde");
+                return "auth/registro";
+            }
+        } while (usuarioService.existsByCodigo(codigo));  // Validar que no exista
 
-        // Asignar rol directamente
+        usuario.setCodigo(codigo);
+
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         usuario.setRol("USER");
 
         usuarioService.save(usuario);
         return "redirect:/auth/login";
     }
+
+    private String generarCodigo(String nombre, String apellido) {
+        nombre = nombre.length() >= 2 ? nombre.substring(0, 2).toUpperCase() : nombre.toUpperCase();
+        apellido = apellido.length() >= 1 ? apellido.substring(0, 1).toUpperCase() : "";
+        int randomNum = (int)(Math.random() * 900000) + 100000; // 6 números aleatorios entre 100000 y 999999
+        return nombre + apellido + randomNum;
+    }
+
+
 
     @PostMapping("/update")
     public String updateUsuario(@ModelAttribute UsuarioEntity usuario) {

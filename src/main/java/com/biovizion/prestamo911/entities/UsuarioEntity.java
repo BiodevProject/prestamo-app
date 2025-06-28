@@ -19,6 +19,10 @@ public class UsuarioEntity {
 
     private String nombre;
 
+    private String apellido;
+
+    private String codigo;
+
     @Column(unique = true)
     private String email;
 
@@ -29,6 +33,8 @@ public class UsuarioEntity {
     private String direccion;
 
     private String rol;
+
+
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<CreditoEntity> creditos = new ArrayList<>();

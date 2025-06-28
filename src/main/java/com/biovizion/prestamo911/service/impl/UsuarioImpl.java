@@ -53,4 +53,10 @@ public class UsuarioImpl implements UsuarioService {
 
     }
 
+
+    @Override
+    public boolean existsByCodigo(String codigo) {
+        return usuarioRepository.existsByCodigo(codigo);
+    }
+
 }

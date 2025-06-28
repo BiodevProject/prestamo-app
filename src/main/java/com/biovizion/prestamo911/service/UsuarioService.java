@@ -17,9 +17,7 @@ public interface UsuarioService {
     public void update(UsuarioEntity usuario);
     public void delete(Long id);
 
-
-
-
-
+    // metodo para validar código
+    boolean existsByCodigo(String codigo);
 }
 
