@@ -35,6 +35,57 @@
                 cursor: not-allowed;
                 pointer-events: none;
             }
+            
+            /* Tab styling */
+            .nav-tabs .nav-link {
+                color: #6c757d;
+                border: none;
+                border-bottom: 2px solid transparent;
+                padding: 10px 20px;
+                margin-right: 5px;
+                border-radius: 5px 5px 0 0;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-tabs .nav-link:hover {
+                color: #495057;
+                background-color: #f8f9fa;
+            }
+            
+            .nav-tabs .nav-link.active {
+                color: #007bff;
+                background-color: #fff;
+                border-bottom: 2px solid #007bff;
+                font-weight: 600;
+            }
+            
+            /* Estado color styling */
+            .estado-activo {
+                background-color: #d4edda !important;
+                color: #155724 !important;
+                font-weight: 600;
+                padding: 4px 8px;
+                border-radius: 4px;
+                display: inline-block;
+            }
+            
+            .estado-pendiente {
+                background-color: #fff3cd !important;
+                color: #856404 !important;
+                font-weight: 600;
+                padding: 4px 8px;
+                border-radius: 4px;
+                display: inline-block;
+            }
+            
+            .estado-rechazado {
+                background-color: #f8d7da !important;
+                color: #721c24 !important;
+                font-weight: 600;
+                padding: 4px 8px;
+                border-radius: 4px;
+                display: inline-block;
+            }
         </style>
     </th:block>
 </head>
@@ -45,7 +96,13 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="creditosTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="creditos-tab" type="button" role="tab">Estado de Créditos</button>
+                <button class="nav-link active" id="activos-tab" type="button" role="tab" onclick="switchTab('activos')">Activos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pendientes-tab" type="button" role="tab" onclick="switchTab('pendientes')">Pendientes</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="rechazados-tab" type="button" role="tab" onclick="switchTab('rechazados')">Rechazados</button>
             </li>
         </ul>
         <div class="tab-content" id="creditosTabsContent">
