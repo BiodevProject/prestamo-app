@@ -35,6 +35,8 @@ public class UsuarioEntity {
     private String rol;
 
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<HistorialPagoEntity> pagos = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<CreditoEntity> creditos = new ArrayList<>();

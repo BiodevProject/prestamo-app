@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "credito")
@@ -25,6 +27,8 @@ public class CreditoEntity {
 
     private String estado = "pendiente";
 
+    private LocalDateTime proximo_pago;
+
     @Column(name = "plazo_meses")
     private Integer plazoMeses;
 
@@ -38,7 +42,8 @@ public class CreditoEntity {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private UsuarioEntity usuario;
-    
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_solicitud_id")
     private UsuarioSolicitudEntity usuarioSolicitud = new UsuarioSolicitudEntity();
@@ -78,4 +83,8 @@ public class CreditoEntity {
 
     @Column(name = "fecha_finalizado", columnDefinition = "DATETIME")
     private LocalDateTime fechaFinalizado;
+
+    @OneToMany(mappedBy = "credito", cascade = CascadeType.ALL)
+    private List<HistorialPagoEntity> pagos = new ArrayList<>();
+
 }

@@ -106,6 +106,18 @@ public class HomeController {
         return "appDashboard/admin/creditosAceptados";
     }
 
+
+    @GetMapping("/admin/creditos/cobros")
+    public String adminCreditosCobros(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+
+        List<CreditoEntity> creditos = creditoService.findAceptadas();
+        model.addAttribute("creditos", creditos);
+        return "appDashboard/admin/creditosCobros";
+    }
+
     // ADMIN: Creditos Rechazados
     @GetMapping("/admin/creditos/rechazados")
     public String adminCreditosRechazados(Model model, Principal principal) {
