@@ -3,11 +3,11 @@ var currentPage = 1;
 var creditosPerPage = 5;
 var filteredData = [];
 var selectedCreditoId = null;
+var currentTab = 'activos'; // Default tab
 
 document.addEventListener('DOMContentLoaded', function() {
     loadCreditoData();
-    updateTable();
-    updatePagination();
+    switchTab('activos'); // Start with activos tab
     setupContextMenu();
 });
 
@@ -23,21 +23,82 @@ function loadCreditoData() {
             fecha: div.getAttribute('data-fecha') || ''
         });
     });
-    filteredData = [...allCreditos];
+}
+
+function switchTab(tabName) {
+    currentTab = tabName;
+    currentPage = 1; // Reset to first page when switching tabs
+    
+    // Update tab buttons
+    document.querySelectorAll('.nav-tabs .nav-link').forEach(function(tab) {
+        tab.classList.remove('active');
+    });
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Filter data based on tab
+    filterDataByTab();
+    
+    // Update table and pagination
+    updateTable();
+    updatePagination();
+    
+    // Clear search input
+    document.getElementById('searchInput').value = '';
+}
+
+function filterDataByTab() {
+    switch(currentTab) {
+        case 'activos':
+            filteredData = allCreditos.filter(function(credito) {
+                return credito.estado.toLowerCase() === 'activo' || 
+                       credito.estado.toLowerCase() === 'aceptado';
+            });
+            break;
+        case 'pendientes':
+            filteredData = allCreditos.filter(function(credito) {
+                return credito.estado.toLowerCase() === 'pendiente';
+            });
+            break;
+        case 'rechazados':
+            filteredData = allCreditos.filter(function(credito) {
+                return credito.estado.toLowerCase() === 'rechazado';
+            });
+            break;
+        default:
+            filteredData = [...allCreditos];
+    }
 }
 
 function filterTable() {
     var input = document.getElementById("searchInput");
     var filter = input.value.toLowerCase();
-    filteredData = allCreditos.filter(function(credito) {
+    
+    // First filter by current tab
+    filterDataByTab();
+    
+    // Then apply search filter
+    filteredData = filteredData.filter(function(credito) {
         return credito.monto.toLowerCase().includes(filter) ||
                credito.plazo.toLowerCase().includes(filter) ||
                credito.estado.toLowerCase().includes(filter) ||
                credito.fecha.toLowerCase().includes(filter);
     });
+    
     currentPage = 1;
     updateTable();
     updatePagination();
+}
+
+function getEstadoClass(estado) {
+    var estadoLower = estado.toLowerCase();
+    if (estadoLower === 'activo' || estadoLower === 'aceptado') {
+        return 'estado-activo';
+    } else if (estadoLower === 'pendiente') {
+        return 'estado-pendiente';
+    } else if (estadoLower === 'rechazado') {
+        return 'estado-rechazado';
+    }
+    return '';
 }
 
 function updateTable() {
@@ -46,14 +107,26 @@ function updateTable() {
     var endIndex = startIndex + creditosPerPage;
     var pageCreditos = filteredData.slice(startIndex, endIndex);
     tbody.innerHTML = '';
+    
+    if (pageCreditos.length === 0) {
+        var emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay créditos en esta categoría</td>';
+        tbody.appendChild(emptyRow);
+        return;
+    }
+    
     pageCreditos.forEach(function(credito) {
         var row = document.createElement('tr');
         row.className = 'clickable-row';
+        
+        var estadoClass = getEstadoClass(credito.estado);
+        var estadoDisplay = credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
+        
         row.innerHTML = `
             <td>${credito.id}</td>
             <td>${credito.monto}</td>
             <td>${credito.plazo}</td>
-            <td>${credito.estado}</td>
+            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
             <td>${credito.fecha}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
         `;
