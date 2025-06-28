@@ -165,7 +165,7 @@ function showCreditoDetails(creditoId) {
     modal.show();
     
     // Fetch credit details via AJAX
-    fetch(`/adminTemp/creditos/detalle/${creditoId}/modal`)
+    fetch(`/admin/creditos/detalle/${creditoId}/modal`)
         .then(response => response.text())
         .then(html => {
             document.getElementById('creditoModalBody').innerHTML = html;

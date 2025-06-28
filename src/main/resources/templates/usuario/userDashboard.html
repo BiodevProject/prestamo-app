@@ -53,11 +53,11 @@
               </div>
 
               <div class="user-actions">
-                <form th:onsubmit="'event.preventDefault(); window.location.href=\'' + @{/usuarios/edit/{id}(id=${usuario.id})} + '\';'">
+                <form th:onsubmit="'event.preventDefault(); window.location.href=\'' + @{/usuario/edit/{id}(id=${usuario.id})} + '\';'">
                   <button type="submit" class="btn btn-outline-primary">Ver</button>
                 </form>
 
-                <form th:action="@{/usuarios/delete/{id}(id=${usuario.id})}" method="post" onsubmit="return confirm('¿Eliminar usuario?');">
+                <form th:action="@{/usuario/delete/{id}(id=${usuario.id})}" method="post" onsubmit="return confirm('¿Eliminar usuario?');">
                   <button type="submit" class="btn btn-outline-danger">Eliminar</button>
                 </form>
               </div>

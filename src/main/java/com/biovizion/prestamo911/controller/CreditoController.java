@@ -106,6 +106,6 @@ public class CreditoController {
         credito.setEstado("aceptado");
         creditoService.update(credito);
         
-        return "redirect:/adminTemp/creditos/pendientes";
+        return "redirect:/admin/creditos/pendientes";
     }
 }

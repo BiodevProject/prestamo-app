@@ -148,13 +148,13 @@ public class UsuarioController {
         usuario.setPassword(usuarioExistente.getPassword());
 
         usuarioService.update(usuario);
-        return "redirect:/usuarios/dashboard";
+        return "redirect:/usuario/dashboard";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteUsuario(@PathVariable Long id) {
         usuarioService.delete(id);
-        return "redirect:/usuarios/dashboard";
+        return "redirect:/usuario/dashboard";
     }
 
     // Helper method to get current user's name

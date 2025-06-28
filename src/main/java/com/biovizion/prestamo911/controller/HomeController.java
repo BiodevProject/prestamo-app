@@ -56,7 +56,7 @@ public class HomeController {
         return "/appDashboard/admin/index";
     }
     
-    @GetMapping("/adminTemp/usuarios")
+    @GetMapping("/admin/usuarios")
     public String mostrarUsuarios(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
@@ -67,7 +67,7 @@ public class HomeController {
         return "/appDashboard/admin/usuarios";
     }
     
-    @GetMapping("/adminTemp/trabajadores")
+    @GetMapping("/admin/trabajadores")
     public String mostrarTrabajadores(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
@@ -79,7 +79,7 @@ public class HomeController {
     }
 
     // ADMIN: Creditos Pendientes
-    @GetMapping("/adminTemp/creditos/pendientes")
+    @GetMapping("/admin/creditos/pendientes")
     public String adminCreditosPendientes(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
@@ -91,7 +91,7 @@ public class HomeController {
     }
 
     // ADMIN: Creditos Aceptados
-    @GetMapping("/adminTemp/creditos/aceptados")
+    @GetMapping("/admin/creditos/aceptados")
     public String adminCreditosAceptados(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
@@ -103,7 +103,7 @@ public class HomeController {
     }
     
     // ADMIN: Credito Detalle Modal Content
-    @GetMapping("/adminTemp/creditos/detalle/{id}/modal")
+    @GetMapping("/admin/creditos/detalle/{id}/modal")
     public String adminCreditoDetalleModal(@PathVariable Long id, Model model) {
         CreditoEntity credito = creditoService.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

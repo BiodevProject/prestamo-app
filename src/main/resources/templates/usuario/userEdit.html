@@ -10,14 +10,14 @@
         <p>ID del Usuario: <strong th:text="${usuario.id}">123</strong></p>
         <nav class="breadcrumb">
           <a href="/">Inicio</a> ›
-          <a href="/usuarios/dashboard">Usuarios</a> ›
+          <a href="/usuario/dashboard">Usuarios</a> ›
           <span class="current">Información</span>
         </nav>
       </div>
     </header>
 
     <div class="info-section">
-      <form th:action="@{/usuarios/update}" method="post" id="user-form">
+      <form th:action="@{/usuario/update}" method="post" id="user-form">
         <input type="hidden" name="id" th:value="${usuario.id}" />
 
         <div class="info-grid">
@@ -45,7 +45,7 @@
         <div class="panel-actions">
           <button type="button" class="btn btn-primary" id="edit-btn">Editar Información</button>
           <button type="submit" class="btn btn-success" id="save-btn" style="display: none;">Guardar Cambios</button>
-          <a href="/usuarios/dashboard" class="btn btn-secondary">Regresar</a>
+          <a href="/usuario/dashboard" class="btn btn-secondary">Regresar</a>
         </div>
       </form>
     </div>

@@ -27,7 +27,7 @@
 
     <!-- Header -->
     <header class="main-header">
-        <a href="/adminTemp/dashboard" class="logo"><b>Admin</b>LTE</a>
+        <a href="/admin/dashboard" class="logo"><b>Admin</b>LTE</a>
         <nav class="navbar navbar-expand-lg navbar-static-top" role="navigation">
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target=".sidebar-offcanvas" role="button">
                 <span class="navbar-toggler-icon"></span>
@@ -75,16 +75,16 @@
             </form>
             <ul class="sidebar-menu">
                 <li class="header">MAIN NAVIGATION</li>
-                <li th:classappend="${activePage == 'dashboard'} ? 'active' : ''"><a href="/adminTemp/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li th:classappend="${activePage == 'dashboard'} ? 'active' : ''"><a href="/admin/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li class="treeview" th:classappend="${#lists.contains({'creditosPendientes', 'creditosAceptados'}, activePage)} ? 'active' : ''">
                     <a href="#" class="nav-link"><i class="fas fa-money-check-alt"></i> <span>Creditos</span> <i class="fas fa-angle-left float-end"></i></a>
                     <ul class="treeview-menu">
-                        <li th:classappend="${activePage == 'creditosPendientes'} ? 'active' : ''"><a href="/adminTemp/creditos/pendientes" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Nuevas</a></li>
-                        <li th:classappend="${activePage == 'creditosAceptados'} ? 'active' : ''"><a href="/adminTemp/creditos/aceptados" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Aceptadas</a></li>
+                        <li th:classappend="${activePage == 'creditosPendientes'} ? 'active' : ''"><a href="/admin/creditos/pendientes" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Nuevas</a></li>
+                        <li th:classappend="${activePage == 'creditosAceptados'} ? 'active' : ''"><a href="/admin/creditos/aceptados" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Aceptadas</a></li>
                     </ul>
                 </li>
-                <li th:classappend="${activePage == 'usuarios'} ? 'active' : ''"><a href="/adminTemp/usuarios" class="nav-link"><i class="fas fa-users"></i> <span>Usuarios</span></a></li>
-                <li th:classappend="${activePage == 'trabajadores'} ? 'active' : ''"><a href="/adminTemp/trabajadores" class="nav-link"><i class="fas fa-user-tie"></i> <span>Trabajadores</span></a></li>
+                <li th:classappend="${activePage == 'usuarios'} ? 'active' : ''"><a href="/admin/usuarios" class="nav-link"><i class="fas fa-users"></i> <span>Usuarios</span></a></li>
+                <li th:classappend="${activePage == 'trabajadores'} ? 'active' : ''"><a href="/admin/trabajadores" class="nav-link"><i class="fas fa-user-tie"></i> <span>Trabajadores</span></a></li>
                 <li><a href="#" class="nav-link"><i class="fas fa-calendar"></i> <span>Calendar</span><small class="badge bg-danger float-end">3</small></a></li>
             </ul>
         </section>
@@ -97,7 +97,7 @@
             <small th:text="${pageSubtitle}"></small>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/adminTemp/dashboard"><i class="fas fa-tachometer-alt"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page" th:text="${pageTitle}"></li>
                 </ol>
             </nav>
