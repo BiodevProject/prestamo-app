@@ -26,10 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         UsuarioEntity usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email: " + email));
 
-        // Convertir roles a autoridades Spring Security
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (usuario.getRol() != null) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.getRol()));
+            // Asume que en BD los roles ya tienen ROLE_ (ej. "ROLE_ADMIN")
+            authorities.add(new SimpleGrantedAuthority(usuario.getRol()));
         }
 
         return new User(

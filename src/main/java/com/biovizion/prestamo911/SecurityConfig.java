@@ -18,32 +18,25 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private CustomAuth customAuth;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST (opcional)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/**",
-                                "/css/**",
-                                "/usuarios/create",
-                                "/usuarios/save",
-                                "/js/**",
-                                "/images/**",
-                                "/vendor/**",
-                                "/api/public/**",
-                                "/",
-                                "/mainPage/**",
-                                "/appDashboard/**"
-
+                                "/auth/**", "/css/**", "/usuarios/create", "/usuarios/save",
+                                "/js/**", "/images/**", "/vendor/**", "/", "/mainPage/**", "/appDashboard/**"
                         ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
-                        .defaultSuccessUrl("/select", true)
+                        .successHandler(customAuth)
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
@@ -56,7 +49,7 @@ public class SecurityConfig {
                 )
                 .rememberMe(remember -> remember
                         .key("uniqueAndSecret")
-                        .tokenValiditySeconds(86400) // 1 día
+                        .tokenValiditySeconds(86400)
                         .userDetailsService(userDetailsService)
                 )
                 .exceptionHandling(exceptions -> exceptions

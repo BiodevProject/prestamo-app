@@ -42,12 +42,8 @@ public class HomeController {
     public String SelectoOption() {
         return "/home/landingPage";
     }
-    
-    @GetMapping("/alex/dashboard")
-    public String mostrarAdminDashboard() {
-        return "/appDashboard/admin/index";
-    }
-    @GetMapping("/adminTemp/dashboard")
+
+    @GetMapping("/admin/dashboard")
     public String mostrarUsuarioDashboard(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
