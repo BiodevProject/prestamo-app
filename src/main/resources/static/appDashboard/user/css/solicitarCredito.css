@@ -1,0 +1,90 @@
+.solicitar-credito-form {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.solicitar-credito-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.solicitar-credito-form .form-grid.full-width {
+    grid-column: 1 / -1;
+}
+
+.solicitar-credito-form .form-grid.three-columns {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.solicitar-credito-form .section-card {
+    margin-bottom: 0;
+    height: fit-content;
+}
+
+.solicitar-credito-form .section-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.solicitar-credito-form .info-item input,
+.solicitar-credito-form .info-item select,
+.solicitar-credito-form .info-item textarea {
+    margin-top: 4px;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    padding: 8px 12px;
+    font-size: 15px;
+    background: #fff;
+    width: 100%;
+}
+
+.solicitar-credito-form .info-item input:focus,
+.solicitar-credito-form .info-item select:focus,
+.solicitar-credito-form .info-item textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px #e8f4fd;
+}
+
+.solicitar-credito-form .btn-primary {
+    font-size: 17px;
+    padding: 12px 36px;
+    border-radius: 24px;
+    margin-top: 18px;
+}
+
+/* Reference section styling */
+.solicitar-credito-form .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.solicitar-credito-form .reference-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.solicitar-credito-form .reference-item .info-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .solicitar-credito-form .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .solicitar-credito-form .form-grid.three-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .solicitar-credito-form .reference-grid {
+        grid-template-columns: 1fr;
+    }
+} 

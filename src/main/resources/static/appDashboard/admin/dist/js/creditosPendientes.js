@@ -404,30 +404,28 @@ function modalRechazarCredito() {
 }
 
 function rechazarCredito(creditoId) {
-    // Show loading state
-    console.log('Rechazando crédito:', creditoId);
     
     // Send request to reject the credit
     fetch(`/admin/creditos/${creditoId}/rechazar`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
-    .then(response => {
-        if (response.ok) {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                if (response.ok) {
             alert('Crédito rechazado exitosamente');
             // Reload the page to refresh the data
-            window.location.reload();
-        } else {
+                    window.location.reload();
+                } else {
             throw new Error('Error al rechazar el crédito');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
         alert('Error al rechazar el crédito. Por favor, intente nuevamente.');
-    });
-}
+            });
+        }
 
 // Variables to store credit data for calculations
 var currentCreditoData = null;

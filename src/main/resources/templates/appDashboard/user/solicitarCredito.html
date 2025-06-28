@@ -11,49 +11,7 @@
 <head>
     <th:block th:fragment="css">
         <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
-        <style>
-            .solicitar-credito-form .section-card {
-                margin-bottom: 32px;
-            }
-            .solicitar-credito-form .sections-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-            }
-            .solicitar-credito-form .section-card.full-width {
-                width: 100%;
-            }
-            .solicitar-credito-form .info-item input,
-            .solicitar-credito-form .info-item select,
-            .solicitar-credito-form .info-item textarea {
-                margin-top: 4px;
-                border-radius: 4px;
-                border: 1px solid #e9ecef;
-                padding: 8px 12px;
-                font-size: 15px;
-                background: #fff;
-                width: 100%;
-            }
-            .solicitar-credito-form .info-item input:focus,
-            .solicitar-credito-form .info-item select:focus,
-            .solicitar-credito-form .info-item textarea:focus {
-                outline: none;
-                border-color: #007bff;
-                box-shadow: 0 0 0 2px #e8f4fd;
-            }
-            .solicitar-credito-form .btn-primary {
-                font-size: 17px;
-                padding: 12px 36px;
-                border-radius: 24px;
-                margin-top: 18px;
-            }
-            /* Make reference info-grid vertical */
-            .solicitar-credito-form .reference-info-vertical {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 12px !important;
-            }
-        </style>
+        <link href="/appDashboard/user/css/solicitarCredito.css" rel="stylesheet" type="text/css" />
     </th:block>
 </head>
 <body>
@@ -62,45 +20,48 @@
         <input type="hidden" th:field="*{estado}" th:value="'pendiente'" />
 
         <!-- Resumen del Crédito -->
-        <div class="section-card full-width">
-            <div class="section-header">
-                <div class="section-header-left">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    Resumen del Crédito
+        <div class="form-grid full-width">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        Resumen del Crédito
+                    </div>
                 </div>
-            </div>
-            <div class="section-content">
-                <div class="summary-grid">
-                    <div class="summary-item financial-field monto-highlight">
-                        <div class="summary-label">Monto Solicitado</div>
-                        <input type="number" step="0.01" th:field="*{monto}" required class="summary-value" placeholder="$0.00">
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Plazo (meses)</div>
-                        <input type="number" th:field="*{plazoMeses}" required class="summary-value" placeholder="12">
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Destino</div>
-                        <select th:field="*{destino}" class="summary-value">
-                            <option value="consumo">Consumo personal</option>
-                            <option value="negocio">Negocio</option>
-                            <option value="compra">Compra de bienes</option>
-                            <option value="deuda">Pago de deudas</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Forma de Pago</div>
-                        <select th:field="*{formaDePago}" class="summary-value">
-                            <option value="quincenal">Quincenal</option>
-                            <option value="mensual">Mensual</option>
-                        </select>
+                <div class="section-content">
+                    <div class="summary-grid">
+                        <div class="summary-item financial-field monto-highlight">
+                            <div class="summary-label">Monto Solicitado</div>
+                            <input type="number" step="0.01" th:field="*{monto}" required class="summary-value" placeholder="$0.00">
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Plazo (meses)</div>
+                            <input type="number" th:field="*{plazoMeses}" required class="summary-value" placeholder="12">
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Destino</div>
+                            <select th:field="*{destino}" class="summary-value">
+                                <option value="consumo">Consumo personal</option>
+                                <option value="negocio">Negocio</option>
+                                <option value="compra">Compra de bienes</option>
+                                <option value="deuda">Pago de deudas</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Forma de Pago</div>
+                            <select th:field="*{formaDePago}" class="summary-value">
+                                <option value="quincenal">Quincenal</option>
+                                <option value="mensual">Mensual</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="sections-grid">
+        <!-- Personal and Labor Information Side by Side -->
+        <div class="form-grid">
             <!-- Información Personal -->
             <div class="section-card">
                 <div class="section-header">
@@ -180,7 +141,10 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Referencias Personales and Declaración Side by Side -->
+        <div class="form-grid">
             <!-- Referencias Personales -->
             <div class="section-card">
                 <div class="section-header">
@@ -190,21 +154,21 @@
                     </div>
                 </div>
                 <div class="section-content">
-                    <div class="info-grid reference-info-vertical">
-                        <div class="info-item">
+                    <div class="reference-grid">
+                        <div class="reference-item">
                             <span class="info-label">Referencia 1 (Nombre)</span>
                             <input type="text" th:field="*{usuarioSolicitud.referencia1}" required placeholder="Nombre completo">
-                            <span class="info-label" style="margin-top: 6px;">Teléfono</span>
+                            <span class="info-label">Teléfono</span>
                             <input type="text" th:field="*{usuarioSolicitud.telefonoReferencia1}" required placeholder="Ej: 999888777">
-                            <span class="info-label" style="margin-top: 6px;">Parentesco</span>
+                            <span class="info-label">Parentesco</span>
                             <input type="text" th:field="*{usuarioSolicitud.parentesco1}" required placeholder="Ej: Familiar, Amigo">
                         </div>
-                        <div class="info-item">
+                        <div class="reference-item">
                             <span class="info-label">Referencia 2 (Nombre)</span>
                             <input type="text" th:field="*{usuarioSolicitud.referencia2}" required placeholder="Nombre completo">
-                            <span class="info-label" style="margin-top: 6px;">Teléfono</span>
+                            <span class="info-label">Teléfono</span>
                             <input type="text" th:field="*{usuarioSolicitud.telefonoReferencia2}" required placeholder="Ej: 999888777">
-                            <span class="info-label" style="margin-top: 6px;">Parentesco</span>
+                            <span class="info-label">Parentesco</span>
                             <input type="text" th:field="*{usuarioSolicitud.parentesco2}" required placeholder="Ej: Familiar, Amigo">
                         </div>
                     </div>
@@ -233,6 +197,7 @@
                 </div>
             </div>
         </div>
+
         <div style="text-align:center">
             <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
         </div>
