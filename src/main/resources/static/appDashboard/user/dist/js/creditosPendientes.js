@@ -4,6 +4,7 @@ var creditosPerPage = 5;
 var filteredData = [];
 var selectedCreditoId = null;
 var currentTab = 'activos'; // Default tab
+var paymentCreditoId = null; // Store credit ID for payment modal
 
 document.addEventListener('DOMContentLoaded', function() {
     loadCreditoData();
@@ -20,7 +21,8 @@ function loadCreditoData() {
             monto: div.getAttribute('data-monto') || '',
             plazo: div.getAttribute('data-plazo') || '',
             estado: div.getAttribute('data-estado') || '',
-            fecha: div.getAttribute('data-fecha') || ''
+            fecha: div.getAttribute('data-fecha') || '',
+            total: div.getAttribute('data-total') || ''
         });
     });
 }
@@ -117,7 +119,7 @@ function updateTable() {
     
     if (pageCreditos.length === 0) {
         var emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="5" class="text-center">No hay créditos en esta categoría</td>';
+        emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay créditos en esta categoría</td>';
         tbody.appendChild(emptyRow);
         return;
     }
@@ -134,6 +136,7 @@ function updateTable() {
             <td>${credito.monto}</td>
             <td>${credito.plazo}</td>
             <td>${credito.fecha}</td>
+            <td>${credito.total}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
         `;
         
@@ -371,6 +374,13 @@ function setupContextMenu() {
             hideContextMenu();
         }
     });
+    
+    // Prevent context menu from being hidden when clicking on context menu items
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.context-menu-item')) {
+            e.stopPropagation();
+        }
+    });
 }
 
 function showContextMenu(e, creditoId) {
@@ -379,6 +389,9 @@ function showContextMenu(e, creditoId) {
     
     selectedCreditoId = creditoId;
     const contextMenu = document.getElementById('contextMenu');
+    
+    // Show/hide context menu items based on current tab
+    updateContextMenuForTab();
     
     // Position the context menu
     contextMenu.style.left = e.pageX + 'px';
@@ -399,6 +412,28 @@ function showContextMenu(e, creditoId) {
     }
 }
 
+function updateContextMenuForTab() {
+    const divider = document.getElementById('contextMenuDivider1');
+    const realizarPagoBtn = document.getElementById('contextMenuRealizarPago');
+    
+    // Hide all action buttons initially
+    divider.style.display = 'none';
+    realizarPagoBtn.style.display = 'none';
+    
+    // Show appropriate buttons based on current tab
+    switch(currentTab) {
+        case 'activos':
+            divider.style.display = 'block';
+            realizarPagoBtn.style.display = 'block';
+            break;
+        case 'pendientes':
+        case 'rechazados':
+        case 'finalizados':
+            // Only "Ver Detalles" is available
+            break;
+    }
+}
+
 function hideContextMenu() {
     const contextMenu = document.getElementById('contextMenu');
     contextMenu.style.display = 'none';
@@ -410,4 +445,92 @@ function contextMenuVerDetalles() {
         showCreditoDetails(selectedCreditoId);
         hideContextMenu();
     }
+}
+
+function contextMenuRealizarPago() {
+    if (selectedCreditoId) {
+        paymentCreditoId = selectedCreditoId;
+        showPagoModal(selectedCreditoId);
+        document.getElementById('contextMenu').style.display = 'none';
+    }
+}
+
+function showPagoModal(creditoId) {
+    // Find the credit data to get the monthly payment amount
+    const creditoDataDiv = document.querySelector(`#creditoData[data-id="${creditoId}"]`);
+    if (creditoDataDiv) {
+        // Set the suggested monthly payment (placeholder for now)
+        // In a real implementation, you would fetch the actual monthly payment from the credit details
+        const suggestedAmount = '$500.00';
+        document.getElementById('cuotaMensualSugerida').textContent = suggestedAmount;
+        
+        // Set the custom amount input to the suggested amount by default
+        document.getElementById('montoPersonalizado').value = '500.00';
+        
+        // Update the final payment amount
+        updateMontoPago();
+    }
+    
+    // Show the payment modal
+    var modal = new bootstrap.Modal(document.getElementById('pagoModal'));
+    modal.show();
+}
+
+function updateMontoPago() {
+    const customAmount = document.getElementById('montoPersonalizado').value;
+    const montoPagoElement = document.getElementById('montoPago');
+    
+    if (customAmount && customAmount > 0) {
+        // Format the amount with proper currency formatting
+        const formattedAmount = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        }).format(parseFloat(customAmount));
+        
+        montoPagoElement.textContent = formattedAmount;
+    } else {
+        montoPagoElement.textContent = '$0.00';
+    }
+}
+
+function realizarPago() {
+    const customAmount = document.getElementById('montoPersonalizado').value;
+    
+    if (!customAmount || customAmount <= 0) {
+        alert('Por favor, ingrese un monto válido para realizar el pago.');
+        return;
+    }
+    
+    if (!paymentCreditoId) {
+        alert('Error: No se ha seleccionado un crédito válido.');
+        return;
+    }
+    
+    // Send payment request
+    fetch(`/credito/pagar/${paymentCreditoId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `monto=${customAmount}`
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Pago realizado exitosamente');
+            // Clear the payment credit ID
+            paymentCreditoId = null;
+            // Close the modal
+            var modal = bootstrap.Modal.getInstance(document.getElementById('pagoModal'));
+            modal.hide();
+            // Refresh the page to show updated totals
+            location.reload();
+        } else {
+            alert('Error al realizar el pago');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al realizar el pago');
+    });
 } 

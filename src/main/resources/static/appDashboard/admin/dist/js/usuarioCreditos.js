@@ -408,6 +408,9 @@ function finalizarCredito(creditoId) {
 
 // Function to set credit data when opening the financial charges modal
 function setCreditoDataForCalculation(creditoId) {
+    // Set the creditoId in the hidden input
+    document.getElementById('creditoIdInput').value = creditoId;
+    
     // Find the credit data from the hidden divs
     const creditoDataDiv = document.querySelector(`#creditoData[data-id="${creditoId}"]`);
     if (creditoDataDiv) {

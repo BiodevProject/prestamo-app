@@ -49,6 +49,7 @@
                         <th>Monto</th>
                         <th>Plazo (meses)</th>
                         <th>Fecha Solicitud</th>
+                        <th>Total</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -62,7 +63,8 @@
                      th:data-id="${credito.id}"
                      th:data-monto="${#numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}"
                      th:data-plazo="${credito.plazoMeses}"
-                     th:data-fecha="${credito.usuarioSolicitud?.fechaSolicitud}">
+                     th:data-fecha="${credito.usuarioSolicitud?.fechaSolicitud}"
+                     th:data-total="${#numbers.formatDecimal(credito.total, 1, 'COMMA', 2, 'POINT')}">
                 </div>
 
                 <div class="pagination-container">
@@ -92,30 +94,75 @@
         </div>
     </div>
 
-    <!-- Modal para Pago Mensual con QR -->
-    <div class="modal fade" id="modalPagoQR" tabindex="-1" aria-labelledby="modalPagoQRLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #F4F6F9; border-radius: 15px;">
-                <div class="modal-header" style="border-bottom: none;">
-                    <h5 class="modal-title" id="modalPagoQRLabel" style="font-weight: 600; color: #333;">Pago mensual</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <p>Escanea el código QR para realizar el pago:</p>
-                    <img src="/images/qrDePago.svg" alt="QR de pago" class="img-fluid" style="max-width: 300px;">
-                </div>
-                <div class="modal-footer" style="border-top: none;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <!-- Context Menu -->
     <div class="context-menu" id="contextMenu">
         <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
-        <button class="context-menu-item primary" onclick="contextMenuHacerPago()"><i class="fas fa-eye"></i> Ver Detalles</button>
+        <div class="context-menu-divider" id="contextMenuDivider1" style="display: none;"></div>
+        <button class="context-menu-item success" id="contextMenuRealizarPago" onclick="contextMenuRealizarPago()" style="display: none;"><i class="fas fa-credit-card"></i> Realizar Pago</button>
+    </div>
+
+    <!-- Modal for Payment -->
+    <div class="modal fade" id="pagoModal" tabindex="-1" aria-labelledby="pagoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #F4F6F9; border-radius: 15px;">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title" id="pagoModalLabel" style="font-weight: 600; color: #333;">Realizar Pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="credito-detail">
+                        <!-- Payment Amount Section -->
+                        <div class="section-card full-width">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Monto a Pagar
+                                </div>
+                            </div>
+                            <div class="section-content">
+                                <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                                    <div class="info-item important-field">
+                                        <span class="info-label">Cuota Mensual Sugerida</span>
+                                        <div class="info-value" id="cuotaMensualSugerida">$0.00</div>
+                                    </div>
+                                    <div class="info-item important-field">
+                                        <span class="info-label">Monto Personalizado</span>
+                                        <input type="number" class="form-control" id="montoPersonalizado" name="montoPersonalizado" step="0.01" min="0" placeholder="Ingrese el monto a pagar" onchange="updateMontoPago()" onkeyup="updateMontoPago()">
+                                    </div>
+                                </div>
+                                <div class="info-grid" style="grid-template-columns: 1fr; margin-top: 15px;">
+                                    <div class="info-item important-field">
+                                        <span class="info-label">Monto Final a Pagar</span>
+                                        <div class="info-value" id="montoPago" style="font-size: 1.2em; font-weight: bold; color: #28a745;">$0.00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- QR Code Section -->
+                        <div class="section-card full-width">
+                            <div class="section-header">
+                                <div class="section-header-left">
+                                    <i class="fas fa-qrcode"></i>
+                                    Código QR para Pago
+                                </div>
+                            </div>
+                            <div class="section-content">
+                                <div class="text-center">
+                                    <img src="/images/qrDePago.svg" alt="QR Code para Pago" style="max-width: 300px; height: auto;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: none;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="realizarPago()" style="border-radius: 20px;">
+                        <i class="fas fa-credit-card"></i> Pagar
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
