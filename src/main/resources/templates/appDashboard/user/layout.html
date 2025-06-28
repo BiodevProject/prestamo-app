@@ -108,12 +108,26 @@
 
 </div>
 
-<!-- Botón flotante de WhatsApp -->
-<a href="https://wa.me/50376578383" class="whatsapp-float" target="_blank" title="Contactar al administrador">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+<!-- Botón flotante de WhatsApp con mensaje -->
+<div class="whatsapp-container">
+    <div class="whatsapp-tooltip">
+        ¿Tienes alguna duda o problema? ¡Comunícate con un administrador!
+    </div>
+    <a th:href="'https://wa.me/50363031460?text=' +
+             '📌 *MENSAJE AUTOMÁTICO – NO BORRAR*%0A' +
+             'Este mensaje fue generado automáticamente para ayudar al administrador a identificar al usuario.%0A%0A' +
+             '🆔 *ID de usuario:* ' + ${usuario.id} + '%0A' +
+             '👤 *Nombre:* ' + ${usuario.nombre} + '%0A' +
+             '✉️ *Correo:* ' + ${usuario.email} + '%0A%0A' +
+             'Por favor, continúe con su mensaje a continuación...'"
+       class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
 
 
-</a>
+
+
+</div>
 
 
 <!-- Common Scripts -->
@@ -125,6 +139,44 @@
 
 <!-- Page-specific Scripts -->
 <th:block th:replace="${pageScripts} ?: ~{}"></th:block>
+
+<script>
+    // Mostrar el mensaje cada 30 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltip = document.querySelector('.whatsapp-tooltip');
+        const container = document.querySelector('.whatsapp-container');
+
+        if (tooltip && container) {
+            // Función para mostrar el tooltip
+            function showTooltip() {
+                tooltip.classList.add('show');
+
+                // Ocultar después de 5 segundos
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 5000);
+            }
+
+            // Mostrar al cargar la página (esperar 3 segundos)
+            setTimeout(showTooltip, 3000);
+
+            // Mostrar periódicamente cada 30 segundos
+            setInterval(showTooltip, 30000);
+
+            // Mostrar al pasar el cursor
+            container.addEventListener('mouseenter', function() {
+                tooltip.classList.add('show');
+            });
+
+            // Ocultar al quitar el cursor
+            container.addEventListener('mouseleave', function() {
+                if (!tooltip.classList.contains('force-show')) {
+                    tooltip.classList.remove('show');
+                }
+            });
+        }
+    });
+</script>
 
 </body>
 </html> 
