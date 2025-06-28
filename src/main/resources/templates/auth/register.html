@@ -13,7 +13,7 @@
             <!-- Breadcrumb -->
             <nav class="breadcrumb" aria-label="breadcrumb">
               <a href="/">Inicio</a> ›
-              <a href="/usuario/dashboard">Usuarios</a> ›
+              <a href="/usuarios/dashboard">Usuarios</a> ›
               <span class="current">Registrar nuevo usuario</span>
             </nav>
             Complete el formulario para registrar un nuevo usuario en el sistema
@@ -22,7 +22,7 @@
 
         <div class="info-section">
 
-          <form th:action="@{/usuario/save}" method="post">
+          <form th:action="@{/usuarios/save}" method="post">
             <div class="info-grid">
               <div class="info-block">
                 <label for="nombre">Nombre completo</label>
@@ -65,7 +65,7 @@
 
             <div class="panel-actions">
               <button type="submit" class="btn btn-primary">Registrar usuario</button>
-              <a href="/usuario/dashboard" class="btn btn-secondary">Cancelar</a>
+              <a href="/usuarios/dashboard" class="btn btn-secondary">Cancelar</a>
             </div>
           </form>
         </div>

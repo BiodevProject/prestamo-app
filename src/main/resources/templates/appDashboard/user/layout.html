@@ -13,11 +13,14 @@
     <link href="/appDashboard/admin/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <link href="/appDashboard/admin/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/flat/blue.css" rel="stylesheet" type="text/css" />
+    <link href="/appDashboard/user/dist/css/userExtra.css" rel="stylesheet" type="text/css"/>
     <style>
         .user-panel p { color: #fff !important; font-weight: 500; }
         .user-panel a { color: #ccc !important; }
         .user-panel a:hover { color: #fff !important; }
     </style>
+
+
 
     <!-- Page-specific CSS -->
     <th:block th:replace="${pageCss} ?: ~{}"></th:block>
@@ -104,6 +107,14 @@
     </footer>
 
 </div>
+
+<!-- Botón flotante de WhatsApp -->
+<a href="https://wa.me/50376578383" class="whatsapp-float" target="_blank" title="Contactar al administrador">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+
+
+</a>
+
 
 <!-- Common Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
