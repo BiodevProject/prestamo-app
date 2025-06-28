@@ -50,6 +50,16 @@ public class CreditoImpl implements CreditoService {
     }
 
     @Override
+    public List<CreditoEntity> findRechazados() {
+        return creditoRepository.findRechazados();
+    }
+
+    @Override
+    public List<CreditoEntity> findFinalizados() {
+        return creditoRepository.findFinalizados();
+    }
+
+    @Override
     public List<CreditoEntity> findByUsuarioId(Long id) {
         return creditoRepository.findByUsuarioId(id);
     }

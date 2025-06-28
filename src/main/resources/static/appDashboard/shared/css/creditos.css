@@ -83,6 +83,15 @@
     display: inline-block;
 }
 
+.estado-finalizado {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
 /* Context Menu Styles */
 .context-menu {
     position: fixed;
@@ -138,6 +147,10 @@
 
 .context-menu-item.danger i {
     color: #dc3545;
+}
+
+.context-menu-item.warning i {
+    color: #ffc107;
 }
 
 .context-menu-divider {

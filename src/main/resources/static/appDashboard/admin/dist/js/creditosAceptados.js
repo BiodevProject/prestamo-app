@@ -84,6 +84,50 @@ function contextMenuDeclinarCredito() {
     }
 }
 
+function contextMenuFinalizarCredito() {
+    if (selectedCreditoId) {
+        const creditoIdToFinalizar = selectedCreditoId;
+        hideContextMenu();
+        if (confirm('¿Está seguro de que desea finalizar este crédito? Esta acción no se puede deshacer.')) {
+            finalizarCredito(creditoIdToFinalizar);
+        }
+    }
+}
+
+function modalFinalizarCredito() {
+    if (selectedCreditoId) {
+        if (confirm('¿Está seguro de que desea finalizar este crédito? Esta acción no se puede deshacer.')) {
+            finalizarCredito(selectedCreditoId);
+        }
+    }
+}
+
+function finalizarCredito(creditoId) {
+    // Show loading state
+    console.log('Finalizando crédito:', creditoId);
+    
+    // Send request to finalize the credit
+    fetch(`/admin/creditos/${creditoId}/finalizar`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Crédito finalizado exitosamente');
+            // Reload the page to refresh the data
+            window.location.reload();
+        } else {
+            throw new Error('Error al finalizar el crédito');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al finalizar el crédito. Por favor, intente nuevamente.');
+    });
+}
+
 function loadCreditoData() {
     var creditoDataDivs = document.querySelectorAll('#creditoData');
     allCreditos = [];
@@ -121,6 +165,8 @@ function getEstadoClass(estado) {
         return 'estado-pendiente';
     } else if (estadoLower === 'rechazado') {
         return 'estado-rechazado';
+    } else if (estadoLower === 'finalizado') {
+        return 'estado-finalizado';
     }
     return '';
 }
@@ -144,7 +190,7 @@ function updateTable() {
         row.className = 'clickable-row';
         
         var estadoClass = getEstadoClass(credito.estado);
-        var estadoDisplay = credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
+        var estadoDisplay = credito.estado.toLowerCase() === 'aceptado' ? 'Aceptado' : credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
         
         row.innerHTML = `
             <td><span class="${estadoClass}">${estadoDisplay}</span></td>
@@ -173,12 +219,12 @@ function updateTable() {
 
 function updatePagination() {
     var totalPages = Math.ceil(filteredData.length / creditosPerPage);
-    var pageInfo = document.getElementById("pageInfo");
+    var currentPageSpan = document.getElementById("currentPage");
     var totalPagesSpan = document.getElementById("totalPages");
     var prevBtn = document.getElementById("prevBtn");
     var nextBtn = document.getElementById("nextBtn");
-    pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-    totalPagesSpan.textContent = totalPages;
+    if (currentPageSpan) currentPageSpan.textContent = currentPage;
+    if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
     if (prevBtn.disabled) { prevBtn.classList.add('disabled'); } else { prevBtn.classList.remove('disabled'); }
@@ -203,13 +249,12 @@ function nextPage() {
 }
 
 function showCreditoDetails(creditoId) {
+    selectedCreditoId = creditoId;
     // Show loading state
     document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-    
     // Show the modal
     var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
     modal.show();
-    
     // Fetch credit details via AJAX
     fetch(`/admin/creditos/detalle/${creditoId}/modal`)
         .then(response => response.text())

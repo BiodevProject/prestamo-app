@@ -58,7 +58,7 @@
 
                 <div class="pagination-container">
                     <button class="btn btn-primary" onclick="previousPage()" id="prevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
-                    <span id="pageInfo">Página 1 de </span><span id="totalPages">1</span>
+                    <span id="pageInfo">Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
                     <button class="btn btn-primary" onclick="nextPage()" id="nextBtn">Siguiente <i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
@@ -80,8 +80,8 @@
                     <button type="button" class="btn btn-success" onclick="modalAceptarCredito()" style="border-radius: 20px;">
                         <i class="fas fa-check"></i> Aceptar
                     </button>
-                    <button type="button" class="btn btn-danger" onclick="modalDeclinarCredito()" style="border-radius: 20px;">
-                        <i class="fas fa-times"></i> Declinar
+                    <button type="button" class="btn btn-danger" onclick="modalRechazarCredito()" style="border-radius: 20px;">
+                        <i class="fas fa-times"></i> Rechazar
                     </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cerrar</button>
                 </div>
@@ -94,7 +94,7 @@
         <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
         <div class="context-menu-divider"></div>
         <button class="context-menu-item success" onclick="contextMenuAceptarCredito()"><i class="fas fa-check"></i> Aceptar Crédito</button>
-        <button class="context-menu-item danger" onclick="contextMenuDeclinarCredito()"><i class="fas fa-times"></i> Declinar Crédito</button>
+        <button class="context-menu-item danger" onclick="contextMenuRechazarCredito()"><i class="fas fa-times"></i> Rechazar Crédito</button>
     </div>
     
     <!-- Modal for Financial Charges -->
@@ -110,6 +110,7 @@
                         <input type="hidden" id="creditoIdInput" name="creditoId" value="">
                         
                         <div class="credito-detail">
+                            <!-- Cargos Financieros Section -->
                             <div class="section-card full-width">
                                 <div class="section-header">
                                     <div class="section-header-left">
@@ -118,22 +119,52 @@
                                     </div>
                                 </div>
                                 <div class="section-content">
-                                    <div class="info-grid">
-                                        <div class="info-item">
+                                    <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                                        <div class="info-item important-field">
                                             <span class="info-label">Porcentaje de Interés (%)</span>
-                                            <input type="number" class="form-control" id="porcentajeInteres" name="porcentajeInteres" step="0.01" required>
+                                            <input type="number" class="form-control" id="porcentajeInteres" name="porcentajeInteres" step="0.01" required onchange="calculateFinancialCharges()" onkeyup="calculateFinancialCharges()" value="12.00">
                                         </div>
-                                        <div class="info-item">
-                                            <span class="info-label">Porcentaje de Mora (%)</span>
-                                            <input type="number" class="form-control" id="porcentajeMora" name="porcentajeMora" step="0.01" required>
-                                        </div>
-                                        <div class="info-item">
+                                        <div class="info-item important-field">
                                             <span class="info-label">Porcentaje de IVA (%)</span>
-                                            <input type="number" class="form-control" id="porcentajeIva" name="porcentajeIva" step="0.01" required>
+                                            <input type="number" class="form-control" id="porcentajeIva" name="porcentajeIva" step="0.01" required onchange="calculateFinancialCharges()" onkeyup="calculateFinancialCharges()" value="13.00">
                                         </div>
-                                        <div class="info-item">
+                                        <div class="info-item important-field">
                                             <span class="info-label">Comisión Fija</span>
-                                            <input type="number" class="form-control" id="comisionFija" name="comisionFija" step="0.01" required>
+                                            <input type="number" class="form-control" id="comisionFija" name="comisionFija" step="0.01" required onchange="calculateFinancialCharges()" onkeyup="calculateFinancialCharges()" value="50.00">
+                                        </div>
+                                        <div class="info-item important-field">
+                                            <span class="info-label">Porcentaje de Mora (%)</span>
+                                            <input type="number" class="form-control" id="porcentajeMora" name="porcentajeMora" step="0.01" required onchange="calculateFinancialCharges()" onkeyup="calculateFinancialCharges()" value="2.00">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Real-time Calculations Section -->
+                            <div class="section-card full-width">
+                                <div class="section-header">
+                                    <div class="section-header-left">
+                                        <i class="fas fa-calculator"></i>
+                                        Cálculos en Tiempo Real
+                                    </div>
+                                </div>
+                                <div class="section-content">
+                                    <div class="summary-grid" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto;">
+                                        <div class="summary-item financial-field" style="grid-column: 1 / 2;">
+                                            <div class="summary-label">Monto Interés</div>
+                                            <div class="summary-value" id="interesCalculado">$0.00</div>
+                                        </div>
+                                        <div class="summary-item financial-field" style="grid-column: 2 / 3;">
+                                            <div class="summary-label">Monto IVA</div>
+                                            <div class="summary-value" id="ivaCalculado">$0.00</div>
+                                        </div>
+                                        <div class="summary-item monto-highlight" style="grid-column: 3 / 4;">
+                                            <div class="summary-label">Cuota Mensual</div>
+                                            <div class="summary-value" id="cuotaMensualCalculada">$0.00</div>
+                                        </div>
+                                        <div class="summary-item monto-highlight" style="grid-column: 1 / -1; grid-row: 2;">
+                                            <div class="summary-label">Monto Total</div>
+                                            <div class="summary-value" id="totalCalculado">$0.00</div>
                                         </div>
                                     </div>
                                 </div>

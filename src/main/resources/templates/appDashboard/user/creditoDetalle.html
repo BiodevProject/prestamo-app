@@ -32,6 +32,19 @@
                         <div class="detail-label">Plazo</div>
                         <div class="detail-value" th:text="${credito.plazoMeses + ' meses'}"></div>
                     </div>
+                    <div th:if="${credito.cuotaMensual != null}" class="detail-item">
+                        <div class="detail-label">Cuota Mensual</div>
+                        <div class="detail-value" th:text="${'$' + #numbers.formatDecimal(credito.cuotaMensual, 1, 'COMMA', 2, 'POINT')}"></div>
+                    </div>
+                    <!-- Status Dates -->
+                    <div th:if="${credito.fechaAceptado != null}" class="detail-item">
+                        <div class="detail-label">Fecha de Aceptación</div>
+                        <div class="detail-value" th:text="${#temporals.format(credito.fechaAceptado, 'dd/MM/yyyy HH:mm')}"></div>
+                    </div>
+                    <div th:if="${credito.fechaFinalizado != null}" class="detail-item">
+                        <div class="detail-label">Fecha de Finalización</div>
+                        <div class="detail-value" th:text="${#temporals.format(credito.fechaFinalizado, 'dd/MM/yyyy HH:mm')}"></div>
+                    </div>
                     <!-- Calculated Financial Amounts -->
                     <div th:if="${credito.interes != null}" class="detail-item">
                         <div class="detail-label">Monto Interés</div>
@@ -40,7 +53,7 @@
                     <div th:if="${credito.mora != null}" class="detail-item">
                         <div class="detail-label">Monto Mora</div>
                         <div class="detail-value" th:text="${'$' + #numbers.formatDecimal(credito.mora, 1, 'COMMA', 2, 'POINT')}"></div>
-                    </div>
+                        </div>
                     <div th:if="${credito.iva != null}" class="detail-item">
                         <div class="detail-label">Monto IVA</div>
                         <div class="detail-value" th:text="${'$' + #numbers.formatDecimal(credito.iva, 1, 'COMMA', 2, 'POINT')}"></div>
@@ -50,7 +63,7 @@
                         <div class="detail-value" th:text="${'$' + #numbers.formatDecimal(credito.total, 1, 'COMMA', 2, 'POINT')}"></div>
                     </div>
                 </div>
-
+                
                 <!-- Financial Charges Details -->
                 <div th:if="${credito.porcentajeInteres != null}">
                     <hr class="my-3">

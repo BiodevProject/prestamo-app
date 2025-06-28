@@ -76,11 +76,13 @@
             <ul class="sidebar-menu">
                 <li class="header">MAIN NAVIGATION</li>
                 <li th:classappend="${activePage == 'dashboard'} ? 'active' : ''"><a href="/admin/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li class="treeview" th:classappend="${#lists.contains({'creditosPendientes', 'creditosAceptados'}, activePage)} ? 'active' : ''">
+                <li class="treeview" th:classappend="${#lists.contains({'creditosPendientes', 'creditosAceptados', 'creditosRechazados', 'creditosFinalizados'}, activePage)} ? 'active' : ''">
                     <a href="#" class="nav-link"><i class="fas fa-money-check-alt"></i> <span>Creditos</span> <i class="fas fa-angle-left float-end"></i></a>
                     <ul class="treeview-menu">
-                        <li th:classappend="${activePage == 'creditosPendientes'} ? 'active' : ''"><a href="/admin/creditos/pendientes" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Nuevas</a></li>
-                        <li th:classappend="${activePage == 'creditosAceptados'} ? 'active' : ''"><a href="/admin/creditos/aceptados" class="nav-link"><i class="fas fa-circle"></i> Solicitudes Aceptadas</a></li>
+                        <li th:classappend="${activePage == 'creditosPendientes'} ? 'active' : ''"><a href="/admin/creditos/pendientes" class="nav-link"><i class="fas fa-circle"></i> Solicitudes de Crédito</a></li>
+                        <li th:classappend="${activePage == 'creditosAceptados'} ? 'active' : ''"><a href="/admin/creditos/aceptados" class="nav-link"><i class="fas fa-circle"></i> Créditos Aceptados</a></li>
+                        <li th:classappend="${activePage == 'creditosRechazados'} ? 'active' : ''"><a href="/admin/creditos/rechazados" class="nav-link"><i class="fas fa-circle"></i> Créditos Rechazados</a></li>
+                        <li th:classappend="${activePage == 'creditosFinalizados'} ? 'active' : ''"><a href="/admin/creditos/finalizados" class="nav-link"><i class="fas fa-circle"></i> Créditos Finalizados</a></li>
                     </ul>
                 </li>
                 <li th:classappend="${activePage == 'usuarios'} ? 'active' : ''"><a href="/admin/usuarios" class="nav-link"><i class="fas fa-users"></i> <span>Usuarios</span></a></li>

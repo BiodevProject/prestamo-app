@@ -11,6 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTable();
         updatePagination();
         setupContextMenu();
+        
+        // Add event listener for financial charges modal
+        const financialModal = document.getElementById('cargosFinancierosModal');
+        if (financialModal) {
+            financialModal.addEventListener('shown.bs.modal', function() {
+                // Trigger calculation when modal is shown
+                setTimeout(function() {
+                    calculateFinancialCharges();
+                }, 100);
+            });
+        }
     }, 100);
 });
 
@@ -103,52 +114,16 @@ function updateTable() {
 
 function updatePagination() {
     var totalPages = Math.ceil(filteredData.length / creditosPerPage);
-    var pageInfo = document.getElementById("pageInfo");
+    var currentPageSpan = document.getElementById("currentPage");
     var totalPagesSpan = document.getElementById("totalPages");
     var prevBtn = document.getElementById("prevBtn");
     var nextBtn = document.getElementById("nextBtn");
-    
-    // Check if all required elements exist
-    if (!pageInfo || !totalPagesSpan || !prevBtn || !nextBtn) {
-        console.error("Pagination elements not found:", {
-            pageInfo: !!pageInfo,
-            totalPagesSpan: !!totalPagesSpan,
-            prevBtn: !!prevBtn,
-            nextBtn: !!nextBtn
-        });
-        return;
-    }
-    
-    // Ensure currentPage doesn't exceed totalPages
-    if (currentPage > totalPages && totalPages > 0) {
-        currentPage = totalPages;
-    }
-    
-    // Update the page info text (now just "Página X de ")
-    pageInfo.textContent = `Página ${currentPage} de `;
-    totalPagesSpan.textContent = totalPages;
-    
-    // Update button states
-    var isFirstPage = currentPage <= 1;
-    var isLastPage = currentPage >= totalPages;
-    
-    prevBtn.disabled = isFirstPage;
-    nextBtn.disabled = isLastPage;
-    
-    // Update CSS classes for styling
-    if (isFirstPage) {
-        prevBtn.classList.add('disabled');
-    } else {
-        prevBtn.classList.remove('disabled');
-    }
-    
-    if (isLastPage) {
-        nextBtn.classList.add('disabled');
-    } else {
-        nextBtn.classList.remove('disabled');
-    }
-    
-    console.log(`Pagination: Page ${currentPage} of ${totalPages}, Prev disabled: ${isFirstPage}, Next disabled: ${isLastPage}`);
+    if (currentPageSpan) currentPageSpan.textContent = currentPage;
+    if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+    if (prevBtn.disabled) { prevBtn.classList.add('disabled'); } else { prevBtn.classList.remove('disabled'); }
+    if (nextBtn.disabled) { nextBtn.classList.add('disabled'); } else { nextBtn.classList.remove('disabled'); }
 }
 
 function previousPage() {
@@ -177,16 +152,12 @@ function nextPage() {
 }
 
 function showCreditoDetails(creditoId) {
-    // Set the selected credit ID for modal buttons
     selectedCreditoId = creditoId;
-    
     // Show loading state
     document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-    
     // Show the modal
     var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
     modal.show();
-    
     // Fetch credit details via AJAX
     fetch(`/admin/creditos/detalle/${creditoId}/modal`)
         .then(response => response.text())
@@ -361,46 +332,166 @@ function contextMenuVerDetalles() {
 
 function contextMenuAceptarCredito() {
     if (selectedCreditoId) {
-        // Set the creditoId in the hidden input of the new modal
-        document.getElementById('creditoIdInput').value = selectedCreditoId;
+        // Store the ID before hiding the context menu
+        const creditoIdToAccept = selectedCreditoId;
         
-        // Show the financial charges modal
-        var financialModal = new bootstrap.Modal(document.getElementById('cargosFinancierosModal'));
-        financialModal.show();
-
+        // Hide the context menu
         hideContextMenu();
+        
+        // Show confirmation dialog
+        if (confirm('¿Está seguro de que desea aceptar este crédito? Esta acción no se puede deshacer.')) {
+            // Set the creditoId in the hidden input of the new modal
+            document.getElementById('creditoIdInput').value = creditoIdToAccept;
+            
+            // Set credit data for calculations
+            setCreditoDataForCalculation(creditoIdToAccept);
+            
+            // Show the financial charges modal
+            var financialModal = new bootstrap.Modal(document.getElementById('cargosFinancierosModal'));
+            financialModal.show();
+        }
     }
 }
 
-function contextMenuDeclinarCredito() {
+function contextMenuRechazarCredito() {
     if (selectedCreditoId) {
-        console.log('Declinar crédito:', selectedCreditoId);
-        // TODO: Implement decline credit functionality
-        alert('Función de declinar crédito será implementada próximamente');
+        // Store the ID before hiding the context menu
+        const creditoIdToRechazar = selectedCreditoId;
+        
+        // Hide the context menu
         hideContextMenu();
+        
+        // Show confirmation dialog
+        if (confirm('¿Está seguro de que desea rechazar este crédito? Esta acción no se puede deshacer.')) {
+            rechazarCredito(creditoIdToRechazar);
+        }
     }
 }
 
-// Modal functions for Accept and Decline buttons
+// Modal functions for Accept and Reject buttons
 function modalAceptarCredito() {
     if (selectedCreditoId) {
-        // Set the creditoId in the hidden input of the new modal
-        document.getElementById('creditoIdInput').value = selectedCreditoId;
-        
         // Hide the details modal
         var detailsModal = bootstrap.Modal.getInstance(document.getElementById('creditoModal'));
         detailsModal.hide();
-
-        // Show the financial charges modal
-        var financialModal = new bootstrap.Modal(document.getElementById('cargosFinancierosModal'));
-        financialModal.show();
+        
+        // Show confirmation dialog
+        if (confirm('¿Está seguro de que desea aceptar este crédito? Esta acción no se puede deshacer.')) {
+            // Set the creditoId in the hidden input of the new modal
+            document.getElementById('creditoIdInput').value = selectedCreditoId;
+            
+            // Set credit data for calculations
+            setCreditoDataForCalculation(selectedCreditoId);
+            
+            // Show the financial charges modal
+            var financialModal = new bootstrap.Modal(document.getElementById('cargosFinancierosModal'));
+            financialModal.show();
+        }
     }
 }
 
-function modalDeclinarCredito() {
+function modalRechazarCredito() {
     if (selectedCreditoId) {
-        console.log('Declinar crédito desde modal:', selectedCreditoId);
-        // TODO: Implement decline credit functionality
-        alert('Función de declinar crédito será implementada próximamente');
+        // Hide the details modal
+        var detailsModal = bootstrap.Modal.getInstance(document.getElementById('creditoModal'));
+        detailsModal.hide();
+        
+        // Show confirmation dialog
+        if (confirm('¿Está seguro de que desea rechazar este crédito? Esta acción no se puede deshacer.')) {
+            rechazarCredito(selectedCreditoId);
+        }
     }
+}
+
+function rechazarCredito(creditoId) {
+    // Show loading state
+    console.log('Rechazando crédito:', creditoId);
+    
+    // Send request to reject the credit
+    fetch(`/admin/creditos/${creditoId}/rechazar`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Crédito rechazado exitosamente');
+            // Reload the page to refresh the data
+            window.location.reload();
+        } else {
+            throw new Error('Error al rechazar el crédito');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al rechazar el crédito. Por favor, intente nuevamente.');
+    });
+}
+
+// Variables to store credit data for calculations
+var currentCreditoData = null;
+
+// Function to set credit data when opening the financial charges modal
+function setCreditoDataForCalculation(creditoId) {
+    // Find the credit data from the hidden divs
+    const creditoDataDiv = document.querySelector(`#creditoData[data-id="${creditoId}"]`);
+    if (creditoDataDiv) {
+        currentCreditoData = {
+            id: creditoDataDiv.getAttribute('data-id'),
+            monto: parseFloat(creditoDataDiv.getAttribute('data-monto').replace(/,/g, '')),
+            plazo: parseInt(creditoDataDiv.getAttribute('data-plazo'))
+        };
+        console.log('Credit data set for calculations:', currentCreditoData);
+    }
+}
+
+// Real-time calculation function for financial charges
+function calculateFinancialCharges() {
+    if (!currentCreditoData) {
+        console.log('No credit data available for calculations');
+        return;
+    }
+
+    // Get input values
+    const porcentajeInteres = parseFloat(document.getElementById('porcentajeInteres').value) || 0;
+    const porcentajeMora = parseFloat(document.getElementById('porcentajeMora').value) || 0;
+    const porcentajeIva = parseFloat(document.getElementById('porcentajeIva').value) || 0;
+    const comisionFija = parseFloat(document.getElementById('comisionFija').value) || 0;
+
+    // Get credit data
+    const monto = currentCreditoData.monto;
+    const plazoEnMeses = currentCreditoData.plazo;
+
+    // Perform calculations (exact same logic as in CreditoController)
+    const cien = 100;
+    const doce = 12;
+
+    // Calculate monthly interest rate (with 10 decimal precision like server)
+    const tasaMensual = (porcentajeInteres / cien) / doce;
+
+    // (1 + r)^n
+    const unoMasTasa = 1 + tasaMensual;
+    const potencia = Math.pow(unoMasTasa, plazoEnMeses);
+
+    // Amortization formula: cuota = P * [ r * (1 + r)^n ] / [ (1 + r)^n - 1 ]
+    // Round to 2 decimal places like server
+    const cuotaMensual = Math.round((monto * tasaMensual * potencia / (potencia - 1)) * 100) / 100;
+
+    // Total repayment = cuota mensual * meses + fixed commission + IVA
+    const totalCuotas = cuotaMensual * plazoEnMeses;
+    const subtotal = totalCuotas + comisionFija;
+
+    // IVA calculation with 4 decimal precision like server
+    const iva = Math.round(subtotal * (porcentajeIva / cien) * 10000) / 10000;
+    const total = subtotal + iva;
+
+    // Interest calculation (totalCuotas - monto) rounded to 2 decimals like server
+    const interes = Math.round((totalCuotas - monto) * 100) / 100;
+
+    // Update display values with proper formatting
+    document.getElementById('cuotaMensualCalculada').textContent = '$' + cuotaMensual.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    document.getElementById('interesCalculado').textContent = '$' + interes.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    document.getElementById('ivaCalculado').textContent = '$' + iva.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    document.getElementById('totalCalculado').textContent = '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 } 

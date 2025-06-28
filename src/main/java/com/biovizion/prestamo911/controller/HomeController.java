@@ -8,6 +8,7 @@ import com.biovizion.prestamo911.service.UsuarioService;
 import com.biovizion.prestamo911.service.CreditoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,10 +16,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -101,6 +105,30 @@ public class HomeController {
         model.addAttribute("creditos", creditos);
         return "appDashboard/admin/creditosAceptados";
     }
+
+    // ADMIN: Creditos Rechazados
+    @GetMapping("/admin/creditos/rechazados")
+    public String adminCreditosRechazados(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        
+        List<CreditoEntity> creditos = creditoService.findRechazados();
+        model.addAttribute("creditos", creditos);
+        return "appDashboard/admin/creditosRechazados";
+    }
+
+    // ADMIN: Creditos Finalizados
+    @GetMapping("/admin/creditos/finalizados")
+    public String adminCreditosFinalizados(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        
+        List<CreditoEntity> creditos = creditoService.findFinalizados();
+        model.addAttribute("creditos", creditos);
+        return "appDashboard/admin/creditosFinalizados";
+    }
     
     // ADMIN: Credito Detalle Modal Content
     @GetMapping("/admin/creditos/detalle/{id}/modal")
@@ -110,6 +138,45 @@ public class HomeController {
         
         model.addAttribute("credito", credito);
         return "appDashboard/admin/creditoDetalle";
+    }
+    
+    // ADMIN: Finalize Credit
+    @PostMapping("/admin/creditos/{id}/finalizar")
+    @ResponseBody
+    public ResponseEntity<String> finalizarCredito(@PathVariable Long id) {
+        try {
+            CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            
+            // Update the credit status to "Finalizado" and set finalization date
+            credito.setEstado("Finalizado");
+            credito.setFechaFinalizado(LocalDateTime.now());
+            creditoService.update(credito);
+            
+            return ResponseEntity.ok("Crédito finalizado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al finalizar el crédito: " + e.getMessage());
+        }
+    }
+    
+    // ADMIN: Reject Credit
+    @PostMapping("/admin/creditos/{id}/rechazar")
+    @ResponseBody
+    public ResponseEntity<String> rechazarCredito(@PathVariable Long id) {
+        try {
+            CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            
+            // Update the credit status to "Rechazado"
+            credito.setEstado("Rechazado");
+            creditoService.update(credito);
+            
+            return ResponseEntity.ok("Crédito rechazado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al rechazar el crédito: " + e.getMessage());
+        }
     }
     
     // Helper method to get current user's name

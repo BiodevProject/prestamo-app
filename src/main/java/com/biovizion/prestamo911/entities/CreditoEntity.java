@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "credito")
@@ -63,4 +64,14 @@ public class CreditoEntity {
 
     @Column(precision = 10, scale = 2)
     private BigDecimal total;
+
+    @Column(name = "cuota_mensual", precision = 10, scale = 2)
+    private BigDecimal cuotaMensual;
+
+    // Fechas de estado
+    @Column(name = "fecha_aceptado", columnDefinition = "DATETIME")
+    private LocalDateTime fechaAceptado;
+
+    @Column(name = "fecha_finalizado", columnDefinition = "DATETIME")
+    private LocalDateTime fechaFinalizado;
 }

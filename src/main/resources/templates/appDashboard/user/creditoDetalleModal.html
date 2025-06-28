@@ -30,6 +30,19 @@
                     <div class="summary-label">Plazo</div>
                     <div class="summary-value" th:text="${credito.plazoMeses + ' meses'}">12 meses</div>
                 </div>
+                <div th:if="${credito.cuotaMensual != null}" class="summary-item financial-field">
+                    <div class="summary-label">Cuota Mensual</div>
+                    <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.cuotaMensual, 1, 'COMMA', 2, 'POINT')}"></div>
+                </div>
+                <!-- Status Dates -->
+                <div th:if="${credito.fechaAceptado != null}" class="summary-item">
+                    <div class="summary-label">Fecha de Aceptación</div>
+                    <div class="summary-value" th:text="${#temporals.format(credito.fechaAceptado, 'dd/MM/yyyy HH:mm')}"></div>
+                </div>
+                <div th:if="${credito.fechaFinalizado != null}" class="summary-item">
+                    <div class="summary-label">Fecha de Finalización</div>
+                    <div class="summary-value" th:text="${#temporals.format(credito.fechaFinalizado, 'dd/MM/yyyy HH:mm')}"></div>
+                </div>
                 <!-- Calculated Financial Amounts -->
                 <div th:if="${credito.interes != null}" class="summary-item financial-field">
                     <div class="summary-label">Monto Interés</div>
@@ -48,29 +61,34 @@
                     <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.total, 1, 'COMMA', 2, 'POINT')}"></div>
                 </div>
             </div>
-
-            <!-- Financial Charges Details -->
-            <div th:if="${credito.porcentajeInteres != null}">
-                <hr class="my-3">
-                <h6 class="text-muted mb-3">Cargos Financieros</h6>
-                <div class="detail-grid">
-                    <!-- Configurable Percentages -->
-                    <div class="detail-item">
-                        <div class="detail-label">Porcentaje Interés</div>
-                        <div class="detail-value" th:text="${#numbers.formatDecimal(credito.porcentajeInteres, 1, 2) + '%'}"></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Porcentaje Mora</div>
-                        <div class="detail-value" th:text="${#numbers.formatDecimal(credito.porcentajeMora, 1, 2) + '%'}"></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Porcentaje IVA</div>
-                        <div class="detail-value" th:text="${#numbers.formatDecimal(credito.porcentajeIva, 1, 2) + '%'}"></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Comisión Fija</div>
-                        <div class="detail-value" th:text="${'$' + #numbers.formatDecimal(credito.comisionFija, 1, 'COMMA', 2, 'POINT')}"></div>
-                    </div>
+                </div>
+            </div>
+            
+    <!-- Financial Charges Details - Full Width Section -->
+    <div class="section-card full-width" th:if="${credito.porcentajeInteres != null}">
+        <div class="section-header">
+            <div class="section-header-left">
+                <i class="fas fa-calculator"></i>
+                Detalles de los Cargos Financieros
+            </div>
+        </div>
+        <div class="section-content">
+            <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="info-item">
+                    <span class="info-label">Porcentaje Interés</span>
+                    <span class="info-value" th:text="${#numbers.formatDecimal(credito.porcentajeInteres, 1, 2) + '%'}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Porcentaje Mora</span>
+                    <span class="info-value" th:text="${#numbers.formatDecimal(credito.porcentajeMora, 1, 2) + '%'}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Porcentaje IVA</span>
+                    <span class="info-value" th:text="${#numbers.formatDecimal(credito.porcentajeIva, 1, 2) + '%'}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Comisión Fija</span>
+                    <span class="info-value" th:text="${'$' + #numbers.formatDecimal(credito.comisionFija, 1, 'COMMA', 2, 'POINT')}"></span>
                 </div>
             </div>
         </div>

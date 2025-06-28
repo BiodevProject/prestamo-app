@@ -178,28 +178,6 @@ body {
     color: var(--primary-color);
 }
 
-/* Tarjeta específica para gestión de facturas */
-.invoice-management {
-    border-top: 4px solid var(--accent-color);
-}
-
-.invoice-management .action-icon {
-    background: linear-gradient(135deg, var(--accent-color), var(--dark-accent));
-    box-shadow: 0 10px 20px rgba(247, 37, 133, 0.3);
-}
-
-.invoice-management .action-hover {
-    background: linear-gradient(135deg, var(--accent-color), var(--dark-accent));
-}
-
-.invoice-management:hover {
-    border-color: rgba(247, 37, 133, 0.3);
-}
-
-.invoice-management:hover h3 {
-    color: var(--accent-color);
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
     .dashboard-container {
@@ -228,8 +206,4 @@ body {
 
 .action-card {
     animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.invoice-management {
-    animation-delay: 0.15s;
 }

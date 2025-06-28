@@ -3,6 +3,7 @@ package com.biovizion.prestamo911.controller;
 import java.util.List;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.service.UsuarioService;
@@ -106,7 +107,8 @@ public class CreditoController {
         CreditoEntity credito = creditoService.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         
-        credito.setEstado("aceptado");
+        credito.setEstado("Aceptado");
+        credito.setFechaAceptado(LocalDateTime.now());
         creditoService.update(credito);
         
         return "redirect:/admin/creditos/pendientes";
@@ -118,39 +120,58 @@ public class CreditoController {
                                     @RequestParam("porcentajeMora") BigDecimal porcentajeMora,
                                     @RequestParam("porcentajeIva") BigDecimal porcentajeIva,
                                     @RequestParam("comisionFija") BigDecimal comisionFija) {
-
+    
         CreditoEntity credito = creditoService.findById(creditoId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Credito not found"));
-
+    
         // Set admin-configurable values
         credito.setPorcentajeInteres(porcentajeInteres);
         credito.setPorcentajeMora(porcentajeMora);
         credito.setPorcentajeIva(porcentajeIva);
         credito.setComisionFija(comisionFija);
-
+    
         // Perform calculations
         BigDecimal monto = credito.getMonto();
+        int plazoEnMeses = credito.getPlazoMeses();
+    
         BigDecimal cien = new BigDecimal("100");
-
-        BigDecimal interes = monto.multiply(porcentajeInteres.divide(cien, 2, RoundingMode.HALF_UP));
-        BigDecimal mora = monto.multiply(porcentajeMora.divide(cien, 2, RoundingMode.HALF_UP));
-
-        BigDecimal subtotal = monto.add(interes).add(mora).add(comisionFija);
-        BigDecimal iva = subtotal.multiply(porcentajeIva.divide(cien, 2, RoundingMode.HALF_UP));
-        
+        BigDecimal doce = new BigDecimal("12");
+    
+        // Calculate monthly interest rate
+        BigDecimal tasaMensual = porcentajeInteres
+            .divide(cien, 10, RoundingMode.HALF_UP)
+            .divide(doce, 10, RoundingMode.HALF_UP);
+    
+        // (1 + r)^n
+        BigDecimal unoMasTasa = BigDecimal.ONE.add(tasaMensual);
+        BigDecimal potencia = unoMasTasa.pow(plazoEnMeses);
+    
+        // Amortization formula: cuota = P * [ r * (1 + r)^n ] / [ (1 + r)^n - 1 ]
+        BigDecimal cuotaMensual = monto.multiply(tasaMensual).multiply(potencia)
+            .divide(potencia.subtract(BigDecimal.ONE), 2, RoundingMode.HALF_UP);
+    
+        // Total repayment = cuota mensual * meses + fixed commission + IVA
+        BigDecimal totalCuotas = cuotaMensual.multiply(new BigDecimal(plazoEnMeses));
+        BigDecimal subtotal = totalCuotas.add(comisionFija);
+    
+        BigDecimal iva = subtotal.multiply(porcentajeIva.divide(cien, 4, RoundingMode.HALF_UP));
         BigDecimal total = subtotal.add(iva);
-
+    
         // Set calculated values
-        credito.setInteres(interes.setScale(2, RoundingMode.HALF_UP));
-        credito.setMora(mora.setScale(2, RoundingMode.HALF_UP));
+        credito.setInteres(totalCuotas.subtract(monto).setScale(2, RoundingMode.HALF_UP)); // interest only
+        credito.setMora(BigDecimal.ZERO); // No mora at start
         credito.setIva(iva.setScale(2, RoundingMode.HALF_UP));
         credito.setTotal(total.setScale(2, RoundingMode.HALF_UP));
-        
-        // Update estado
-        credito.setEstado("aceptado");
-
+    
+        // You can also save cuotaMensual if needed
+        credito.setCuotaMensual(cuotaMensual.setScale(2, RoundingMode.HALF_UP)); // ← if your entity has this
+    
+        // Update estado and fecha
+        credito.setEstado("Aceptado");
+        credito.setFechaAceptado(java.time.LocalDateTime.now());
+    
         creditoService.save(credito);
-
+    
         return "redirect:/admin/creditos/pendientes";
-    }
+    }    
 }
