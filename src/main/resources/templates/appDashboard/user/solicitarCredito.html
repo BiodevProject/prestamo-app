@@ -60,10 +60,9 @@
             </div>
         </div>
 
-        <!-- Personal and Labor Information Side by Side -->
-        <div class="form-grid">
-            <!-- Información Personal -->
-            <div class="section-card">
+        <!-- Información Personal - Full Width -->
+        <div class="form-grid full-width">
+            <div class="section-card full-width">
                 <div class="section-header">
                     <div class="section-header-left">
                         <i class="fas fa-user"></i>
@@ -71,7 +70,7 @@
                     </div>
                 </div>
                 <div class="section-content">
-                    <div class="info-grid">
+                    <div class="personal-info-grid">
                         <div class="info-item important-field">
                             <span class="info-label">Nombres</span>
                             <input type="text" th:field="*{usuarioSolicitud.nombres}" required placeholder="Ej: Juan Carlos">
@@ -111,7 +110,10 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Información Laboral and Referencias Personales Side by Side -->
+        <div class="form-grid">
             <!-- Información Laboral -->
             <div class="section-card">
                 <div class="section-header">
@@ -141,10 +143,7 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Referencias Personales and Declaración Side by Side -->
-        <div class="form-grid">
             <!-- Referencias Personales -->
             <div class="section-card">
                 <div class="section-header">
@@ -154,29 +153,39 @@
                     </div>
                 </div>
                 <div class="section-content">
-                    <div class="reference-grid">
-                        <div class="reference-item">
+                    <div class="info-grid">
+                        <div class="info-item">
                             <span class="info-label">Referencia 1 (Nombre)</span>
                             <input type="text" th:field="*{usuarioSolicitud.referencia1}" required placeholder="Nombre completo">
-                            <span class="info-label">Teléfono</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Teléfono Referencia 1</span>
                             <input type="text" th:field="*{usuarioSolicitud.telefonoReferencia1}" required placeholder="Ej: 999888777">
-                            <span class="info-label">Parentesco</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Parentesco Referencia 1</span>
                             <input type="text" th:field="*{usuarioSolicitud.parentesco1}" required placeholder="Ej: Familiar, Amigo">
                         </div>
-                        <div class="reference-item">
+                        <div class="info-item">
                             <span class="info-label">Referencia 2 (Nombre)</span>
                             <input type="text" th:field="*{usuarioSolicitud.referencia2}" required placeholder="Nombre completo">
-                            <span class="info-label">Teléfono</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Teléfono Referencia 2</span>
                             <input type="text" th:field="*{usuarioSolicitud.telefonoReferencia2}" required placeholder="Ej: 999888777">
-                            <span class="info-label">Parentesco</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Parentesco Referencia 2</span>
                             <input type="text" th:field="*{usuarioSolicitud.parentesco2}" required placeholder="Ej: Familiar, Amigo">
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Declaración y Firma -->
-            <div class="section-card">
+        <!-- Declaración y Firma - Centered at Bottom -->
+        <div class="form-grid full-width">
+            <div class="section-card full-width">
                 <div class="section-header">
                     <div class="section-header-left">
                         <i class="fas fa-clipboard-check"></i>
@@ -184,7 +193,7 @@
                     </div>
                 </div>
                 <div class="section-content">
-                    <div class="info-grid">
+                    <div class="info-grid" style="max-width: 400px; margin: 0 auto;">
                         <div class="info-item">
                             <span class="info-label">Firma</span>
                             <input type="text" th:field="*{usuarioSolicitud.firma}" required placeholder="Ej: Juan C. Pérez">

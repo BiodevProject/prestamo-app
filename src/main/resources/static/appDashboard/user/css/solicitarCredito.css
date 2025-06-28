@@ -28,6 +28,13 @@
     grid-column: 1 / -1;
 }
 
+/* Personal Information 2-column grid */
+.solicitar-credito-form .personal-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
 .solicitar-credito-form .info-item input,
 .solicitar-credito-form .info-item select,
 .solicitar-credito-form .info-item textarea {
@@ -81,6 +88,10 @@
     }
     
     .solicitar-credito-form .form-grid.three-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .solicitar-credito-form .personal-info-grid {
         grid-template-columns: 1fr;
     }
     
