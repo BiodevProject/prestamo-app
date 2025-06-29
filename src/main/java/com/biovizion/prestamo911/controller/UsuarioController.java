@@ -79,6 +79,21 @@ public class UsuarioController {
         return "appDashboard/user/creditosPendientes";
     }
 
+    @GetMapping("/pagarCredito")
+    public String pagarCredito(Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+
+        String emailUsuario = principal.getName();
+        UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
+        model.addAttribute("creditos", creditos);
+        return "appDashboard/user/pagarCredito";
+    }
+
     @GetMapping("/creditos/detalle/{id}/modal")
     public String creditoDetalleModal(@PathVariable Long id, Model model, Principal principal) {
         String emailUsuario = principal.getName();

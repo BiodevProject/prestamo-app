@@ -56,7 +56,7 @@ function showContextMenu(e, creditoId) {
 function hideContextMenu() {
     const contextMenu = document.getElementById('contextMenu');
     contextMenu.style.display = 'none';
-    selectedCreditoId = null;
+
 }
 
 function contextMenuVerDetalles() {
@@ -66,23 +66,7 @@ function contextMenuVerDetalles() {
     }
 }
 
-function contextMenuAceptarCredito() {
-    if (selectedCreditoId) {
-        console.log('Aceptar crédito:', selectedCreditoId);
-        // TODO: Implement accept credit functionality
-        alert('Función de aceptar crédito será implementada próximamente');
-        hideContextMenu();
-    }
-}
 
-function contextMenuDeclinarCredito() {
-    if (selectedCreditoId) {
-        console.log('Declinar crédito:', selectedCreditoId);
-        // TODO: Implement decline credit functionality
-        alert('Función de declinar crédito será implementada próximamente');
-        hideContextMenu();
-    }
-}
 
 function contextMenuFinalizarCredito() {
     if (selectedCreditoId) {
@@ -127,6 +111,50 @@ function finalizarCredito(creditoId) {
         alert('Error al finalizar el crédito. Por favor, intente nuevamente.');
     });
 }
+
+
+// Marcar crédito como pendiente
+function contextMenuPendienteCredito() {
+    if (selectedCreditoId) {
+        hideContextMenu();
+        if (confirm('¿Está seguro de que desea marcar este crédito como pendiente?')) {
+            marcarCreditoPendiente(selectedCreditoId);
+        }
+    }
+}
+
+function modalPendienteCredito() {
+    if (selectedCreditoId) {
+        if (confirm('¿Está seguro de que desea marcar este crédito como pendiente?')) {
+            marcarCreditoPendiente(selectedCreditoId);
+        }
+    }
+}
+
+function marcarCreditoPendiente(creditoId) {
+    console.log('Marcando crédito como pendiente:', creditoId);
+
+    fetch(`/admin/creditos/${creditoId}/pendiente`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Crédito marcado como pendiente exitosamente');
+                window.location.reload();
+            } else {
+                throw new Error('Error al marcar el crédito como pendiente');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al marcar el crédito como pendiente. Por favor, intente nuevamente.');
+        });
+}
+
+
 
 function loadCreditoData() {
     var creditoDataDivs = document.querySelectorAll('#creditoData');

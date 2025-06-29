@@ -1,0 +1,174 @@
+/* Shared Creditos Styles - Used by both Admin and User dashboards */
+
+/* Search and Pagination Container Styles */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.pagination-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination-container button {
+    margin: 0 5px;
+}
+
+/* Pagination button styling */
+.pagination-container button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-container button:not(:disabled) {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.pagination-container button.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Tab styling */
+.nav-tabs .nav-link {
+    color: #6c757d;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 20px;
+    margin-right: 5px;
+    border-radius: 5px 5px 0 0;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff;
+    background-color: #fff;
+    border-bottom: 2px solid #007bff;
+    font-weight: 600;
+}
+
+/* Estado color styling */
+.estado-activo {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.estado-pendiente {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.estado-rechazado {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.estado-finalizado {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Context Menu Styles */
+.context-menu {
+    position: fixed;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    min-width: 180px;
+    z-index: 9999;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: none;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+.context-menu-item:hover {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+}
+
+.context-menu-item:active {
+    background-color: #e9ecef;
+}
+
+.context-menu-item i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.context-menu-item.primary i {
+    color: #007bff;
+}
+
+.context-menu-item.success i {
+    color: #28a745;
+}
+
+.context-menu-item.danger i {
+    color: #dc3545;
+}
+
+.context-menu-item.warning i {
+    color: #ffc107;
+}
+
+.context-menu-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 4px 0;
+}
+
+/* Make table rows clickable */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+    background-color: #f8f9fa !important;
+}
+
+.clickable-row:active {
+    background-color: #e9ecef !important;
+}

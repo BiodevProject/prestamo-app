@@ -171,6 +171,25 @@ public class HomeController {
                 .body("Error al finalizar el crédito: " + e.getMessage());
         }
     }
+
+    @PostMapping("/admin/creditos/{id}/pendiente")
+    @ResponseBody
+    public ResponseEntity<String> marcarPendiente(@PathVariable Long id) {
+        try {
+            CreditoEntity credito = creditoService.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+            // Update the credit status to "Pendiente"
+            credito.setEstado("Pendiente");
+            creditoService.update(credito);
+
+            return ResponseEntity.ok("Crédito marcado como pendiente exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al marcar el crédito como pendiente: " + e.getMessage());
+        }
+    }
+
     
     // ADMIN: Reject Credit
     @PostMapping("/admin/creditos/{id}/rechazar")
@@ -190,6 +209,10 @@ public class HomeController {
                 .body("Error al rechazar el crédito: " + e.getMessage());
         }
     }
+
+
+
+
     
     // Helper method to get current user's name
     private String getCurrentUserName(Principal principal) {

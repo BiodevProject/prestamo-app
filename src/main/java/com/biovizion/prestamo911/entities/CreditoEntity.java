@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,9 @@ public class CreditoEntity {
 
     private String estado = "pendiente";
 
-    private LocalDateTime proximo_pago;
+
+    @Column(name = "proximo_pago")
+    private LocalDate proximoPago;
 
     @Column(name = "plazo_meses")
     private Integer plazoMeses;
