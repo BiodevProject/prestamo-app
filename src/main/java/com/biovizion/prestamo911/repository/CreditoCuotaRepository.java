@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface CreditoCuotaRepository extends JpaRepository<CreditoCuotaEntity
 
     @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.usuario.id = :usuarioId")
     List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId);
+
+    @Query("SELECT cc FROM CreditoCuotaEntity cc JOIN cc.credito c WHERE c.usuario.id = :usuarioId AND LOWER(cc.estado) = 'vencido'")
+    List<CreditoCuotaEntity> findCuotasVencidasByUsuarioId(@Param("usuarioId") Long usuarioId);
+
 } 

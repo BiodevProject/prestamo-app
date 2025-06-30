@@ -21,5 +21,6 @@ public interface CreditoRepository extends JpaRepository<CreditoEntity, Long> {
     @Query("SELECT c FROM CreditoEntity c WHERE LOWER(c.estado) = 'Finalizado'")
     List<CreditoEntity> findFinalizados();
 
+
     List<CreditoEntity> findByUsuarioId(Long id);
 }

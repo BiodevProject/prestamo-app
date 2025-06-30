@@ -66,7 +66,7 @@ function switchTab(tabName) {
 }
 
 function updateTableHeaders() {
-    if (currentTab === 'pendientes') {
+    if (currentTab === 'pendientes' || currentTab === 'vencidos') {
         // Headers for cuotas
         document.getElementById('header1').textContent = 'Estado';
         document.getElementById('header2').textContent = 'Monto';
@@ -94,6 +94,11 @@ function filterDataByTab() {
         case 'pendientes':
             filteredData = allCuotas.filter(function(cuota) {
                 return cuota.estado.toLowerCase() === 'pendiente';
+            });
+            break;
+        case 'vencidos':
+            filteredData = allCuotas.filter(function(cuota) {
+                return cuota.estado.toLowerCase() === 'vencido';
             });
             break;
         case 'rechazados':
@@ -137,6 +142,8 @@ function getEstadoClass(estado) {
         return 'estado-activo';
     } else if (estadoLower === 'pendiente') {
         return 'estado-pendiente';
+    } else if (estadoLower === 'vencido') {
+        return 'estado-vencido';
     } else if (estadoLower === 'rechazado') {
         return 'estado-rechazado';
     } else if (estadoLower === 'finalizado') {
@@ -149,7 +156,7 @@ function formatDate(dateString) {
     if (!dateString || dateString === 'null' || dateString === '') {
         return 'N/A';
     }
-    
+
     try {
         var date = new Date(dateString);
         return date.toLocaleDateString('es-ES', {
@@ -175,6 +182,8 @@ function updateTable() {
         var emptyRow = document.createElement('tr');
         if (currentTab === 'pendientes') {
             emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay cuotas pendientes</td>';
+        } else if (currentTab === 'vencidos') {
+            emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay pagos vencidos</td>';
         } else {
             emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay créditos en esta categoría</td>';
         }
@@ -182,7 +191,7 @@ function updateTable() {
         return;
     }
 
-    if (currentTab === 'pendientes') {
+    if (currentTab === 'pendientes' || currentTab === 'vencidos') {
         // Display cuotas
         pageData.forEach(function(cuota) {
             var row = document.createElement('tr');
@@ -335,14 +344,14 @@ function nextPage() {
 function showCreditoDetails(creditoId) {
     // Set the selected credito ID for modal buttons
     selectedCreditoId = creditoId;
-    
+
     // Show loading state
     document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-    
+
     // Show the modal
     var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
     modal.show();
-    
+
     // Fetch credito details via AJAX
     fetch(`/usuario/creditos/detalle/${creditoId}/modal`)
         .then(response => response.text())
@@ -358,14 +367,14 @@ function showCreditoDetails(creditoId) {
 function showCuotaDetails(cuotaId) {
     // Set the selected cuota ID for modal buttons
     selectedCreditoId = cuotaId;
-    
+
     // Show loading state
     document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-    
+
     // Show the modal
     var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
     modal.show();
-    
+
     // For now, show basic cuota info since we don't have a cuota details endpoint
     const cuotaDataDiv = document.querySelector(`#cuotaData[data-id="${cuotaId}"]`);
     if (cuotaDataDiv) {
@@ -577,6 +586,7 @@ function updateContextMenuForTab() {
             realizarPagoBtn.style.display = 'block';
             break;
         case 'pendientes':
+        case 'vencidos':
         case 'rechazados':
         case 'finalizados':
             // Only "Ver Detalles" is available
