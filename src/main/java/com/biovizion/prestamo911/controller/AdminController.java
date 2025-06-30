@@ -10,9 +10,11 @@ import org.springframework.web.server.ResponseStatusException;
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.entities.TrabajadorEntity;
 import com.biovizion.prestamo911.entities.CreditoEntity;
+import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
 import com.biovizion.prestamo911.service.UsuarioService;
 import com.biovizion.prestamo911.service.TrabajadorService;
 import com.biovizion.prestamo911.service.CreditoService;
+import com.biovizion.prestamo911.service.CreditoCuotaService;
 
 import java.util.List;
 
@@ -28,6 +30,18 @@ public class AdminController {
 
     @Autowired
     private CreditoService creditoService;
+
+    @Autowired
+    private CreditoCuotaService creditoCuotaService;
+
+    @GetMapping("/creditos/cobros")
+    public String showCobros(Model model) {
+        // Get all cuotas with EnRevision status
+        List<CreditoCuotaEntity> cuotasEnRevision = creditoCuotaService.findEnRevision();
+        
+        model.addAttribute("cuotas", cuotasEnRevision);
+        return "appDashboard/admin/creditosCobros";
+    }
 
     @GetMapping("/usuarios/{usuarioId}/creditos")
     public String showUsuarioCreditos(@PathVariable Long usuarioId, Model model) {
