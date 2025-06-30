@@ -94,7 +94,10 @@ public class UsuarioController {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
+        List<CreditoCuotaEntity> cuotas = creditoCuotaService.findByUsuarioId(usuario.getId());
+        
         model.addAttribute("creditos", creditos);
+        model.addAttribute("cuotas", cuotas);
         return "appDashboard/user/pagarCredito";
     }
 

@@ -22,10 +22,7 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="cuotasTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="todas-tab" type="button" role="tab" onclick="switchTab('todas')">Todas</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pendientes-tab" type="button" role="tab" onclick="switchTab('pendientes')">Pendientes</button>
+                <button class="nav-link active" id="pendientes-tab" type="button" role="tab" onclick="switchTab('pendientes')">Pendientes</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pagadas-tab" type="button" role="tab" onclick="switchTab('pagadas')">Pagadas</button>
@@ -47,7 +44,6 @@
                     <tr>
                         <th>Código</th>
                         <th>Fecha Vencimiento</th>
-                        <th>Fecha Pago</th>
                         <th>Monto</th>
                         <th>Estado</th>
                         <th></th>
@@ -98,7 +94,7 @@
     <div class="context-menu" id="contextMenu">
         <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
         <div class="context-menu-divider" id="contextMenuDivider1" style="display: none;"></div>
-        <button class="context-menu-item success" id="contextMenuRealizarPago" onclick="contextMenuRealizarPago()" style="display: none;"><i class="fas fa-credit-card"></i> Realizar Pago</button>
+        <button class="context-menu-item success" id="contextMenuRealizarPago" onclick="contextMenuRealizarPago()" style="display: none;"><i class="fas fa-credit-card"></i> Pagar Cuota</button>
     </div>
 
     <!-- Modal for Payment -->
@@ -116,24 +112,14 @@
                             <div class="section-header">
                                 <div class="section-header-left">
                                     <i class="fas fa-dollar-sign"></i>
-                                    Monto a Pagar
+                                    Paga tu cuota de:
                                 </div>
                             </div>
                             <div class="section-content">
-                                <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="info-grid" style="grid-template-columns: 1fr;">
                                     <div class="info-item important-field">
                                         <span class="info-label">Monto de la Cuota</span>
-                                        <div class="info-value" id="montoCuota">$0.00</div>
-                                    </div>
-                                    <div class="info-item important-field">
-                                        <span class="info-label">Monto Personalizado</span>
-                                        <input type="number" class="form-control" id="montoPersonalizado" name="montoPersonalizado" step="0.01" min="0" placeholder="Ingrese el monto a pagar" onchange="updateMontoPago()" onkeyup="updateMontoPago()">
-                                    </div>
-                                </div>
-                                <div class="info-grid" style="grid-template-columns: 1fr; margin-top: 15px;">
-                                    <div class="info-item important-field">
-                                        <span class="info-label">Monto Final a Pagar</span>
-                                        <div class="info-value" id="montoPago" style="font-size: 1.2em; font-weight: bold; color: #28a745;">$0.00</div>
+                                        <div class="info-value" id="montoCuota" style="font-size: 1.5em; font-weight: bold; color: #28a745;">$0.00</div>
                                     </div>
                                 </div>
                             </div>

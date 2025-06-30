@@ -1,4 +1,5 @@
 var allCreditos = [];
+var allCuotas = [];
 var currentPage = 1;
 var creditosPerPage = 5;
 var filteredData = [];
@@ -25,6 +26,19 @@ function loadCreditoData() {
             total: div.getAttribute('data-total') || ''
         });
     });
+
+    var cuotaDataDivs = document.querySelectorAll('#cuotaData');
+    allCuotas = [];
+    cuotaDataDivs.forEach(function(div) {
+        allCuotas.push({
+            id: div.getAttribute('data-id'),
+            codigo: div.getAttribute('data-codigo') || '',
+            fechaVencimiento: div.getAttribute('data-fecha-vencimiento') || '',
+            monto: div.getAttribute('data-monto') || '',
+            estado: div.getAttribute('data-estado') || '',
+            creditoId: div.getAttribute('data-credito-id') || ''
+        });
+    });
 }
 
 function switchTab(tabName) {
@@ -37,6 +51,9 @@ function switchTab(tabName) {
     });
     document.getElementById(tabName + '-tab').classList.add('active');
 
+    // Update table headers based on tab
+    updateTableHeaders();
+
     // Filter data based on tab
     filterDataByTab();
 
@@ -48,6 +65,24 @@ function switchTab(tabName) {
     document.getElementById('searchInput').value = '';
 }
 
+function updateTableHeaders() {
+    if (currentTab === 'pendientes') {
+        // Headers for cuotas
+        document.getElementById('header1').textContent = 'Estado';
+        document.getElementById('header2').textContent = 'Monto';
+        document.getElementById('header3').textContent = 'Código';
+        document.getElementById('header4').textContent = 'Fecha Vencimiento';
+        document.getElementById('header5').textContent = 'Monto';
+    } else {
+        // Headers for credits
+        document.getElementById('header1').textContent = 'Estado';
+        document.getElementById('header2').textContent = 'Monto';
+        document.getElementById('header3').textContent = 'Plazo (meses)';
+        document.getElementById('header4').textContent = 'Fecha Solicitud';
+        document.getElementById('header5').textContent = 'Total';
+    }
+}
+
 function filterDataByTab() {
     switch(currentTab) {
         case 'activos':
@@ -57,8 +92,8 @@ function filterDataByTab() {
             });
             break;
         case 'pendientes':
-            filteredData = allCreditos.filter(function(credito) {
-                return credito.estado.toLowerCase() === 'pendiente';
+            filteredData = allCuotas.filter(function(cuota) {
+                return cuota.estado.toLowerCase() === 'pendiente';
             });
             break;
         case 'rechazados':
@@ -110,51 +145,116 @@ function getEstadoClass(estado) {
     return '';
 }
 
+function formatDate(dateString) {
+    if (!dateString || dateString === 'null' || dateString === '') {
+        return 'N/A';
+    }
+    
+    try {
+        var date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        return dateString;
+    }
+}
+
 function updateTable() {
     var tbody = document.getElementById("creditoTableBody");
     var startIndex = (currentPage - 1) * creditosPerPage;
     var endIndex = startIndex + creditosPerPage;
-    var pageCreditos = filteredData.slice(startIndex, endIndex);
+    var pageData = filteredData.slice(startIndex, endIndex);
     tbody.innerHTML = '';
 
-    if (pageCreditos.length === 0) {
+    if (pageData.length === 0) {
         var emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay créditos en esta categoría</td>';
+        if (currentTab === 'pendientes') {
+            emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay cuotas pendientes</td>';
+        } else {
+            emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay créditos en esta categoría</td>';
+        }
         tbody.appendChild(emptyRow);
         return;
     }
 
-    pageCreditos.forEach(function(credito) {
-        var row = document.createElement('tr');
-        row.className = 'clickable-row';
+    if (currentTab === 'pendientes') {
+        // Display cuotas
+        pageData.forEach(function(cuota) {
+            var row = document.createElement('tr');
+            row.className = 'clickable-row';
 
-        var estadoClass = getEstadoClass(credito.estado);
-        var estadoDisplay = credito.estado.toLowerCase() === 'aceptado' ? 'Aceptado' : credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
+            var estadoClass = getEstadoClass(cuota.estado);
+            var estadoDisplay = cuota.estado.charAt(0).toUpperCase() + cuota.estado.slice(1);
 
-        row.innerHTML = `
-            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
-            <td>${credito.monto}</td>
-            <td>${credito.plazo}</td>
-            <td>${credito.fecha}</td>
-            <td>${credito.total}</td>
-            <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
-        `;
+            row.innerHTML = `
+                <td><span class="${estadoClass}">${estadoDisplay}</span></td>
+                <td>${cuota.monto}</td>
+                <td>${cuota.codigo || 'N/A'}</td>
+                <td>${formatDate(cuota.fechaVencimiento)}</td>
+                <td>${cuota.monto}</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
+                    <a href="#" class="btn btn-success btn-sm ms-1" onclick="showPagoModal('${cuota.id}')">Pagar Cuota</a>
+                </td>
+            `;
 
-        // Add right-click event for context menu
-        row.addEventListener('contextmenu', function(e) {
-            showContextMenu(e, credito.id);
+            // Add right-click event for context menu
+            row.addEventListener('contextmenu', function(e) {
+                showContextMenu(e, cuota.id);
+            });
+
+            // Add left-click event to also show context menu (optional)
+            row.addEventListener('click', function(e) {
+                // Only trigger if not clicking on the button
+                if (!e.target.closest('.btn')) {
+                    showContextMenu(e, cuota.id);
+                }
+            });
+
+            tbody.appendChild(row);
         });
+    } else {
+        // Display credits
+        pageData.forEach(function(credito) {
+            var row = document.createElement('tr');
+            row.className = 'clickable-row';
 
-        // Add left-click event to also show context menu (optional)
-        row.addEventListener('click', function(e) {
-            // Only trigger if not clicking on the button
-            if (!e.target.closest('.btn')) {
+            var estadoClass = getEstadoClass(credito.estado);
+            var estadoDisplay = credito.estado.toLowerCase() === 'aceptado' ? 'Aceptado' : credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
+
+            row.innerHTML = `
+                <td><span class="${estadoClass}">${estadoDisplay}</span></td>
+                <td>${credito.monto}</td>
+                <td>${credito.plazo}</td>
+                <td>${credito.fecha}</td>
+                <td>${credito.total}</td>
+                <td>
+                    <a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a>
+                    <a href="/usuario/credito/cuotas/${credito.id}" class="btn btn-primary btn-sm ms-1">Ver Cuotas</a>
+                </td>
+            `;
+
+            // Add right-click event for context menu
+            row.addEventListener('contextmenu', function(e) {
                 showContextMenu(e, credito.id);
-            }
-        });
+            });
 
-        tbody.appendChild(row);
-    });
+            // Add left-click event to also show context menu (optional)
+            row.addEventListener('click', function(e) {
+                // Only trigger if not clicking on the button
+                if (!e.target.closest('.btn')) {
+                    showContextMenu(e, credito.id);
+                }
+            });
+
+            tbody.appendChild(row);
+        });
+    }
 }
 
 function updatePagination() {
@@ -233,28 +333,78 @@ function nextPage() {
 }
 
 function showCreditoDetails(creditoId) {
-    // Set the selected credit ID for modal buttons
+    // Set the selected credito ID for modal buttons
     selectedCreditoId = creditoId;
-
+    
     // Show loading state
     document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-
+    
     // Show the modal
     var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
     modal.show();
-
-    // Fetch credit details via AJAX - using user endpoint
+    
+    // Fetch credito details via AJAX
     fetch(`/usuario/creditos/detalle/${creditoId}/modal`)
         .then(response => response.text())
         .then(html => {
             document.getElementById('creditoModalBody').innerHTML = html;
-            // Initialize collapsible sections after content is loaded
-            initializeModalSections();
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('creditoModalBody').innerHTML = '<div class="alert alert-danger">Error al cargar los detalles del crédito</div>';
         });
+}
+
+function showCuotaDetails(cuotaId) {
+    // Set the selected cuota ID for modal buttons
+    selectedCreditoId = cuotaId;
+    
+    // Show loading state
+    document.getElementById('creditoModalBody').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+    
+    // Show the modal
+    var modal = new bootstrap.Modal(document.getElementById('creditoModal'));
+    modal.show();
+    
+    // For now, show basic cuota info since we don't have a cuota details endpoint
+    const cuotaDataDiv = document.querySelector(`#cuotaData[data-id="${cuotaId}"]`);
+    if (cuotaDataDiv) {
+        const cuotaInfo = `
+            <div class="cuota-detail">
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-info-circle"></i>
+                            Detalle de Cuota
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="info-item">
+                                <span class="info-label">Código</span>
+                                <div class="info-value">${cuotaDataDiv.getAttribute('data-codigo') || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Estado</span>
+                                <div class="info-value">${cuotaDataDiv.getAttribute('data-estado') || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Monto</span>
+                                <div class="info-value">${cuotaDataDiv.getAttribute('data-monto') || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fecha de Vencimiento</span>
+                                <div class="info-value">${formatDate(cuotaDataDiv.getAttribute('data-fecha-vencimiento'))}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('creditoModalBody').innerHTML = cuotaInfo;
+    } else {
+        document.getElementById('creditoModalBody').innerHTML = '<div class="alert alert-danger">Error al cargar los detalles de la cuota</div>';
+    }
 }
 
 // Collapsible section functions for modal content

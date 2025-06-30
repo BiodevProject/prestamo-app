@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
 import com.biovizion.prestamo911.entities.CreditoEntity;
 import com.biovizion.prestamo911.entities.UsuarioSolicitudEntity;
+import com.biovizion.prestamo911.service.CreditoCuotaService;
 import com.biovizion.prestamo911.service.CreditoService;
 
 @Controller
@@ -32,6 +34,8 @@ import com.biovizion.prestamo911.service.CreditoService;
 public class CreditoController {
     @Autowired
     private CreditoService creditoService;
+    @Autowired
+    private CreditoCuotaService creditoCuotaService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -109,7 +113,7 @@ public class CreditoController {
                                     @RequestParam("porcentajeMora") BigDecimal porcentajeMora,
                                     @RequestParam("porcentajeIva") BigDecimal porcentajeIva,
                                     @RequestParam("comisionFija") BigDecimal comisionFija,
-                                    @RequestParam("proximoPago") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate proximoPago) {
+                                    @RequestParam(value = "proximoPago", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate proximoPago) {
 
         CreditoEntity credito = creditoService.findById(creditoId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Credito not found"));
@@ -120,8 +124,12 @@ public class CreditoController {
         credito.setPorcentajeIva(porcentajeIva);
         credito.setComisionFija(comisionFija);
 
-        // Guardar fecha de próximo pago
-        credito.setProximoPago(proximoPago);
+        // Guardar fecha de próximo pago si se proporciona, sino usar fecha actual + 1 mes
+        if (proximoPago != null) {
+            credito.setProximoPago(proximoPago);
+        } else {
+            credito.setProximoPago(LocalDate.now().plusMonths(1));
+        }
 
         // Resto de cálculos y guardado
         BigDecimal monto = credito.getMonto();
@@ -154,6 +162,16 @@ public class CreditoController {
 
         credito.setEstado("Aceptado");
         credito.setFechaAceptado(LocalDateTime.now());
+
+        // Crear las cuotas
+        for (int i = 0; i < plazoEnMeses; i++) {
+            CreditoCuotaEntity cuota = new CreditoCuotaEntity();
+            cuota.setCredito(credito);
+            cuota.setFechaVencimiento(credito.getFechaAceptado().plusMonths(i));
+            cuota.setEstado("Pendiente");
+            cuota.setMonto(cuotaMensual);
+            creditoCuotaService.save(cuota);
+        }
 
         creditoService.save(credito);
 

@@ -16,4 +16,5 @@ public interface CreditoCuotaService {
     List<CreditoCuotaEntity> findPendientes(Long creditoId);
     List<CreditoCuotaEntity> findPagadas(Long creditoId);
     List<CreditoCuotaEntity> findVencidas(Long creditoId);
+    List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId);
 } 

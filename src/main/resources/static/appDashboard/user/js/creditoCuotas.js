@@ -3,12 +3,12 @@ var currentPage = 1;
 var cuotasPerPage = 5;
 var filteredData = [];
 var selectedCuotaId = null;
-var currentTab = 'todas'; // Default tab
+var currentTab = 'pendientes'; // Default tab
 var paymentCuotaId = null; // Store cuota ID for payment modal
 
 document.addEventListener('DOMContentLoaded', function() {
     loadCuotaData();
-    switchTab('todas'); // Start with todas tab
+    switchTab('pendientes'); // Start with pendientes tab
     setupContextMenu();
 });
 
@@ -20,9 +20,9 @@ function loadCuotaData() {
             id: div.getAttribute('data-id'),
             codigo: div.getAttribute('data-codigo') || '',
             fechaVencimiento: div.getAttribute('data-fecha-vencimiento') || '',
-            fechaPago: div.getAttribute('data-fecha-pago') || '',
             monto: div.getAttribute('data-monto') || '',
-            estado: div.getAttribute('data-estado') || ''
+            estado: div.getAttribute('data-estado') || '',
+            fechaPago: div.getAttribute('data-fecha-pago') || ''
         });
     });
 }
@@ -37,6 +37,9 @@ function switchTab(tabName) {
     });
     document.getElementById(tabName + '-tab').classList.add('active');
     
+    // Update table headers based on tab
+    updateTableHeaders();
+    
     // Filter data based on tab
     filterDataByTab();
     
@@ -48,11 +51,32 @@ function switchTab(tabName) {
     document.getElementById('searchInput').value = '';
 }
 
+function updateTableHeaders() {
+    const table = document.getElementById('cuotaTable');
+    const thead = table.querySelector('thead tr');
+    
+    if (currentTab === 'pagadas') {
+        thead.innerHTML = `
+            <th>Código</th>
+            <th>Fecha Vencimiento</th>
+            <th>Fecha Pago</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th></th>
+        `;
+    } else {
+        thead.innerHTML = `
+            <th>Código</th>
+            <th>Fecha Vencimiento</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th></th>
+        `;
+    }
+}
+
 function filterDataByTab() {
     switch(currentTab) {
-        case 'todas':
-            filteredData = [...allCuotas];
-            break;
         case 'pendientes':
             filteredData = allCuotas.filter(function(cuota) {
                 return cuota.estado.toLowerCase() === 'pendiente';
@@ -69,7 +93,9 @@ function filterDataByTab() {
             });
             break;
         default:
-            filteredData = [...allCuotas];
+            filteredData = allCuotas.filter(function(cuota) {
+                return cuota.estado.toLowerCase() === 'pendiente';
+            });
     }
 }
 
@@ -84,7 +110,6 @@ function filterTable() {
     filteredData = filteredData.filter(function(cuota) {
         return cuota.codigo.toLowerCase().includes(filter) ||
                cuota.fechaVencimiento.toLowerCase().includes(filter) ||
-               cuota.fechaPago.toLowerCase().includes(filter) ||
                cuota.monto.toLowerCase().includes(filter) ||
                cuota.estado.toLowerCase().includes(filter);
     });
@@ -146,14 +171,28 @@ function updateTable() {
         var estadoClass = getEstadoClass(cuota.estado);
         var estadoDisplay = cuota.estado.charAt(0).toUpperCase() + cuota.estado.slice(1);
         
-        row.innerHTML = `
-            <td>${cuota.codigo || 'N/A'}</td>
-            <td>${formatDate(cuota.fechaVencimiento)}</td>
-            <td>${formatDate(cuota.fechaPago)}</td>
-            <td>${cuota.monto}</td>
-            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
-            <td><a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a></td>
-        `;
+        // Create different row content based on current tab
+        if (currentTab === 'pagadas') {
+            row.innerHTML = `
+                <td>${cuota.codigo || 'N/A'}</td>
+                <td>${formatDate(cuota.fechaVencimiento)}</td>
+                <td>${formatDate(cuota.fechaPago)}</td>
+                <td>${cuota.monto}</td>
+                <td><span class="${estadoClass}">${estadoDisplay}</span></td>
+                <td><a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a></td>
+            `;
+        } else {
+            row.innerHTML = `
+                <td>${cuota.codigo || 'N/A'}</td>
+                <td>${formatDate(cuota.fechaVencimiento)}</td>
+                <td>${cuota.monto}</td>
+                <td><span class="${estadoClass}">${estadoDisplay}</span></td>
+                <td>
+                    <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
+                    ${cuota.estado.toLowerCase() === 'pendiente' ? `<a href="#" class="btn btn-success btn-sm ms-1" onclick="showPagoModal('${cuota.id}')">Pagar Cuota</a>` : ''}
+                </td>
+            `;
+        }
         
         // Add right-click event for context menu
         row.addEventListener('contextmenu', function(e) {
@@ -336,7 +375,6 @@ function updateContextMenuForTab() {
             divider.style.display = 'block';
             realizarPagoBtn.style.display = 'block';
             break;
-        case 'todas':
         case 'pagadas':
         case 'vencidas':
             // Only "Ver Detalles" is available
@@ -366,18 +404,14 @@ function contextMenuRealizarPago() {
 }
 
 function showPagoModal(cuotaId) {
+    // Set the payment cuota ID for the payment process
+    paymentCuotaId = cuotaId;
+    
     // Find the cuota data to get the payment amount
     const cuotaDataDiv = document.querySelector(`#cuotaData[data-id="${cuotaId}"]`);
     if (cuotaDataDiv) {
         const cuotaAmount = cuotaDataDiv.getAttribute('data-monto');
         document.getElementById('montoCuota').textContent = cuotaAmount;
-        
-        // Set the custom amount input to the cuota amount by default
-        const amountValue = cuotaAmount.replace(/[$,]/g, '');
-        document.getElementById('montoPersonalizado').value = amountValue;
-        
-        // Update the final payment amount
-        updateMontoPago();
     }
     
     // Show the payment modal
@@ -386,33 +420,22 @@ function showPagoModal(cuotaId) {
 }
 
 function updateMontoPago() {
-    const customAmount = document.getElementById('montoPersonalizado').value;
-    const montoPagoElement = document.getElementById('montoPago');
-    
-    if (customAmount && customAmount > 0) {
-        // Format the amount with proper currency formatting
-        const formattedAmount = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        }).format(parseFloat(customAmount));
-        
-        montoPagoElement.textContent = formattedAmount;
-    } else {
-        montoPagoElement.textContent = '$0.00';
-    }
+    // This function is no longer needed for the simplified payment flow
+    // but keeping it for compatibility
 }
 
 function realizarPago() {
-    const customAmount = document.getElementById('montoPersonalizado').value;
-    
-    if (!customAmount || customAmount <= 0) {
-        alert('Por favor, ingrese un monto válido para realizar el pago.');
+    if (!paymentCuotaId) {
+        alert('Error: No se ha seleccionado una cuota válida.');
         return;
     }
     
-    if (!paymentCuotaId) {
-        alert('Error: No se ha seleccionado una cuota válida.');
+    // Get the cuota amount from the modal
+    const cuotaAmountElement = document.getElementById('montoCuota');
+    const cuotaAmount = cuotaAmountElement.textContent.replace(/[$,]/g, '');
+    
+    if (!cuotaAmount || cuotaAmount <= 0) {
+        alert('Error: Monto de cuota inválido.');
         return;
     }
     
@@ -422,7 +445,7 @@ function realizarPago() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `monto=${customAmount}`
+        body: `monto=${cuotaAmount}`
     })
     .then(response => {
         if (response.ok) {

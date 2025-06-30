@@ -60,4 +60,9 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
     public List<CreditoCuotaEntity> findVencidas(Long creditoId) {
         return creditoCuotaRepository.findVencidas(creditoId);
     }
+
+    @Override
+    public List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId) {
+        return creditoCuotaRepository.findByUsuarioId(usuarioId);
+    }
 } 

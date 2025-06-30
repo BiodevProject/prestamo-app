@@ -20,4 +20,7 @@ public interface CreditoCuotaRepository extends JpaRepository<CreditoCuotaEntity
 
     @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.id = :creditoId AND LOWER(cc.estado) = 'vencido'")
     List<CreditoCuotaEntity> findVencidas(Long creditoId);
+
+    @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.usuario.id = :usuarioId")
+    List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId);
 } 
