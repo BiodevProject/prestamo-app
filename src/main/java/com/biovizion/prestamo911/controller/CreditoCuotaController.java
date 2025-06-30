@@ -46,8 +46,8 @@ public class CreditoCuotaController {
                 credito.setEstado("Finalizado");
             }
 
-            // Update the cuota status to "Pagado"
-            cuota.setEstado("Pagado");
+            // Update the cuota status to "EnRevision"
+            cuota.setEstado("EnRevision");
             cuota.setFechaPago(LocalDateTime.now());
             creditoCuotaService.save(cuota);
 
@@ -57,6 +57,23 @@ public class CreditoCuotaController {
             return "redirect:/usuario/pagarCredito";
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing payment", e);
+        }
+    }
+
+    @PostMapping("/aceptar/{id}")
+    public String aceptarCuota(@PathVariable Long id) {
+        try {
+            // Find the cuota
+            CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota not found"));
+
+            // Change status from EnRevision to Pagado
+            cuota.setEstado("Pagado");
+            creditoCuotaService.save(cuota);
+
+            return "redirect:/admin/creditos/cobros";
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error accepting cuota", e);
         }
     }
 } 

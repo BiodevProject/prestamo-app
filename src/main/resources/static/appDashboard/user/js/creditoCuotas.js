@@ -55,7 +55,7 @@ function updateTableHeaders() {
     const table = document.getElementById('cuotaTable');
     const thead = table.querySelector('thead tr');
     
-    if (currentTab === 'pagadas') {
+    if (currentTab === 'pagadas' || currentTab === 'enrevision') {
         thead.innerHTML = `
             <th>Código</th>
             <th>Fecha Vencimiento</th>
@@ -80,6 +80,11 @@ function filterDataByTab() {
         case 'pendientes':
             filteredData = allCuotas.filter(function(cuota) {
                 return cuota.estado.toLowerCase() === 'pendiente';
+            });
+            break;
+        case 'enrevision':
+            filteredData = allCuotas.filter(function(cuota) {
+                return cuota.estado.toLowerCase() === 'enrevision';
             });
             break;
         case 'pagadas':
@@ -123,6 +128,8 @@ function getEstadoClass(estado) {
     var estadoLower = estado.toLowerCase();
     if (estadoLower === 'pendiente') {
         return 'estado-pendiente';
+    } else if (estadoLower === 'enrevision') {
+        return 'estado-enrevision';
     } else if (estadoLower === 'pagado') {
         return 'estado-pagado';
     } else if (estadoLower === 'vencido') {
@@ -172,7 +179,7 @@ function updateTable() {
         var estadoDisplay = cuota.estado.charAt(0).toUpperCase() + cuota.estado.slice(1);
         
         // Create different row content based on current tab
-        if (currentTab === 'pagadas') {
+        if (currentTab === 'pagadas' || currentTab === 'enrevision') {
             row.innerHTML = `
                 <td>${cuota.codigo || 'N/A'}</td>
                 <td>${formatDate(cuota.fechaVencimiento)}</td>
@@ -375,6 +382,7 @@ function updateContextMenuForTab() {
             divider.style.display = 'block';
             realizarPagoBtn.style.display = 'block';
             break;
+        case 'enrevision':
         case 'pagadas':
         case 'vencidas':
             // Only "Ver Detalles" is available

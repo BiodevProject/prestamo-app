@@ -28,8 +28,9 @@
 <body>
 
 <div th:fragment="content">
-          <!-- Small boxes (Stat box) -->
-          <div class="row">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+
         <div class="col-lg-3 col-6">
             <a href="/admin/usuarios" class="text-decoration-none">
                 <div class="small-box bg-info">
@@ -38,7 +39,8 @@
                     <div class="small-box-footer">Mostrar tabla de usuarios <i class="fas fa-arrow-circle-right"></i></div>
                 </div>
             </a>
-                </div>
+        </div>
+
         <div class="col-lg-3 col-6">
             <a href="/admin/trabajadores" class="text-decoration-none">
                 <div class="small-box bg-success">
@@ -47,17 +49,20 @@
                     <div class="small-box-footer">Mostrar tabla de trabajadores <i class="fas fa-arrow-circle-right"></i></div>
                 </div>
             </a>
-                      </div>
+        </div>
+
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-                <div class="inner"><h3>Cobros</h3><p>Cobros pendientes</p></div>
-                <div class="icon"><i class="ion ion-person-add"></i></div>
-                <a href="/admin/creditos/cobros" class="small-box-footer">Mostrar tabla de cobros <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                  </div>
+            <a href="/admin/creditos/cobros" class="text-decoration-none">
+                <div class="small-box bg-danger">
+                    <div class="inner"><h3>Cobros</h3><p>Cobros pendientes</p></div>
+                    <div class="icon"><i class="ion ion-person-add"></i></div>
+                    <div class="small-box-footer">Mostrar tabla de cobros <i class="fas fa-arrow-circle-right"></i></div>
                 </div>
-    <!-- Other dashboard content can go here -->
-              </div>
+            </a>
+        </div>
+        
+    </div>
+</div>
 
 <th:block th:fragment="scripts">
     <!-- Morris.js charts -->

@@ -65,4 +65,9 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
     public List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId) {
         return creditoCuotaRepository.findByUsuarioId(usuarioId);
     }
+
+    @Override
+    public List<CreditoCuotaEntity> findEnRevision() {
+        return creditoCuotaRepository.findEnRevision();
+    }
 } 
