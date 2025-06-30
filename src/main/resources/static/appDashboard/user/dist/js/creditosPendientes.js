@@ -138,6 +138,7 @@ function updateTable() {
             <td>${credito.fecha}</td>
             <td>${credito.total}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
+            <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoCuotas('${credito.id}')">Ver Cuotas</a></td>
         `;
         
         // Add right-click event for context menu
@@ -230,6 +231,13 @@ function nextPage() {
     } else {
         console.log('Already on last page');
     }
+}
+
+function showCreditoCuotas(creditoId) {
+    // Set the selected credit ID for modal buttons
+    selectedCreditoId = creditoId;
+    
+    window.location.href = '/usuario/credito/cuotas/' + creditoId;
 }
 
 function showCreditoDetails(creditoId) {

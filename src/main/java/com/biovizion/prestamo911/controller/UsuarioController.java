@@ -1,7 +1,9 @@
 package com.biovizion.prestamo911.controller;
 
 import com.biovizion.prestamo911.entities.CreditoEntity;
+import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
 import com.biovizion.prestamo911.service.CreditoService;
+import com.biovizion.prestamo911.service.CreditoCuotaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,8 @@ public class UsuarioController {
     @Autowired
     private CreditoService creditoService;
 
+    @Autowired
+    private CreditoCuotaService creditoCuotaService;
 
     
     @GetMapping("/create")
@@ -208,5 +212,29 @@ public class UsuarioController {
         } catch (Exception e) {
             return principal.getName();
         }
+    }
+
+    @GetMapping("/credito/cuotas/{id}")
+    public String creditoCuotas(@PathVariable Long id, Model model, Principal principal) {
+        String emailUsuario = principal.getName();
+        UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        
+        // Verify that the credit belongs to the current user
+        if (!credito.getUsuario().getId().equals(usuario.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para ver este crédito");
+        }
+        
+        List<CreditoCuotaEntity> cuotas = creditoCuotaService.findByCreditoId(id);
+        
+        // Get current user's name for the template
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        model.addAttribute("credito", credito);
+        model.addAttribute("cuotas", cuotas);
+        return "appDashboard/user/creditoCuotas";
     }
 }

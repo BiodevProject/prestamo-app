@@ -83,7 +83,6 @@ public class CreditoController {
         return "credito/creditoDashboardAceptadas";
     }
 
-
     @GetMapping("/edit/{id}")
     public String creditoEdit(@PathVariable Long id, Model model){
         CreditoEntity credito = creditoService.findById(id)
@@ -102,18 +101,6 @@ public class CreditoController {
     public String creditoDelete(@PathVariable Long id) {
         creditoService.delete(id);
         return "redirect:/credito/dashboard";
-    }
-
-    @PostMapping("/accept/{id}")
-    public String acceptCredito(@PathVariable Long id) {
-        CreditoEntity credito = creditoService.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        
-        credito.setEstado("Aceptado");
-        credito.setFechaAceptado(LocalDateTime.now());
-        creditoService.update(credito);
-        
-        return "redirect:/admin/creditos/pendientes";
     }
 
     @PostMapping("/accept-with-charges")

@@ -90,4 +90,6 @@ public class CreditoEntity {
     @OneToMany(mappedBy = "credito", cascade = CascadeType.ALL)
     private List<HistorialPagoEntity> pagos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "credito", cascade = CascadeType.ALL)
+    private List<CreditoCuotaEntity> cuotas = new ArrayList<>();
 }
