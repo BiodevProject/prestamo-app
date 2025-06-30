@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -74,6 +75,28 @@ public class CreditoCuotaController {
             return "redirect:/admin/creditos/cobros";
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error accepting cuota", e);
+        }
+    }
+
+    // Manual trigger for testing expired cuotas (optional)
+    @GetMapping("/check-expired")
+    public String checkExpiredCuotas() {
+        try {
+            creditoCuotaService.updateExpiredCuotas();
+            return "redirect:/admin/creditos/cobros?message=Expired cuotas checked successfully";
+        } catch (Exception e) {
+            return "redirect:/admin/creditos/cobros?error=Error checking expired cuotas: " + e.getMessage();
+        }
+    }
+
+    // Manual trigger for testing about to expire cuotas (optional)
+    @GetMapping("/check-about-to-expire")
+    public String checkAboutToExpireCuotas() {
+        try {
+            creditoCuotaService.updateAboutToExpireCuotas();
+            return "redirect:/admin/creditos/cobros?message=About to expire cuotas checked successfully";
+        } catch (Exception e) {
+            return "redirect:/admin/creditos/cobros?error=Error checking about to expire cuotas: " + e.getMessage();
         }
     }
 } 

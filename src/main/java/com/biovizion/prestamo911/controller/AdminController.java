@@ -36,10 +36,14 @@ public class AdminController {
 
     @GetMapping("/creditos/cobros")
     public String showCobros(Model model) {
-        // Get all cuotas with EnRevision status
+        // Get all cuotas with different statuses for the tabs
         List<CreditoCuotaEntity> cuotasEnRevision = creditoCuotaService.findEnRevision();
+        List<CreditoCuotaEntity> cuotasAvencer = creditoCuotaService.findAvencer();
+        List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.findVencidas();
         
         model.addAttribute("cuotas", cuotasEnRevision);
+        model.addAttribute("cuotasAvencer", cuotasAvencer);
+        model.addAttribute("cuotasVencidas", cuotasVencidas);
         return "appDashboard/admin/creditosCobros";
     }
 

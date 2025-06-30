@@ -1,17 +1,22 @@
 var allCuotas = [];
+var allCuotasAvencer = [];
+var allCuotasVencidas = [];
 var currentPage = 1;
 var cuotasPerPage = 5;
 var filteredData = [];
 var selectedCuotaId = null;
+var currentTab = 'enrevision';
 
 document.addEventListener('DOMContentLoaded', function() {
     loadCuotaData();
+    setupTabHandlers();
     updateTable();
     updatePagination();
     setupContextMenu();
 });
 
 function loadCuotaData() {
+    // Load EnRevision cuotas
     var cuotaDataDivs = document.querySelectorAll('#cuotaData');
     allCuotas = [];
     cuotaDataDivs.forEach(function(div) {
@@ -25,7 +30,90 @@ function loadCuotaData() {
             estado: div.getAttribute('data-estado') || ''
         });
     });
+
+    // Load Avencer cuotas
+    var cuotaDataAvencerDivs = document.querySelectorAll('#cuotaDataAvencer');
+    allCuotasAvencer = [];
+    cuotaDataAvencerDivs.forEach(function(div) {
+        allCuotasAvencer.push({
+            id: div.getAttribute('data-id'),
+            usuario: div.getAttribute('data-usuario') || '',
+            codigo: div.getAttribute('data-codigo') || '',
+            fechaVencimiento: div.getAttribute('data-fecha-vencimiento') || '',
+            fechaPago: div.getAttribute('data-fecha-pago') || '',
+            monto: div.getAttribute('data-monto') || '',
+            estado: div.getAttribute('data-estado') || ''
+        });
+    });
+
+    // Load Vencidas cuotas
+    var cuotaDataVencidasDivs = document.querySelectorAll('#cuotaDataVencidas');
+    allCuotasVencidas = [];
+    cuotaDataVencidasDivs.forEach(function(div) {
+        allCuotasVencidas.push({
+            id: div.getAttribute('data-id'),
+            usuario: div.getAttribute('data-usuario') || '',
+            codigo: div.getAttribute('data-codigo') || '',
+            fechaVencimiento: div.getAttribute('data-fecha-vencimiento') || '',
+            fechaPago: div.getAttribute('data-fecha-pago') || '',
+            monto: div.getAttribute('data-monto') || '',
+            estado: div.getAttribute('data-estado') || ''
+        });
+    });
+
     filteredData = [...allCuotas];
+}
+
+function setupTabHandlers() {
+    // Add click handlers for tabs
+    document.getElementById('enrevision-tab').addEventListener('click', function() {
+        switchTab('enrevision');
+    });
+    
+    document.getElementById('avencer-tab').addEventListener('click', function() {
+        switchTab('avencer');
+    });
+    
+    document.getElementById('vencidas-tab').addEventListener('click', function() {
+        switchTab('vencidas');
+    });
+}
+
+function switchTab(tabName) {
+    // Update active tab
+    document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Update current tab and data
+    currentTab = tabName;
+    currentPage = 1;
+    
+    // Clear search input
+    document.getElementById('searchInput').value = '';
+    
+    // Show/hide Fecha Pago column based on tab
+    var fechaPagoHeader = document.getElementById('fechaPagoHeader');
+    if (tabName === 'enrevision') {
+        fechaPagoHeader.style.display = 'table-cell';
+    } else {
+        fechaPagoHeader.style.display = 'none';
+    }
+    
+    // Load appropriate data
+    switch(tabName) {
+        case 'enrevision':
+            filteredData = [...allCuotas];
+            break;
+        case 'avencer':
+            filteredData = [...allCuotasAvencer];
+            break;
+        case 'vencidas':
+            filteredData = [...allCuotasVencidas];
+            break;
+    }
+    
+    updateTable();
+    updatePagination();
 }
 
 function filterTable() {
@@ -48,6 +136,10 @@ function getEstadoClass(estado) {
     var estadoLower = estado.toLowerCase();
     if (estadoLower === 'enrevision') {
         return 'estado-enrevision';
+    } else if (estadoLower === 'avencer') {
+        return 'estado-avencer';
+    } else if (estadoLower === 'vencido') {
+        return 'estado-vencido';
     }
     return '';
 }
@@ -80,7 +172,22 @@ function updateTable() {
     
     if (pageCuotas.length === 0) {
         var emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="7" class="text-center">No hay cuotas en revisión</td>';
+        var emptyMessage = '';
+        switch(currentTab) {
+            case 'enrevision':
+                emptyMessage = 'No hay cuotas en revisión';
+                break;
+            case 'avencer':
+                emptyMessage = 'No hay cuotas a vencer';
+                break;
+            case 'vencidas':
+                emptyMessage = 'No hay cuotas vencidas';
+                break;
+            default:
+                emptyMessage = 'No hay cuotas';
+        }
+        var colspan = currentTab === 'enrevision' ? '7' : '6';
+        emptyRow.innerHTML = '<td colspan="' + colspan + '" class="text-center">' + emptyMessage + '</td>';
         tbody.appendChild(emptyRow);
         return;
     }
@@ -92,17 +199,33 @@ function updateTable() {
         var estadoClass = getEstadoClass(cuota.estado);
         var estadoDisplay = cuota.estado.charAt(0).toUpperCase() + cuota.estado.slice(1);
         
+        var actionButtons = '';
+        if (currentTab === 'enrevision') {
+            actionButtons = `
+                <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
+                <a href="#" class="btn btn-success btn-sm ms-1" onclick="aceptarCuota('${cuota.id}')">Aceptar</a>
+            `;
+        } else if (currentTab === 'avencer') {
+            actionButtons = `
+                <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
+            `;
+        } else if (currentTab === 'vencidas') {
+            actionButtons = `
+                <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
+                <span class="badge bg-danger ms-1">Vencida</span>
+            `;
+        }
+
+        var fechaPagoCell = currentTab === 'enrevision' ? `<td>${formatDate(cuota.fechaPago)}</td>` : '';
+        
         row.innerHTML = `
             <td>${cuota.usuario || 'N/A'}</td>
             <td>${cuota.codigo || 'N/A'}</td>
             <td>${formatDate(cuota.fechaVencimiento)}</td>
-            <td>${formatDate(cuota.fechaPago)}</td>
+            ${fechaPagoCell}
             <td>${cuota.monto}</td>
             <td><span class="${estadoClass}">${estadoDisplay}</span></td>
-            <td>
-                <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
-                <a href="#" class="btn btn-success btn-sm ms-1" onclick="aceptarCuota('${cuota.id}')">Aceptar</a>
-            </td>
+            <td>${actionButtons}</td>
         `;
         
         // Add right-click event for context menu

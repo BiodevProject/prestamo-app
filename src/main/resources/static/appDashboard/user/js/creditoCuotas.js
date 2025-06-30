@@ -82,6 +82,11 @@ function filterDataByTab() {
                 return cuota.estado.toLowerCase() === 'pendiente';
             });
             break;
+        case 'enrevision':
+            filteredData = allCuotas.filter(function(cuota) {
+                return cuota.estado.toLowerCase() === 'enrevision';
+            });
+            break;
         case 'pagadas':
             filteredData = allCuotas.filter(function(cuota) {
                 return cuota.estado.toLowerCase() === 'pagado';
@@ -123,6 +128,8 @@ function getEstadoClass(estado) {
     var estadoLower = estado.toLowerCase();
     if (estadoLower === 'pendiente') {
         return 'estado-pendiente';
+    } else if (estadoLower === 'enrevision') {
+        return 'estado-enrevision';
     } else if (estadoLower === 'pagado') {
         return 'estado-pagado';
     } else if (estadoLower === 'vencido') {

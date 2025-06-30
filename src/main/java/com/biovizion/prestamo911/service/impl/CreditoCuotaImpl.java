@@ -7,6 +7,8 @@ import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
 import com.biovizion.prestamo911.repository.CreditoCuotaRepository;
 import com.biovizion.prestamo911.service.CreditoCuotaService;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,8 +69,66 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
     }
 
     @Override
+    public List<CreditoCuotaEntity> findEnRevision() {
+        return creditoCuotaRepository.findEnRevision();
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findAvencer() {
+        return creditoCuotaRepository.findAvencer();
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findVencidas() {
+        return creditoCuotaRepository.findVencidas();
+    }
+
+    @Override
     public List<CreditoCuotaEntity> findCuotasVencidasByUsuarioId(Long usuarioId) {
         return creditoCuotaRepository.findCuotasVencidasByUsuarioId(usuarioId);
     }
 
+    @Override
+    public void updateExpiredCuotas() {
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Long> expiredCuotaIds = creditoCuotaRepository.findExpiredCuotaIds(currentDate);
+        
+        if (!expiredCuotaIds.isEmpty()) {
+            processBatch(expiredCuotaIds, "expired", "Vencido");
+        } else {
+            System.out.println("No expired cuotas found");
+        }
+    }
+
+    @Override
+    public void updateAboutToExpireCuotas() {
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime oneWeekFromNow = currentDate.plus(7, ChronoUnit.DAYS);
+        List<Long> aboutToExpireCuotaIds = creditoCuotaRepository.findAboutToExpireCuotaIds(currentDate, oneWeekFromNow);
+        
+        if (!aboutToExpireCuotaIds.isEmpty()) {
+            processBatch(aboutToExpireCuotaIds, "about to expire", "AVencer");
+        } else {
+            System.out.println("No cuotas about to expire found");
+        }
+    }
+
+    // Helper method to process batches (KISS - DRY principle)
+    private void processBatch(List<Long> cuotaIds, String description, String newState) {
+        int batchSize = 1000;
+        int totalUpdated = 0;
+        
+        for (int i = 0; i < cuotaIds.size(); i += batchSize) {
+            int endIndex = Math.min(i + batchSize, cuotaIds.size());
+            List<Long> batch = cuotaIds.subList(i, endIndex);
+            
+            int updatedCount = newState.equals("Vencido") 
+                ? creditoCuotaRepository.updateCuotasToVencido(batch)
+                : creditoCuotaRepository.updateCuotasToAVencer(batch);
+            
+            totalUpdated += updatedCount;
+        }
+        
+        System.out.println("Updated " + totalUpdated + " " + description + " cuotas to " + newState);
+    }
 } 

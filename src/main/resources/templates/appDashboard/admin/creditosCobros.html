@@ -24,6 +24,12 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="enrevision-tab" type="button" role="tab">Cuotas en Revisión</button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="avencer-tab" type="button" role="tab">Cuotas A Vencer</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="vencidas-tab" type="button" role="tab">Cuotas Vencidas</button>
+            </li>
         </ul>
         <div class="tab-content" id="cuotasTabsContent">
             <div class="search-container">
@@ -39,7 +45,7 @@
                         <th>Usuario</th>
                         <th>Código</th>
                         <th>Fecha Vencimiento</th>
-                        <th>Fecha Pago</th>
+                        <th id="fechaPagoHeader">Fecha Pago</th>
                         <th>Monto</th>
                         <th>Estado</th>
                         <th></th>
@@ -49,6 +55,28 @@
                 </table>
                 <div id="cuotaData" style="display: none;"
                      th:each="cuota : ${cuotas}"
+                     th:data-id="${cuota.id}"
+                     th:data-usuario="${cuota.credito.usuario?.nombre}"
+                     th:data-codigo="${cuota.codigo}"
+                     th:data-fecha-vencimiento="${cuota.fechaVencimiento}"
+                     th:data-fecha-pago="${cuota.fechaPago}"
+                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}"
+                     th:data-estado="${cuota.estado}">
+                </div>
+
+                <div id="cuotaDataAvencer" style="display: none;"
+                     th:each="cuota : ${cuotasAvencer}"
+                     th:data-id="${cuota.id}"
+                     th:data-usuario="${cuota.credito.usuario?.nombre}"
+                     th:data-codigo="${cuota.codigo}"
+                     th:data-fecha-vencimiento="${cuota.fechaVencimiento}"
+                     th:data-fecha-pago="${cuota.fechaPago}"
+                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}"
+                     th:data-estado="${cuota.estado}">
+                </div>
+
+                <div id="cuotaDataVencidas" style="display: none;"
+                     th:each="cuota : ${cuotasVencidas}"
                      th:data-id="${cuota.id}"
                      th:data-usuario="${cuota.credito.usuario?.nombre}"
                      th:data-codigo="${cuota.codigo}"

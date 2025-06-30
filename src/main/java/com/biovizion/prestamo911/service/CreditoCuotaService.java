@@ -11,13 +11,17 @@ public interface CreditoCuotaService {
     Optional<CreditoCuotaEntity> findById(Long id);
     void update(CreditoCuotaEntity creditoCuota);
     void delete(Long id);
+    void updateExpiredCuotas();
+    void updateAboutToExpireCuotas();
     
     List<CreditoCuotaEntity> findByCreditoId(Long creditoId);
     List<CreditoCuotaEntity> findPendientes(Long creditoId);
     List<CreditoCuotaEntity> findPagadas(Long creditoId);
     List<CreditoCuotaEntity> findVencidas(Long creditoId);
     List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId);
+    List<CreditoCuotaEntity> findEnRevision();
+    List<CreditoCuotaEntity> findAvencer();
+    List<CreditoCuotaEntity> findVencidas();
 
     List<CreditoCuotaEntity> findCuotasVencidasByUsuarioId(Long usuarioId);
-
 } 
