@@ -1,0 +1,86 @@
+
+<div th:fragment="mostrar(alerta)"
+     th:if="${alerta != null}"
+     th:id="'alerta-flotante'"
+     th:class="'alerta-flotante alerta-' + ${alerta.tipo}">
+  <span class="alerta-icono" th:switch="${alerta.tipo}">
+    <span th:case="'success'">✅</span>
+    <span th:case="'danger'">❌</span>
+    <span th:case="'warning'">⚠️</span>
+    <span th:case="'info'">ℹ️</span>
+    <span th:case="*">🔔</span>
+  </span>
+    <p class="alerta-mensaje" th:text="${'(' + alerta.codigo + ') ' + alerta.mensaje}">Mensaje</p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const alerta = document.getElementById('alerta-flotante');
+            if (alerta) {
+                requestAnimationFrame(() => {
+                    alerta.style.opacity = '1';
+                    alerta.style.transform = 'translateY(0)';
+                });
+                setTimeout(() => {
+                    alerta.style.opacity = '0';
+                    alerta.style.transform = 'translateY(-20px)';
+                }, 5000);
+            }
+        });
+    </script>
+
+    <style>
+        #alerta-flotante {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-left: 5px solid transparent;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            max-width: 360px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 15px;
+        }
+
+        .alerta-icono {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .alerta-mensaje {
+            margin: 0;
+            flex: 1;
+        }
+
+        .alerta-success {
+            background-color: #e6ffed;
+            color: #207544;
+            border-left-color: #28a745;
+        }
+
+        .alerta-danger {
+            background-color: #ffe6e6;
+            color: #b02a37;
+            border-left-color: #dc3545;
+        }
+
+        .alerta-warning {
+            background-color: #fff8e5;
+            color: #997404;
+            border-left-color: #ffc107;
+        }
+
+        .alerta-info {
+            background-color: #e6f7ff;
+            color: #116d85;
+            border-left-color: #17a2b8;
+        }
+    </style>
+</div>

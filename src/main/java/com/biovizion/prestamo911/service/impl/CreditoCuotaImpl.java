@@ -83,9 +83,10 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
         return creditoCuotaRepository.findVencidas();
     }
 
+
     @Override
-    public List<CreditoCuotaEntity> findCuotasVencidasByUsuarioId(Long usuarioId) {
-        return creditoCuotaRepository.findCuotasVencidasByUsuarioId(usuarioId);
+    public List<CreditoCuotaEntity> getCuotasByUsuarioAndEstado(Long usuarioId, String estado) {
+        return creditoCuotaRepository.findCuotasByUsuarioIdAndEstado(usuarioId, estado);
     }
 
     @Override

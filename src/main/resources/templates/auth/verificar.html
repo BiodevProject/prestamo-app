@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro - Sistema</title>
+  <title>Verificación de Código - Sistema</title>
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan&display=swap" rel="stylesheet">
@@ -28,8 +28,8 @@
       padding: 20px;
     }
 
-    /* Contenedor del registro */
-    .register-container {
+    /* Contenedor de verificación */
+    .verification-container {
       background-color: #fff;
       width: 100%;
       max-width: 450px;
@@ -40,7 +40,7 @@
       position: relative;
     }
 
-    .register-container::before {
+    .verification-container::before {
       content: '';
       position: absolute;
       top: 0;
@@ -51,21 +51,41 @@
     }
 
     /* Cabecera */
-    .register-header {
+    .verification-header {
       text-align: center;
       margin-bottom: 25px;
     }
 
-    .register-header h2 {
+    .verification-header h2 {
       color: #02246a;
-      font-size: clamp(24px, 5vw, 28px); /* Tamaño responsive */
+      font-size: clamp(24px, 5vw, 28px);
       margin-bottom: 8px;
       font-family: 'Baloo Chettan', cursive;
     }
 
-    .register-header p {
+    .verification-header p {
       color: #666;
-      font-size: clamp(13px, 3vw, 15px); /* Tamaño responsive */
+      font-size: clamp(13px, 3vw, 15px);
+    }
+
+    /* Mensajes */
+    .alert {
+      padding: 12px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: clamp(13px, 3vw, 14px);
+    }
+
+    .alert-error {
+      background-color: #fde8e8;
+      color: #c53030;
+      border: 1px solid #feb2b2;
+    }
+
+    .alert-success {
+      background-color: #e6fffa;
+      color: #2c7a7b;
+      border: 1px solid #81e6d9;
     }
 
     /* Campos del formulario */
@@ -106,8 +126,8 @@
       font-size: clamp(14px, 3vw, 16px);
     }
 
-    /* Botón de registro */
-    .btn-register {
+    /* Botones */
+    .btn-verify {
       background-color: #02246a;
       color: #fff;
       border: none;
@@ -121,30 +141,31 @@
       margin-top: 10px;
     }
 
-    .btn-register:hover {
+    .btn-verify:hover {
       background-color: #011a52;
     }
 
-    /* Pie de página */
-    .register-footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: clamp(13px, 3vw, 14px);
-    }
-
-    .register-footer a {
-      color:#011a52;
+    .btn-resend {
+      background-color: transparent;
+      color: #02246a;
+      border: 1px solid #02246a;
+      padding: 12px 0;
+      width: 100%;
+      border-radius: 5px;
+      font-size: clamp(15px, 3vw, 16px);
       font-weight: 500;
-      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
     }
 
-    .register-footer a:hover {
-      text-decoration: underline;
+    .btn-resend:hover {
+      background-color: #f0f4ff;
     }
 
     /* Media Queries para ajustes específicos */
     @media (max-width: 480px) {
-      .register-container {
+      .verification-container {
         padding: 25px 20px;
       }
 
@@ -154,7 +175,7 @@
     }
 
     @media (max-width: 350px) {
-      .register-container {
+      .verification-container {
         padding: 20px 15px;
       }
 
@@ -170,62 +191,40 @@
   </style>
 </head>
 <body>
-<div class="register-container">
-  <div class="register-header">
-    <h2>Crear una cuenta</h2>
-    <p>Regístrate para acceder al sistema</p>
+<div class="verification-container">
+  <div class="verification-header">
+    <h2>Verificación de Código</h2>
+    <p>Ingresa el código que enviamos a tu correo electrónico</p>
   </div>
 
-  <form action="/usuario/save" method="post">
-    <div class="form-group">
-      <label for="nombre">Nombres</label>
-      <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
-      <i class="fas fa-user"></i>
-    </div>
+  <!-- Mensajes de error/success -->
+  <div th:if="${error}" class="alert alert-error">
+    <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+  </div>
+  <div th:if="${mensaje}" class="alert alert-success">
+    <i class="fas fa-check-circle"></i> <span th:text="${mensaje}"></span>
+  </div>
+
+  <!-- Formulario de verificación -->
+  <form th:action="@{/verificacion/verificar}" method="post">
+    <input type="hidden" name="email" th:value="${email}" />
 
     <div class="form-group">
-      <label for="apellido">Apellidos</label>
-      <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ej: Pérez" required>
-      <i class="fas fa-user"></i>
+      <label for="codigo">Código de verificación</label>
+      <input type="text" id="codigo" name="codigo" class="form-control"
+             placeholder="Ingresa el código de 9 dígitos"
+             title="Por favor ingresa un código de 9 dígitos">
+      <i class="fas fa-key"></i>
     </div>
 
-    <div class="form-group">
-      <label for="email">Correo electrónico</label>
-      <input type="email" id="email" name="email" class="form-control" placeholder="Ej: usuario@example.com" required>
-      <i class="fas fa-envelope"></i>
-    </div>
-
-    <div class="form-group">
-      <label for="celular">Número de celular</label>
-      <input type="tel" id="celular" name="celular" class="form-control" placeholder="Ej: 999888777" required>
-      <i class="fas fa-phone"></i>
-    </div>
-
-    <div class="form-group">
-      <label for="edad">Edad</label>
-      <input type="number" id="edad" name="edad" class="form-control" placeholder="Ej: 25" min="18" max="120" required>
-      <i class="fas fa-birthday-cake"></i>
-    </div>
-
-    <div class="form-group">
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese una contraseña segura" required>
-      <i class="fas fa-lock"></i>
-    </div>
-
-    <!-- reCAPTCHA -->
-    <div class="g-recaptcha" data-sitekey="6LfdRXQrAAAAAHDTgPuo0c3dQK9F_ftjdqtf0WDQ"></div>
-
-    <button type="submit" class="btn-register">Registrarse</button>
+    <button type="submit" class="btn-verify">Verificar código</button>
   </form>
 
-  <div class="register-footer">
-    <p>¿Ya tienes una cuenta? <a href="/auth/login">Inicia sesión aquí</a></p>
-  </div>
+  <!-- Formulario para reenviar código -->
+  <form th:action="@{/verificacion/reenviar-codigo}" method="post">
+    <input type="hidden" name="email" th:value="${email}" />
+    <button type="submit" class="btn-resend">Reenviar código</button>
+  </form>
 </div>
 </body>
-
-<!-- Script de Google -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 </html>

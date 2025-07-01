@@ -34,6 +34,12 @@ public class UsuarioEntity {
 
     private String rol;
 
+    @Column(name = "codigo_verificacion")
+    private String codigoVerificacion;
+
+    @Column(name = "activo")
+    private boolean activo;
+
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<HistorialPagoEntity> pagos = new ArrayList<>();

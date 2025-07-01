@@ -13,7 +13,7 @@ public class ScheduledTasks {
     private CreditoCuotaService creditoCuotaService;
     
     // Run daily at midnight (00:00) El Salvador time
-    @Scheduled(cron = "0 51 16 * * ?", zone = "America/El_Salvador")
+    @Scheduled(cron = "0 0 0 * * ?", zone = "America/El_Salvador")
     public void checkExpiredCuotas() {
         try {
             System.out.println("Starting scheduled task at " + java.time.LocalDateTime.now());

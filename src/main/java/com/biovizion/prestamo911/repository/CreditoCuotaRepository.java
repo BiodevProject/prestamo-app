@@ -37,8 +37,7 @@ public interface CreditoCuotaRepository extends JpaRepository<CreditoCuotaEntity
     @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE LOWER(cc.estado) = 'vencido'")
     List<CreditoCuotaEntity> findVencidas();
 
-    @Query("SELECT cc FROM CreditoCuotaEntity cc JOIN cc.credito c WHERE c.usuario.id = :usuarioId AND LOWER(cc.estado) = 'vencido'")
-    List<CreditoCuotaEntity> findCuotasVencidasByUsuarioId(@Param("usuarioId") Long usuarioId);
+
 
     @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.fechaVencimiento <= :currentDate AND LOWER(cc.estado) = 'pendiente'")
     List<CreditoCuotaEntity> findExpiredCuotas(@Param("currentDate") LocalDateTime currentDate);
@@ -62,4 +61,9 @@ public interface CreditoCuotaRepository extends JpaRepository<CreditoCuotaEntity
     @Modifying
     @Transactional
     int updateCuotasToAVencer(@Param("ids") List<Long> ids);
+
+
+    @Query("SELECT cc FROM CreditoCuotaEntity cc JOIN cc.credito c WHERE c.usuario.id = :usuarioId AND LOWER(cc.estado) = LOWER(:estado)")
+    List<CreditoCuotaEntity> findCuotasByUsuarioIdAndEstado(@Param("usuarioId") Long usuarioId, @Param("estado") String estado);
+
 } 

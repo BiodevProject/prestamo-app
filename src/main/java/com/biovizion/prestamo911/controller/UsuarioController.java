@@ -2,26 +2,29 @@ package com.biovizion.prestamo911.controller;
 
 import com.biovizion.prestamo911.entities.CreditoEntity;
 import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
-import com.biovizion.prestamo911.service.CreditoService;
-import com.biovizion.prestamo911.service.CreditoCuotaService;
+import com.biovizion.prestamo911.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.entities.UsuarioSolicitudEntity;
-import com.biovizion.prestamo911.service.UsuarioService;
-import com.biovizion.prestamo911.service.UsuarioSolicitudService;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/usuario")
@@ -41,7 +44,72 @@ public class UsuarioController {
     @Autowired
     private CreditoCuotaService creditoCuotaService;
 
-    
+    @Autowired
+    private EmailService emailService;
+
+
+
+    @PostMapping("/save")
+    public String saveUsuario(@ModelAttribute UsuarioEntity usuario,
+                              @RequestParam("g-recaptcha-response") String captchaResponse,
+                              Model model) {
+        // 1. Verificar el CAPTCHA
+        String secretKey = "6LfdRXQrAAAAAM7a7PFCuYBa5dYLaDeQenArCeAg";  // La clave secreta que te dio Google
+        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+
+        RestTemplate restTemplate = new RestTemplate();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("secret", secretKey);
+        params.add("response", captchaResponse);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, params, Map.class);
+        Map body = response.getBody();
+
+        if (!(Boolean) body.get("success")) {
+            model.addAttribute("error", "Por favor valida el captcha.");
+            return "auth/registro";
+        }
+
+        // 2. Lógica normal si el captcha fue exitoso
+        System.out.println("Guardando usuario: " + usuario.getEmail());
+
+        if (usuarioService.findByEmail(usuario.getEmail()).isPresent()) {
+            model.addAttribute("error", "El email ya está registrado");
+            return "auth/registro";
+        }
+
+        String codigo;
+        int intentos = 0;
+        int maxIntentos = 10;
+        do {
+            codigo = generarCodigo(usuario.getNombre(), usuario.getApellido());
+            intentos++;
+            if (intentos > maxIntentos) {
+                model.addAttribute("error", "No se pudo generar un código único, intente más tarde");
+                return "auth/registro";
+            }
+        } while (usuarioService.existsByCodigo(codigo));
+
+        usuario.setCodigo(codigo);
+        usuario.setActivo(false);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setRol("ROLE_USER");
+
+        usuarioService.save(usuario);
+        emailService.enviarCodigoVerificacion(usuario.getEmail(), codigo);
+
+        return "redirect:/verificacion/verificar?email=" + usuario.getEmail();
+    }
+
+    private String generarCodigo(String nombre, String apellido) {
+        nombre = nombre.length() >= 2 ? nombre.substring(0, 2).toUpperCase() : nombre.toUpperCase();
+        apellido = apellido.length() >= 1 ? apellido.substring(0, 1).toUpperCase() : "";
+        int randomNum = (int)(Math.random() * 900000) + 100000; // 6 números aleatorios entre 100000 y 999999
+        return nombre + apellido + randomNum;
+    }
+
+
+
     @GetMapping("/create")
     public String createUser(Model model) {
         model.addAttribute("usuario", new UsuarioEntity());
@@ -143,42 +211,6 @@ public class UsuarioController {
         return "usuario/userEdit";
     }
 
-    @PostMapping("/save")
-    public String saveUsuario(@ModelAttribute UsuarioEntity usuario, Model model) {
-        System.out.println("Guardando usuario: " + usuario.getEmail());
-        if (usuarioService.findByEmail(usuario.getEmail()).isPresent()) {
-            model.addAttribute("error", "El email ya está registrado");
-            return "auth/registro";
-        }
-
-        // Generar código único
-        String codigo;
-        int intentos = 0;
-        int maxIntentos = 10; // para evitar bucle infinito
-        do {
-            codigo = generarCodigo(usuario.getNombre(), usuario.getApellido());
-            intentos++;
-            if (intentos > maxIntentos) {
-                model.addAttribute("error", "No se pudo generar un código único, intente más tarde");
-                return "auth/registro";
-            }
-        } while (usuarioService.existsByCodigo(codigo));  // Validar que no exista
-
-        usuario.setCodigo(codigo);
-
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        usuario.setRol("USER");
-
-        usuarioService.save(usuario);
-        return "redirect:/auth/login";
-    }
-
-    private String generarCodigo(String nombre, String apellido) {
-        nombre = nombre.length() >= 2 ? nombre.substring(0, 2).toUpperCase() : nombre.toUpperCase();
-        apellido = apellido.length() >= 1 ? apellido.substring(0, 1).toUpperCase() : "";
-        int randomNum = (int)(Math.random() * 900000) + 100000; // 6 números aleatorios entre 100000 y 999999
-        return nombre + apellido + randomNum;
-    }
 
 
 

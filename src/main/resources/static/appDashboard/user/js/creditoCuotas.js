@@ -456,7 +456,7 @@ function realizarPago() {
     })
         .then(response => {
             if (response.ok) {
-                alert('Pago realizado exitosamente');
+                alert('EL pago ha sido enviado a revision');
                 // Clear the payment cuota ID
                 paymentCuotaId = null;
                 // Close the modal

@@ -23,5 +23,5 @@ public interface CreditoCuotaService {
     List<CreditoCuotaEntity> findAvencer();
     List<CreditoCuotaEntity> findVencidas();
 
-    List<CreditoCuotaEntity> findCuotasVencidasByUsuarioId(Long usuarioId);
+    List<CreditoCuotaEntity> getCuotasByUsuarioAndEstado(Long usuarioId, String estado);
 } 

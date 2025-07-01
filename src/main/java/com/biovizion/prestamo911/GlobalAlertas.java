@@ -50,10 +50,24 @@ public class GlobalAlertas {
             Optional<UsuarioEntity> optionalUsuario = usuarioService.findByEmail(principal.getName());
             if (optionalUsuario.isPresent()) {
                 UsuarioEntity usuario = optionalUsuario.get();
-                List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.findCuotasVencidasByUsuarioId(usuario.getId());
+
+                // Ahora podés hacer llamadas con diferentes estados según la alerta que quieras validar
+                List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.getCuotasByUsuarioAndEstado(usuario.getId(), "vencido");
                 if (!cuotasVencidas.isEmpty()) {
-                    model.addAttribute("alerta3", alertaService.findById(3L).orElse(null));
+                    model.addAttribute("PAGO_RETRASADO", alertaService.findById(3L).orElse(null));
                 }
+
+                List<CreditoCuotaEntity> cuotasPagadas = creditoCuotaService.getCuotasByUsuarioAndEstado(usuario.getId(), "EnRevision");
+                if (!cuotasPagadas.isEmpty()) {
+                    model.addAttribute("PAGO_EN_REVISION", alertaService.findById(5L).orElse(null));
+                }
+
+                model.addAttribute("alerta5", alertaService.findById(5L).orElse(null));
+                model.addAttribute("alerta5", alertaService.findById(5L).orElse(null));
+
+
+
+                // Y así para las demás alertas...
             }
         }
 

@@ -1,0 +1,141 @@
+<div th:fragment="mostrar(alerta)"
+     th:if="${alerta != null and alerta.tipo == 'danger'}"
+     id="alerta-flotante"
+     class="alerta-flotante alerta-danger">
+  <span class="alerta-icono">⚠️</span>
+  <div class="alerta-contenido">
+    <h3 class="alerta-titulo">¡PAGO RETRASADO!</h3>
+    <p class="alerta-mensaje" th:text="${'(' + alerta.codigo + ') ' + alerta.mensaje}">Mensaje</p>
+  </div>
+  <button class="alerta-boton-cerrar" onclick="cerrarAlerta()">×</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const alerta = document.getElementById('alerta-flotante');
+      if (alerta) {
+        // Efecto de entrada más dramático
+        requestAnimationFrame(() => {
+          alerta.style.opacity = '1';
+          alerta.style.transform = 'translateY(0) scale(1)';
+
+
+
+          // Efecto de vibración para llamar la atención
+          alerta.animate([
+            { transform: 'translateX(0)' },
+            { transform: 'translateX(-5px)' },
+            { transform: 'translateX(5px)' },
+            { transform: 'translateX(0)' }
+          ], {
+            duration: 300,
+            iterations: 3
+          });
+        });
+      }
+    });
+
+    function cerrarAlerta() {
+      const alerta = document.getElementById('alerta-flotante');
+      if (alerta) {
+        // Solo animar pero nunca ocultar ni display none
+        alerta.style.opacity = '1';
+        alerta.style.transform = 'translateY(0) scale(1)';
+      }
+    }
+
+  </script>
+
+  <style>
+    @keyframes parpadeo {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.6); }
+      50% { box-shadow: 0 0 25px rgba(255, 0, 0, 1); }
+    }
+
+    #alerta-flotante {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 18px 22px;
+      border-left: 6px solid #ff0000;
+      border-radius: 8px;
+      background-color: #ff0000; /* rojo puro */
+      color: #ffffff;
+      font-family: 'Arial', sans-serif;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+      animation: parpadeo 1.2s infinite;
+      border: 2px solid #cc0000;
+
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+
+      max-width: 400px;
+      z-index: 9999;
+
+      opacity: 0;
+      transform: translateY(-30px) scale(0.95);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .alerta-icono {
+      font-size: 28px;
+      line-height: 1;
+      margin-top: 2px;
+      color: #ffffff;
+    }
+
+    .alerta-contenido {
+      flex: 1;
+    }
+
+    .alerta-titulo {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .alerta-mensaje {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .alerta-boton-cerrar {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 0 0 0 15px;
+      line-height: 1;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .alerta-boton-cerrar:hover {
+      opacity: 1;
+      color: #ffffff;
+    }
+
+    #alerta-flotante::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff0000, #cc0000, #ff0000);
+      background-size: 200% 100%;
+      animation: barraUrgente 2s linear infinite;
+    }
+
+    @keyframes barraUrgente {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+  </style>
+
+</div>
