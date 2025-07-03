@@ -50,6 +50,7 @@
                         <th>Código</th>
                         <th>Fecha Vencimiento</th>
                         <th>Monto</th>
+                        <th id="moraHeader" style="display: none;">Mora</th>
                         <th>Estado</th>
                         <th></th>
                     </tr>
@@ -65,7 +66,8 @@
                      th:data-codigo="${cuota.codigo}"
                      th:data-fecha-vencimiento="${cuota.fechaVencimiento}"
                      th:data-fecha-pago="${cuota.fechaPago}"
-                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">
+                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}"
+                     th:data-pago-mora="${cuota.pagoMora != null ? #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '0.00'}">
                 </div>
 
                 <div class="pagination-container">
@@ -121,10 +123,20 @@
                                 </div>
                             </div>
                             <div class="section-content">
-                                <div class="info-grid" style="grid-template-columns: 1fr;">
+                                <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
                                     <div class="info-item important-field">
                                         <span class="info-label">Monto de la Cuota</span>
                                         <div class="info-value" id="montoCuota" style="font-size: 1.5em; font-weight: bold; color: #28a745;">$0.00</div>
+                                    </div>
+                                    <div class="info-item important-field" id="moraField" style="display: none;">
+                                        <span class="info-label">Mora</span>
+                                        <div class="info-value" id="montoMora" style="font-size: 1.5em; font-weight: bold; color: #dc3545;">$0.00</div>
+                                    </div>
+                                </div>
+                                <div class="info-grid" style="grid-template-columns: 1fr; margin-top: 15px;">
+                                    <div class="info-item important-field" id="totalField" style="display: none;">
+                                        <span class="info-label">Total a Pagar</span>
+                                        <div class="info-value" id="montoTotal" style="font-size: 1.8em; font-weight: bold; color: #007bff;">$0.00</div>
                                     </div>
                                 </div>
                             </div>

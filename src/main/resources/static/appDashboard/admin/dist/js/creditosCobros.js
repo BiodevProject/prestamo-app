@@ -57,7 +57,8 @@ function loadCuotaData() {
             fechaVencimiento: div.getAttribute('data-fecha-vencimiento') || '',
             fechaPago: div.getAttribute('data-fecha-pago') || '',
             monto: div.getAttribute('data-monto') || '',
-            estado: div.getAttribute('data-estado') || ''
+            estado: div.getAttribute('data-estado') || '',
+            pagoMora: div.getAttribute('data-pago-mora') || '0.00'
         });
     });
 
@@ -99,6 +100,9 @@ function switchTab(tabName) {
         fechaPagoHeader.style.display = 'none';
     }
     
+    // Update table headers for vencidas tab to include mora column
+    updateTableHeaders(tabName);
+    
     // Load appropriate data
     switch(tabName) {
         case 'enrevision':
@@ -114,6 +118,42 @@ function switchTab(tabName) {
     
     updateTable();
     updatePagination();
+}
+
+function updateTableHeaders(tabName) {
+    const table = document.getElementById('cuotaTable');
+    const thead = table.querySelector('thead tr');
+    
+    if (tabName === 'vencidas') {
+        thead.innerHTML = `
+            <th>Usuario</th>
+            <th>Código</th>
+            <th>Fecha Vencimiento</th>
+            <th>Monto</th>
+            <th>Mora</th>
+            <th>Estado</th>
+            <th></th>
+        `;
+    } else if (tabName === 'enrevision') {
+        thead.innerHTML = `
+            <th>Usuario</th>
+            <th>Código</th>
+            <th>Fecha Vencimiento</th>
+            <th id="fechaPagoHeader">Fecha Pago</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th></th>
+        `;
+    } else {
+        thead.innerHTML = `
+            <th>Usuario</th>
+            <th>Código</th>
+            <th>Fecha Vencimiento</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th></th>
+        `;
+    }
 }
 
 function filterTable() {
@@ -186,7 +226,14 @@ function updateTable() {
             default:
                 emptyMessage = 'No hay cuotas';
         }
-        var colspan = currentTab === 'enrevision' ? '7' : '6';
+        var colspan;
+        if (currentTab === 'enrevision') {
+            colspan = '7';
+        } else if (currentTab === 'vencidas') {
+            colspan = '7';
+        } else {
+            colspan = '6';
+        }
         emptyRow.innerHTML = '<td colspan="' + colspan + '" class="text-center">' + emptyMessage + '</td>';
         tbody.appendChild(emptyRow);
         return;
@@ -217,6 +264,7 @@ function updateTable() {
         }
 
         var fechaPagoCell = currentTab === 'enrevision' ? `<td>${formatDate(cuota.fechaPago)}</td>` : '';
+        var moraCell = currentTab === 'vencidas' ? `<td>$${cuota.pagoMora}</td>` : '';
         
         row.innerHTML = `
             <td>${cuota.usuario || 'N/A'}</td>
@@ -224,6 +272,7 @@ function updateTable() {
             <td>${formatDate(cuota.fechaVencimiento)}</td>
             ${fechaPagoCell}
             <td>${cuota.monto}</td>
+            ${moraCell}
             <td><span class="${estadoClass}">${estadoDisplay}</span></td>
             <td>${actionButtons}</td>
         `;

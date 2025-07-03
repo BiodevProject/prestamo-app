@@ -50,8 +50,8 @@ public interface CreditoCuotaRepository extends JpaRepository<CreditoCuotaEntity
     @Query("SELECT cc.id FROM CreditoCuotaEntity cc WHERE cc.fechaVencimiento <= :oneWeekFromNow AND cc.fechaVencimiento > :currentDate AND LOWER(cc.estado) = 'pendiente'")
     List<Long> findAboutToExpireCuotaIds(@Param("currentDate") LocalDateTime currentDate, @Param("oneWeekFromNow") LocalDateTime oneWeekFromNow);
 
-    // Batch update for better performance
-    @Query("UPDATE CreditoCuotaEntity cc SET cc.estado = 'Vencido' WHERE cc.id IN :ids")
+    // Batch update for better performance - also calculates mora
+    @Query(value = "UPDATE credito_cuota cc JOIN credito c ON c.id = cc.credito_id SET cc.estado = 'Vencido', cc.pago_mora = (cc.monto * c.porcentaje_mora / 100) WHERE cc.id IN :ids", nativeQuery = true)
     @Modifying
     @Transactional
     int updateCuotasToVencido(@Param("ids") List<Long> ids);

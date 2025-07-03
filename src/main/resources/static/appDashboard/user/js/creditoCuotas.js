@@ -22,7 +22,8 @@ function loadCuotaData() {
             fechaVencimiento: div.getAttribute('data-fecha-vencimiento') || '',
             monto: div.getAttribute('data-monto') || '',
             estado: div.getAttribute('data-estado') || '',
-            fechaPago: div.getAttribute('data-fecha-pago') || ''
+            fechaPago: div.getAttribute('data-fecha-pago') || '',
+            pagoMora: div.getAttribute('data-pago-mora') || '0.00'
         });
     });
 }
@@ -61,6 +62,15 @@ function updateTableHeaders() {
             <th>Fecha Vencimiento</th>
             <th>Fecha Pago</th>
             <th>Monto</th>
+            <th>Estado</th>
+            <th></th>
+        `;
+    } else if (currentTab === 'vencidas') {
+        thead.innerHTML = `
+            <th>Código</th>
+            <th>Fecha Vencimiento</th>
+            <th>Monto</th>
+            <th>Mora</th>
             <th>Estado</th>
             <th></th>
         `;
@@ -166,7 +176,8 @@ function updateTable() {
 
     if (pageCuotas.length === 0) {
         var emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="6" class="text-center">No hay cuotas en esta categoría</td>';
+        var colspan = currentTab === 'vencidas' ? '6' : '6';
+        emptyRow.innerHTML = '<td colspan="' + colspan + '" class="text-center">No hay cuotas en esta categoría</td>';
         tbody.appendChild(emptyRow);
         return;
     }
@@ -187,6 +198,18 @@ function updateTable() {
                 <td>${cuota.monto}</td>
                 <td><span class="${estadoClass}">${estadoDisplay}</span></td>
                 <td><a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a></td>
+            `;
+        } else if (currentTab === 'vencidas') {
+            row.innerHTML = `
+                <td>${cuota.codigo || 'N/A'}</td>
+                <td>${formatDate(cuota.fechaVencimiento)}</td>
+                <td>${cuota.monto}</td>
+                <td>$${cuota.pagoMora}</td>
+                <td><span class="${estadoClass}">${estadoDisplay}</span></td>
+                <td>
+                    <a href="#" class="btn btn-info btn-sm" onclick="showCuotaDetails('${cuota.id}')">Ver Detalles</a>
+                    <a href="#" class="btn btn-success btn-sm ms-1" onclick="showPagoModal('${cuota.id}')">Pagar Cuota</a>
+                </td>
             `;
         } else {
             row.innerHTML = `
@@ -264,32 +287,22 @@ function updatePagination() {
     } else {
         nextBtn.classList.remove('disabled');
     }
-
-    console.log(`Pagination: Page ${currentPage} of ${totalPages}, Prev disabled: ${isFirstPage}, Next disabled: ${isLastPage}`);
 }
 
 function previousPage() {
-    console.log(`Previous page clicked. Current page: ${currentPage}`);
     if (currentPage > 1) {
         currentPage--;
-        console.log(`Going to page: ${currentPage}`);
         updateTable();
         updatePagination();
-    } else {
-        console.log('Already on first page');
     }
 }
 
 function nextPage() {
     var totalPages = Math.ceil(filteredData.length / cuotasPerPage);
-    console.log(`Next page clicked. Current page: ${currentPage}, Total pages: ${totalPages}`);
     if (currentPage < totalPages) {
         currentPage++;
-        console.log(`Going to page: ${currentPage}`);
         updateTable();
         updatePagination();
-    } else {
-        console.log('Already on last page');
     }
 }
 
@@ -414,12 +427,34 @@ function showPagoModal(cuotaId) {
     // Set the payment cuota ID for the payment process
     paymentCuotaId = cuotaId;
 
-    // Find the cuota data to get the payment amount
+    // Find the cuota data to get the payment amount and mora
     const cuotaDataDiv = document.querySelector(`#cuotaData[data-id="${cuotaId}"]`);
     if (cuotaDataDiv) {
         const cuotaAmount = cuotaDataDiv.getAttribute('data-monto');
+        const moraAmount = cuotaDataDiv.getAttribute('data-pago-mora');
+        const cuotaEstado = cuotaDataDiv.getAttribute('data-estado');
+        
         document.getElementById('montoCuota').textContent = cuotaAmount;
-    }
+        
+        // Show/hide mora field based on cuota status
+        const moraField = document.getElementById('moraField');
+        const totalField = document.getElementById('totalField');
+        
+        if (cuotaEstado.toLowerCase() === 'vencido' && parseFloat(moraAmount) > 0) {
+            moraField.style.display = 'block';
+            totalField.style.display = 'block';
+            document.getElementById('montoMora').textContent = '$' + moraAmount;
+            
+            // Calculate total (cuota + mora)
+            const cuotaValue = parseFloat(cuotaAmount.replace(/[$,]/g, ''));
+            const moraValue = parseFloat(moraAmount);
+            const total = cuotaValue + moraValue;
+            document.getElementById('montoTotal').textContent = '$' + total.toFixed(2);
+        } else {
+            moraField.style.display = 'none';
+            totalField.style.display = 'none';
+        }
+    } 
 
     // Show the payment modal
     var modal = new bootstrap.Modal(document.getElementById('pagoModal'));
@@ -437,12 +472,21 @@ function realizarPago() {
         return;
     }
 
-    // Get the cuota amount from the modal
-    const cuotaAmountElement = document.getElementById('montoCuota');
-    const cuotaAmount = cuotaAmountElement.textContent.replace(/[$,]/g, '');
+    // Get the payment amount from the modal
+    let paymentAmount;
+    const totalElement = document.getElementById('montoTotal');
+    
+    if (totalElement && totalElement.style.display !== 'none') {
+        // For vencidas cuotas, use the total (cuota + mora)
+        paymentAmount = totalElement.textContent.replace(/[$,]/g, '');
+    } else {
+        // For regular cuotas, use just the cuota amount
+        const cuotaAmountElement = document.getElementById('montoCuota');
+        paymentAmount = cuotaAmountElement.textContent.replace(/[$,]/g, '');
+    }
 
-    if (!cuotaAmount || cuotaAmount <= 0) {
-        alert('Error: Monto de cuota inválido.');
+    if (!paymentAmount || paymentAmount <= 0) {
+        alert('Error: Monto de pago inválido.');
         return;
     }
 
@@ -452,7 +496,7 @@ function realizarPago() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `monto=${cuotaAmount}`
+        body: `monto=${paymentAmount}`
     })
         .then(response => {
             if (response.ok) {
