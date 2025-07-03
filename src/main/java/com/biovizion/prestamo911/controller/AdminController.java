@@ -24,13 +24,10 @@ public class AdminController {
 
     @Autowired
     private UsuarioService usuarioService;
-
     @Autowired
     private TrabajadorService trabajadorService;
-
     @Autowired
     private CreditoService creditoService;
-
     @Autowired
     private CreditoCuotaService creditoCuotaService;
 

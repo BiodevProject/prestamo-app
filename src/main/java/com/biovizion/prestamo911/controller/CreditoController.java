@@ -154,8 +154,12 @@ public class CreditoController {
         BigDecimal iva = subtotal.multiply(porcentajeIva.divide(cien, 4, RoundingMode.HALF_UP));
         BigDecimal total = subtotal.add(iva);
 
+        // Calcular monto de mora como porcentaje del total
+        BigDecimal mora = total.multiply(porcentajeMora.divide(cien, 4, RoundingMode.HALF_UP));
+        System.out.println("MORA CALCULADA: $" + mora); // Debug
+
         credito.setInteres(totalCuotas.subtract(monto).setScale(2, RoundingMode.HALF_UP));
-        credito.setMora(BigDecimal.ZERO);
+        credito.setMora(mora.setScale(2, RoundingMode.HALF_UP)); // Mora en dinero
         credito.setIva(iva.setScale(2, RoundingMode.HALF_UP));
         credito.setTotal(total.setScale(2, RoundingMode.HALF_UP));
         credito.setCuotaMensual(cuotaMensual.setScale(2, RoundingMode.HALF_UP));
@@ -177,6 +181,8 @@ public class CreditoController {
 
         return "redirect:/admin/creditos/pendientes";
     }
+
+
 
 
     @PostMapping("/pagar/{id}")

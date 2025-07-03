@@ -20,6 +20,9 @@ public class CreditoCuotaEntity {
     @Column(length = 15)
     private String codigo;
 
+    @Column (name = "pago_mora")
+    private BigDecimal pagoMora;
+
     @Column(name = "fecha_vencimiento", columnDefinition = "DATETIME")
     private LocalDateTime fechaVencimiento;
 
