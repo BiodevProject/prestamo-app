@@ -79,7 +79,7 @@ public class CreditoCuotaController {
     }
 
     // Manual trigger for testing expired cuotas (optional)
-    @GetMapping("/check-expired")
+    @GetMapping("/probar")
     public String checkExpiredCuotas() {
         try {
             creditoCuotaService.updateExpiredCuotas();

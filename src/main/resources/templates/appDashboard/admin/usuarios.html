@@ -33,11 +33,11 @@
                 <table class="table table-hover" id="userTable">
                     <thead>
                     <tr>
+                        <th>Código</th>
                         <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>Email</th>
                         <th>Celular</th>
-                        <th>Rol</th>
-                        <th>Código</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -48,11 +48,12 @@
                 <div id="userData" style="display: none;"
                      th:each="usuario : ${usuarios}"
                      th:data-id="${usuario.id}"
+                     th:data-codigo="${usuario.codigo}"
                      th:data-nombre="${usuario.nombre}"
+                     th:data-apellido="${usuario.apellido}"
                      th:data-email="${usuario.email}"
                      th:data-celular="${usuario.celular}"
-                     th:data-rol="${usuario.rol}"
-                     th:data-codigo="${usuario.codigo}">
+                     >
                 </div>
 
                 <div class="pagination-container">

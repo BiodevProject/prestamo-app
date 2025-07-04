@@ -23,7 +23,7 @@ function loadUsuarioData() {
             nombre: div.getAttribute('data-nombre') || '',
             email: div.getAttribute('data-email') || '',
             celular: div.getAttribute('data-celular') || '',
-            rol: div.getAttribute('data-rol') || '',
+            apellido: div.getAttribute('data-apellido') || '',
             codigo: div.getAttribute('data-codigo') || ''
         });
     });
@@ -64,11 +64,11 @@ function updateTable() {
         row.className = 'clickable-row';
         
         row.innerHTML = `
+            <td>${usuario.codigo}</td>
             <td>${usuario.nombre}</td>
+            <td>${usuario.apellido}</td>
             <td>${usuario.email}</td>
             <td>${usuario.celular}</td>
-            <td>${usuario.rol}</td>
-            <td>${usuario.codigo}</td>
             <td>
                 <a href="#" class="btn btn-info btn-sm" onclick="showUsuarioDetails('${usuario.id}')">Ver Detalles</a>
                 <a href="/admin/usuarios/${usuario.id}/creditos" class="btn btn-primary btn-sm">Ver Créditos</a>
@@ -139,7 +139,6 @@ function showUsuarioDetails(usuarioId) {
     document.getElementById('modalNombre').value = usuario.nombre;
     document.getElementById('modalEmail').value = usuario.email;
     document.getElementById('modalCelular').value = usuario.celular;
-    document.getElementById('modalRol').value = usuario.rol;
     document.getElementById('modalCodigo').value = usuario.codigo;
     
     // Reset form state (all fields disabled, edit button visible)

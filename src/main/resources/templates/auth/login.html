@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,10 @@
   <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Estilos solo para alertas -->
+  <link rel="stylesheet" href="/css/alerta.css">
   <style>
-    /* Estilos base */
     * {
       box-sizing: border-box !important;
       margin: 0;
@@ -26,9 +28,9 @@
       justify-content: center;
       align-items: center;
       padding: 20px;
+      flex-direction: column;
     }
 
-    /* Contenedor del login */
     .login-container {
       background-color: #fff;
       width: 100%;
@@ -50,7 +52,6 @@
       background-color: #ffca56;
     }
 
-    /* Cabecera */
     .login-header {
       text-align: center;
       margin-bottom: 25px;
@@ -58,17 +59,16 @@
 
     .login-header h2 {
       color: #02246a;
-      font-size: clamp(24px, 5vw, 28px); /* Tamaño responsive */
+      font-size: clamp(24px, 5vw, 28px);
       margin-bottom: 8px;
       font-family: 'Baloo Chettan', cursive;
     }
 
     .login-header p {
       color: #666;
-      font-size: clamp(13px, 3vw, 15px); /* Tamaño responsive */
+      font-size: clamp(13px, 3vw, 15px);
     }
 
-    /* Campos del formulario */
     .form-group {
       margin-bottom: 20px;
       position: relative;
@@ -97,7 +97,6 @@
       outline: none;
     }
 
-    /* Iconos */
     .form-group i {
       position: absolute;
       right: 15px;
@@ -106,7 +105,6 @@
       font-size: clamp(14px, 3vw, 16px);
     }
 
-    /* Botón de login */
     .btn-login {
       background-color: #02246a;
       color: #fff;
@@ -125,7 +123,6 @@
       background-color: #011a52;
     }
 
-    /* Pie de página */
     .login-footer {
       text-align: center;
       margin-top: 20px;
@@ -142,7 +139,6 @@
       text-decoration: underline;
     }
 
-    /* Recordar y olvidar contraseña */
     .remember-forgot {
       display: flex;
       justify-content: space-between;
@@ -176,7 +172,6 @@
       color: #ffca56;
     }
 
-    /* Media Queries para ajustes específicos */
     @media (max-width: 480px) {
       .login-container {
         padding: 25px 20px;
@@ -213,15 +208,24 @@
   </style>
 </head>
 <body>
+
+<!-- Mensajes de error o logout -->
+<div th:if="${param.error}" class="alert-error">
+  Usuario o contraseña incorrectos. Inténtalo de nuevo.
+</div>
+
+<div th:if="${param.logout}" class="alert-success">
+  Sesión cerrada correctamente.
+</div>
+
 <div class="login-container">
   <div class="login-header">
     <h2>Bienvenido de nuevo</h2>
     <p>Inicia sesión para acceder a tu cuenta</p>
   </div>
 
-  <form action="/auth/login" method="post">
-
-  <div class="form-group">
+  <form th:action="@{/auth/login}" method="post">
+    <div class="form-group">
       <label for="username">Correo electrónico</label>
       <input type="email" id="username" name="username" class="form-control" placeholder="Ingresa tu correo electrónico" required>
       <i class="fas fa-envelope"></i>
@@ -235,7 +239,7 @@
 
     <div class="remember-forgot">
       <div class="remember-me">
-        <input type="checkbox" id="remember">
+        <input type="checkbox" id="remember" name="remember-me">
         <label for="remember">Recordarme</label>
       </div>
       <div class="forgot-password">
@@ -247,8 +251,9 @@
   </form>
 
   <div class="login-footer">
-    <p>¿No tienes una cuenta? <a href="/auth/register">Regístrate aquí</a></p>
+    <p>¿No tienes una cuenta? <a th:href="@{/auth/register}">Regístrate aquí</a></p>
   </div>
 </div>
+
 </body>
 </html>
