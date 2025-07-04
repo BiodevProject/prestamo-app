@@ -91,4 +91,14 @@ public class AdminController {
             return "error: " + e.getMessage();
         }
     }
+
+    @GetMapping("/usuarios/credito/{creditoId}/cuotas")
+    public String adminCreditoCuotas(@PathVariable Long creditoId, Model model) {
+        CreditoEntity credito = creditoService.findById(creditoId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        List<CreditoCuotaEntity> cuotas = creditoCuotaService.findByCreditoId(creditoId);
+        model.addAttribute("credito", credito);
+        model.addAttribute("cuotas", cuotas);
+        return "appDashboard/admin/creditoCuotas";
+    }
 } 

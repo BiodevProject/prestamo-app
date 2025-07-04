@@ -134,13 +134,19 @@ function updateTable() {
         var estadoClass = getEstadoClass(credito.estado);
         var estadoDisplay = credito.estado.charAt(0).toUpperCase() + credito.estado.slice(1);
         
-        row.innerHTML = `
-            <td><span class="${estadoClass}">${estadoDisplay}</span></td>
-            <td>${credito.monto}</td>
-            <td>${credito.plazo}</td>
-            <td>${credito.fecha}</td>
-            <td><a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a></td>
-        `;
+            const verCuotasButton = currentTab === 'activos' ? 
+        `<a href="#" class="btn btn-info btn-sm" onclick="showCreditoCuotas('${credito.id}')">Ver Cuotas</a>` : '';
+    
+    row.innerHTML = `
+        <td><span class="${estadoClass}">${estadoDisplay}</span></td>
+        <td>${credito.monto}</td>
+        <td>${credito.plazo}</td>
+        <td>${credito.fecha}</td>
+        <td>
+            <a href="#" class="btn btn-info btn-sm" onclick="showCreditoDetails('${credito.id}')">Ver Detalles</a>
+            ${verCuotasButton}
+        </td>
+    `;
         
         // Add right-click event for context menu
         row.addEventListener('contextmenu', function(e) {
@@ -474,27 +480,86 @@ function calculateFinancialCharges() {
 
 // Collapsible section functions for modal content
 function toggleSection(sectionId) {
+    // Define section pairs - updated for new order
+    const sectionPairs = {
+        'personal-info': 'account-info',
+        'account-info': 'personal-info',
+        'work-info': 'contact-info',
+        'contact-info': 'work-info'
+    };
+    const pairedSectionId = sectionPairs[sectionId];
+    // Toggle the clicked section
+    toggleSingleSection(sectionId);
+    // If this section has a pair, toggle the paired section too
+    if (pairedSectionId) {
+        toggleSingleSection(pairedSectionId);
+    }
+}
+
+function toggleSingleSection(sectionId) {
     const content = document.getElementById(sectionId + '-content');
-    const icon = document.getElementById(sectionId + '-icon');
-    
-    if (content.style.display === 'none' || content.style.display === '') {
-        content.style.display = 'block';
-        icon.className = 'fas fa-chevron-up';
+    const toggle = document.getElementById(sectionId + '-toggle');
+    if (!content || !toggle) {
+        console.error('Elements not found for section:', sectionId);
+        return;
+    }
+    // Check if collapsed by looking at inline styles
+    const isCollapsed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
+    if (isCollapsed) {
+        // Expand
+        content.classList.remove('collapsed');
+        toggle.classList.remove('collapsed');
+        content.style.maxHeight = '1000px';
+        content.style.paddingTop = '20px';
+        content.style.paddingBottom = '20px';
+        content.style.overflow = 'visible';
     } else {
-        content.style.display = 'none';
-        icon.className = 'fas fa-chevron-down';
+        // Collapse
+        content.classList.add('collapsed');
+        toggle.classList.add('collapsed');
+        content.style.maxHeight = '0px';
+        content.style.paddingTop = '0px';
+        content.style.paddingBottom = '0px';
+        content.style.overflow = 'hidden';
     }
 }
 
 function initializeModalSections() {
-    // Initialize all collapsible sections
-    const sections = ['personal-info', 'account-info', 'work-info', 'contact-info'];
-    sections.forEach(sectionId => {
+    // Collapse all sections except credit summary
+    const sectionsToCollapse = [
+        'personal-info',
+        'contact-info',
+        'work-info',
+        'account-info',
+        'references',
+        'application-details'
+    ];
+    sectionsToCollapse.forEach(function(sectionId) {
         const content = document.getElementById(sectionId + '-content');
-        const icon = document.getElementById(sectionId + '-icon');
-        if (content && icon) {
-            content.style.display = 'none';
-            icon.className = 'fas fa-chevron-down';
+        const toggle = document.getElementById(sectionId + '-toggle');
+        if (content && toggle) {
+            content.classList.add('collapsed');
+            toggle.classList.add('collapsed');
+            content.style.maxHeight = '0px';
+            content.style.paddingTop = '0px';
+            content.style.paddingBottom = '0px';
+            content.style.overflow = 'hidden';
         }
     });
+    // Ensure credit summary is expanded
+    const creditSummaryContent = document.getElementById('credit-summary-content');
+    const creditSummaryToggle = document.getElementById('credit-summary-toggle');
+    if (creditSummaryContent && creditSummaryToggle) {
+        creditSummaryContent.classList.remove('collapsed');
+        creditSummaryToggle.classList.remove('collapsed');
+        creditSummaryContent.style.maxHeight = '1000px';
+        creditSummaryContent.style.paddingTop = '20px';
+        creditSummaryContent.style.paddingBottom = '20px';
+        creditSummaryContent.style.overflow = 'visible';
+    }
+}
+
+// Add the showCreditoCuotas function
+function showCreditoCuotas(creditoId) {
+    window.location.href = '/admin/usuarios/credito/' + creditoId + '/cuotas';
 } 

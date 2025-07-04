@@ -25,6 +25,8 @@ import com.biovizion.prestamo911.entities.UsuarioSolicitudEntity;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/usuario")
@@ -147,8 +149,30 @@ public class UsuarioController {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
-        model.addAttribute("creditos", creditos);
-        return "appDashboard/user/creditosPendientes";
+        
+        // Create simple DTOs to avoid circular references
+        List<Map<String, Object>> creditosDto = creditos.stream()
+            .map(credito -> {
+                Map<String, Object> dto = new HashMap<>();
+                dto.put("id", credito.getId());
+                dto.put("estado", credito.getEstado());
+                dto.put("monto", credito.getMonto());
+                dto.put("plazoMeses", credito.getPlazoMeses());
+                dto.put("total", credito.getTotal());
+                
+                // Handle nested objects safely
+                if (credito.getUsuarioSolicitud() != null) {
+                    Map<String, Object> solicitudDto = new HashMap<>();
+                    solicitudDto.put("fechaSolicitud", credito.getUsuarioSolicitud().getFechaSolicitud());
+                    dto.put("usuarioSolicitud", solicitudDto);
+                }
+                
+                return dto;
+            })
+            .collect(Collectors.toList());
+        
+        model.addAttribute("creditos", creditosDto);
+        return "appDashboard/user/creditosPendientes-simple";
     }
 
     @GetMapping("/pagarCredito")
