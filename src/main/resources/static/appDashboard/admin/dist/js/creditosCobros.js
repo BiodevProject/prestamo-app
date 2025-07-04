@@ -92,15 +92,7 @@ function switchTab(tabName) {
     // Clear search input
     document.getElementById('searchInput').value = '';
     
-    // Show/hide Fecha Pago column based on tab
-    var fechaPagoHeader = document.getElementById('fechaPagoHeader');
-    if (tabName === 'enrevision') {
-        fechaPagoHeader.style.display = 'table-cell';
-    } else {
-        fechaPagoHeader.style.display = 'none';
-    }
-    
-    // Update table headers for vencidas tab to include mora column
+    // Update table headers first (this clears the table body)
     updateTableHeaders(tabName);
     
     // Load appropriate data
@@ -116,6 +108,7 @@ function switchTab(tabName) {
             break;
     }
     
+    // Update table and pagination
     updateTable();
     updatePagination();
 }
@@ -154,6 +147,10 @@ function updateTableHeaders(tabName) {
             <th></th>
         `;
     }
+    
+    // Clear the table body to prevent glitches
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = '';
 }
 
 function filterTable() {
