@@ -55,7 +55,8 @@ public class CreditoController {
 
     @PostMapping("/save")
     public String saveCredito(@ModelAttribute CreditoEntity credito,
-                              @RequestParam(value = "dui", required = false) MultipartFile duiFile) throws IOException {
+                              @RequestParam(value = "duiDelante", required = false) MultipartFile duiDelanteFile,
+                              @RequestParam(value = "duiAtras", required = false) MultipartFile duiAtrasFile) throws IOException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -63,15 +64,25 @@ public class CreditoController {
         UsuarioEntity usuario = usuarioService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (duiFile != null && !duiFile.isEmpty()) {
-            String nombreArchivo = UUID.randomUUID() + "_" + duiFile.getOriginalFilename();
-            String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
-            File destino = new File(rutaFotos + nombreArchivo);
-            duiFile.transferTo(destino);
+        String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
 
-            // GUARDAR EN usuarioSolicitud.dui, NO en usuario.dui
+        if (duiDelanteFile != null && !duiDelanteFile.isEmpty()) {
+            String nombreArchivoDelante = UUID.randomUUID() + "_" + duiDelanteFile.getOriginalFilename();
+            File destinoDelante = new File(rutaFotos + nombreArchivoDelante);
+            duiDelanteFile.transferTo(destinoDelante);
+
             if (credito.getUsuarioSolicitud() != null) {
-                credito.getUsuarioSolicitud().setDui("/fotos-usuarios/" + nombreArchivo);
+                credito.getUsuarioSolicitud().setDuiDelante("/fotos-usuarios/" + nombreArchivoDelante);
+            }
+        }
+
+        if (duiAtrasFile != null && !duiAtrasFile.isEmpty()) {
+            String nombreArchivoAtras = UUID.randomUUID() + "_" + duiAtrasFile.getOriginalFilename();
+            File destinoAtras = new File(rutaFotos + nombreArchivoAtras);
+            duiAtrasFile.transferTo(destinoAtras);
+
+            if (credito.getUsuarioSolicitud() != null) {
+                credito.getUsuarioSolicitud().setDuiAtras("/fotos-usuarios/" + nombreArchivoAtras);
             }
         }
 
@@ -80,6 +91,7 @@ public class CreditoController {
 
         return "redirect:/usuario/estadoDeCreditos";
     }
+
 
 
     @GetMapping("/dashboardPendientes")

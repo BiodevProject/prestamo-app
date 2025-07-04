@@ -207,9 +207,15 @@
     </div>
 
     <div class="form-group">
-      <label for="edad">Edad</label>
-      <input type="number" id="edad" name="edad" class="form-control" placeholder="Ej: 25" min="18" max="120" required>
-      <i class="fas fa-birthday-cake"></i>
+      <label for="duiDelante">Foto DUI (frente)</label>
+      <input type="file" id="duiDelante" name="duiDelante" class="form-control" accept="image/*" required>
+      <i class="fas fa-id-card"></i>
+    </div>
+
+    <div class="form-group">
+      <label for="duiAtras">Foto DUI (atrás)</label>
+      <input type="file" id="duiAtras" name="duiAtras" class="form-control" accept="image/*" required>
+      <i class="fas fa-id-card"></i>
     </div>
 
     <div class="form-group">
@@ -228,6 +234,26 @@
     <p>¿Ya tienes una cuenta? <a href="/auth/login">Inicia sesión aquí</a></p>
   </div>
 </div>
+
+<script>
+  function previewImage(input, previewId) {
+    const file = input.files[0];
+    const preview = document.getElementById(previewId);
+
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = '';
+      preview.style.display = 'none';
+    }
+  }
+</script>
+
 </body>
 
 <!-- Script de Google -->

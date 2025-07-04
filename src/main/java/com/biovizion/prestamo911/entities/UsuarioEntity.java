@@ -42,7 +42,13 @@ public class UsuarioEntity {
 
 
     private String foto;
-    private String dui;
+
+    @Column(name = "dui_delante")
+    private String duiDelante;
+
+    @Column(name = "dui_atras")
+    private String duiAtras;
+
     private String nit;
 
 

@@ -24,7 +24,8 @@ function loadUsuarioData() {
             email: div.getAttribute('data-email') || '',
             celular: div.getAttribute('data-celular') || '',
             apellido: div.getAttribute('data-apellido') || '',
-            codigo: div.getAttribute('data-codigo') || ''
+            codigo: div.getAttribute('data-codigo') || '',
+            foto: div.getAttribute('data-foto') || ''
         });
     });
     filteredData = [...allUsuarios];
@@ -137,6 +138,7 @@ function showUsuarioDetails(usuarioId) {
     document.getElementById('usuarioId').value = usuario.id;
     document.getElementById('usuarioIdDisplay').textContent = usuario.id;
     document.getElementById('modalNombre').value = usuario.nombre;
+    document.getElementById('modalFotoUsuario').src = usuario.foto || '/img/default-user.png';
     document.getElementById('modalEmail').value = usuario.email;
     document.getElementById('modalCelular').value = usuario.celular;
     document.getElementById('modalCodigo').value = usuario.codigo;
@@ -197,7 +199,7 @@ function setupModalEditFunctionality() {
                 usuario.nombre = formData.get('nombre');
                 usuario.email = formData.get('email');
                 usuario.celular = formData.get('celular');
-                usuario.rol = formData.get('rol');
+                usuario.foto = formData.get('foto');
                 usuario.codigo = formData.get('codigo');
                 
                 // Refresh table

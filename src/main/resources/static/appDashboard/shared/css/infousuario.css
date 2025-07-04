@@ -1,0 +1,59 @@
+/* Modal content background y borde */
+#usuarioModal .modal-content {
+    background-color: #F4F6F9 !important;
+    border-radius: 15px !important;
+    padding: 20px;
+}
+
+/* Título modal */
+#usuarioModal .modal-title {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Foto usuario: grande, borde suave, no circular */
+#modalFotoUsuario {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border: 3px solid #ccc;
+}
+
+/* Inputs deshabilitados con fondo gris claro */
+#usuarioModal input[disabled] {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Botones con bordes redondeados */
+#usuarioModal .btn {
+    border-radius: 20px;
+}
+
+/* Footer sin borde */
+#usuarioModal .modal-footer {
+    border-top: none !important;
+}
+
+/* Info grid para inputs */
+#usuarioModal .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+/* Ajustes para etiquetas */
+#usuarioModal label.form-label {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Ajuste para subheader */
+#usuarioModal .subheader p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+}

@@ -11,7 +11,11 @@
 <head>
     <th:block th:fragment="css">
         <link href="/appDashboard/shared/css/creditos.css" rel="stylesheet" type="text/css" />
+        <link href="/appDashboard/shared/css/infousuario.css" rel="stylesheet" type="text/css" />
     </th:block>
+
+
+
 </head>
 <body>
 
@@ -52,6 +56,7 @@
                      th:data-nombre="${usuario.nombre}"
                      th:data-apellido="${usuario.apellido}"
                      th:data-email="${usuario.email}"
+                     th:data-foto="${usuario.foto}"
                      th:data-celular="${usuario.celular}"
                      >
                 </div>
@@ -84,40 +89,37 @@
                 <div class="modal-body">
                     <form id="usuarioForm" th:action="@{/admin/usuarios/update}" method="post">
                         <input type="hidden" id="usuarioId" name="id" value="">
-                        
-                        <div class="info-section">
-                            <div class="subheader mb-3">
-                                <p>ID del Usuario: <strong id="usuarioIdDisplay">-</strong></p>
-                            </div>
 
-                            <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                                <div class="info-block">
-                                    <label for="modalNombre" class="form-label">Nombre completo</label>
-                                    <input type="text" id="modalNombre" name="nombre" class="form-control" disabled required />
+                        <div class="info-section" style="display: flex; gap: 30px;">
+                            <div class="info-details" style="flex: 2;">
+                                <div class="subheader mb-3">
+                                    <p>ID del Usuario: <strong id="usuarioIdDisplay">-</strong></p>
                                 </div>
-                                <div class="info-block">
-                                    <label for="modalEmail" class="form-label">Correo electrónico</label>
-                                    <input type="email" id="modalEmail" name="email" class="form-control" disabled required />
+                                <div class="info-grid">
+                                    <div class="info-block">
+                                        <label for="modalNombre" class="form-label">Nombre completo</label>
+                                        <input type="text" id="modalNombre" name="nombre" class="form-control" disabled required />
+                                    </div>
+                                    <div class="info-block">
+                                        <label for="modalEmail" class="form-label">Correo electrónico</label>
+                                        <input type="email" id="modalEmail" name="email" class="form-control" disabled required />
+                                    </div>
+                                    <div class="info-block">
+                                        <label for="modalCelular" class="form-label">Número de celular</label>
+                                        <input type="text" id="modalCelular" name="celular" class="form-control" disabled required />
+                                    </div>
+                                    <div class="info-block">
+                                        <label for="modalCodigo" class="form-label">Código</label>
+                                        <input type="text" id="modalCodigo" name="codigo" class="form-control" disabled />
+                                    </div>
                                 </div>
-                                <div class="info-block">
-                                    <label for="modalCelular" class="form-label">Número de celular</label>
-                                    <input type="text" id="modalCelular" name="celular" class="form-control" disabled required />
-                                </div>
-                                <div class="info-block">
-                                    <label for="modalRol" class="form-label">Rol en el sistema</label>
-                                    <select id="modalRol" name="rol" class="form-select" disabled required>
-                                        <option value="" disabled>Seleccione un rol</option>
-                                        <option value="USER">Usuario</option>
-                                        <option value="ADMIN">Administrador</option>
-                                        <option value="TRABAJADOR">Trabajador</option>
-                                    </select>
-                                </div>
-                                <div class="info-block">
-                                    <label for="modalCodigo" class="form-label">Código</label>
-                                    <input type="text" id="modalCodigo" name="codigo" class="form-control" disabled />
-                                </div>
+                            </div>
+                            <div class="info-photo" style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                                <img id="modalFotoUsuario" src="" alt="Foto del usuario" />
                             </div>
                         </div>
+
+
                     </form>
                 </div>
                 <div class="modal-footer" style="border-top: none;">

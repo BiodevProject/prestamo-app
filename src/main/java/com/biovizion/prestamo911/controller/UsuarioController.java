@@ -135,13 +135,24 @@ public class UsuarioController {
 
     @GetMapping("/solicitarCredito")
     public String solicitarCreditoForm(Model model, Principal principal) {
-        // Get current user's name
-        String currentUserName = getCurrentUserName(principal);
-        model.addAttribute("currentUserName", currentUserName);
-        model.addAttribute("credito", new com.biovizion.prestamo911.entities.CreditoEntity());
+        String currentUserName = principal.getName();
+        UsuarioEntity usuario = usuarioService.findByEmail(currentUserName)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + currentUserName));
+
+        CreditoEntity credito = new CreditoEntity();
+        UsuarioSolicitudEntity solicitud = new UsuarioSolicitudEntity();
+
+        solicitud.setNombres(usuario.getNombre());
+        solicitud.setApellidos(usuario.getApellido());
+        solicitud.setEmail(usuario.getEmail());
+
+        credito.setUsuarioSolicitud(solicitud);
+
+        model.addAttribute("credito", credito);
         return "appDashboard/user/solicitarCredito";
     }
-    
+
+
     @GetMapping("/estadoDeCreditos")
     public String estadoDeCreditos(Model model, Principal principal) {
         // Get current user's name

@@ -177,8 +177,6 @@ public class HomeController {
                     .body("Error al marcar el crédito como pendiente: " + e.getMessage());
         }
     }
-
-    
     // ADMIN: Reject Credit
     @PostMapping("/admin/creditos/{id}/rechazar")
     @ResponseBody
@@ -197,11 +195,6 @@ public class HomeController {
                 .body("Error al rechazar el crédito: " + e.getMessage());
         }
     }
-
-
-
-
-    
     // Helper method to get current user's name
     private String getCurrentUserName(Principal principal) {
         if (principal == null) {
