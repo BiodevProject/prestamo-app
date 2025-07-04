@@ -17,7 +17,7 @@
     </header>
 
     <div class="info-section">
-      <form th:action="@{/usuario/update}" method="post" id="user-form">
+      <form th:action="@{/usuario/update}" method="post" id="user-form" enctype="multipart/form-data">
         <input type="hidden" name="id" th:value="${usuario.id}" />
 
         <div class="info-grid">
@@ -33,12 +33,12 @@
             <label for="celular">Número de celular</label>
             <input type="text" id="celular" name="celular" th:value="${usuario.celular}" disabled required />
           </div>
+
+          <!-- NUEVO CAMPO DE FOTO -->
           <div class="info-block">
-            <label for="rol">Rol en el sistema</label>
-            <select id="rol" name="rol" class="form-select" disabled required>
-              <option value="" disabled>Seleccione un rol</option>
-              <option value="USER" th:selected="${usuario.rol == 'USER'}">Usuario</option>
-            </select>
+            <label for="foto">Añadir foto de perfil</label>
+            <input type="file" id="foto" name="foto" accept="image/*" disabled onchange="previewImage(event)" />
+            <img id="foto-preview" th:src="${usuario.foto}" alt="Vista previa" style="margin-top:10px; max-width: 200px; display:block;" />
           </div>
         </div>
 
@@ -62,6 +62,18 @@
       editBtn.style.display = "none";
       saveBtn.style.display = "inline-block";
     });
+
+    function previewImage(event) {
+      const preview = document.getElementById('foto-preview');
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          preview.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   </script>
 
 </div>

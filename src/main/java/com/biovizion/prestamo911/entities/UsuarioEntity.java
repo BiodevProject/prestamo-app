@@ -41,6 +41,11 @@ public class UsuarioEntity {
     private boolean activo;
 
 
+    private String foto;
+    private String dui;
+    private String nit;
+
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<HistorialPagoEntity> pagos = new ArrayList<>();
 

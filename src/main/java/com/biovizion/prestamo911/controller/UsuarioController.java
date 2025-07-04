@@ -17,15 +17,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.entities.UsuarioSolicitudEntity;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -172,7 +176,7 @@ public class UsuarioController {
             .collect(Collectors.toList());
         
         model.addAttribute("creditos", creditosDto);
-        return "appDashboard/user/creditosPendientes-simple";
+        return "appDashboard/user/creditosPendientes";
     }
 
     @GetMapping("/pagarCredito")
@@ -235,21 +239,39 @@ public class UsuarioController {
         return "usuario/userEdit";
     }
 
-
-
-
     @PostMapping("/update")
-    public String updateUsuario(@ModelAttribute UsuarioEntity usuario) {
-
-        // Obtener el usuario existente y conservar la contraseña
-        UsuarioEntity usuarioExistente = usuarioService.findById(usuario.getId())
+    public String updateUsuario(
+            @RequestParam("id") Long id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("email") String email,
+            @RequestParam("celular") String celular,
+            @RequestParam(value = "foto", required = false) MultipartFile foto
+    ) {
+        UsuarioEntity usuario = usuarioService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        usuario.setPassword(usuarioExistente.getPassword());
+        usuario.setNombre(nombre);
+        usuario.setEmail(email);
+        usuario.setCelular(celular);
+
+        if (foto != null && !foto.isEmpty()) {
+            try {
+                String nombreArchivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
+                String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
+                File destino = new File(rutaFotos + nombreArchivo);
+                foto.transferTo(destino);
+                usuario.setFoto("/fotos-usuarios/" + nombreArchivo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         usuarioService.update(usuario);
-        return "redirect:/usuario/dashboard";
+        return "redirect:/usuario/edit/" + id;
     }
+
+
+
 
     @PostMapping("/delete/{id}")
     public String deleteUsuario(@PathVariable Long id) {

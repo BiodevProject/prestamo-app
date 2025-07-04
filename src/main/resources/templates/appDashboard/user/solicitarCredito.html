@@ -16,7 +16,7 @@
 </head>
 <body>
 <div th:fragment="content" class="credito-detail solicitar-credito-form">
-    <form th:action="@{/credito/save}" th:object="${credito}" method="post" autocomplete="off">
+    <form th:action="@{/credito/save}" th:object="${credito}" method="post" autocomplete="off" enctype="multipart/form-data">
         <input type="hidden" th:field="*{estado}" th:value="'pendiente'" />
 
         <!-- Resumen del Crédito -->
@@ -80,32 +80,16 @@
                             <input type="text" th:field="*{usuarioSolicitud.apellidos}" required placeholder="Ej: Pérez González">
                         </div>
                         <div class="info-item important-field">
-                            <span class="info-label">Número de DUI</span>
-                            <input type="text" th:field="*{usuarioSolicitud.dui}" required placeholder="12345678-9">
+                            <span class="info-label">Foto de DUI</span>
+                            <input type="file" name="dui" accept="image/*" />
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Número de NIT</span>
-                            <input type="text" th:field="*{usuarioSolicitud.nit}" required placeholder="1234-567890-123-4">
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Fecha de Nacimiento</span>
-                            <input type="date" th:field="*{usuarioSolicitud.fechaNacimiento}" required>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Estado Civil</span>
-                            <input type="text" th:field="*{usuarioSolicitud.estadoCivil}" required placeholder="Ej: Soltero">
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Teléfono</span>
+                            <span class="info-label">Numero de celular (Whatsapp)</span>
                             <input type="text" th:field="*{usuarioSolicitud.telefono}" required placeholder="Ej: 999888777">
                         </div>
                         <div class="info-item">
                             <span class="info-label">Email</span>
                             <input type="email" th:field="*{usuarioSolicitud.email}" required placeholder="usuario@email.com">
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Dirección</span>
-                            <input type="text" th:field="*{usuarioSolicitud.direccion}" required placeholder="Ej: San Salvador, El Salvador">
                         </div>
                         </div>
                     </div>

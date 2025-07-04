@@ -1,10 +1,13 @@
 package com.biovizion.prestamo911.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
 import com.biovizion.prestamo911.service.UsuarioService;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -50,21 +54,28 @@ public class CreditoController {
     }
 
     @PostMapping("/save")
-    public String saveCredito(@ModelAttribute CreditoEntity credito) {
+    public String saveCredito(@ModelAttribute CreditoEntity credito,
+                              @RequestParam(value = "dui", required = false) MultipartFile duiFile) throws IOException {
 
-        // Obtener la sesión actual
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName(); // normalmente el email es el username
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
 
-        // Buscar el usuario desde tu servicio por su email
         UsuarioEntity usuario = usuarioService.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        if (duiFile != null && !duiFile.isEmpty()) {
+            String nombreArchivo = UUID.randomUUID() + "_" + duiFile.getOriginalFilename();
+            String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
+            File destino = new File(rutaFotos + nombreArchivo);
+            duiFile.transferTo(destino);
 
-        // Asociar el crédito al usuario autenticado
+            // GUARDAR EN usuarioSolicitud.dui, NO en usuario.dui
+            if (credito.getUsuarioSolicitud() != null) {
+                credito.getUsuarioSolicitud().setDui("/fotos-usuarios/" + nombreArchivo);
+            }
+        }
+
         credito.setUsuario(usuario);
-
-        // Guardar el crédito
         creditoService.save(credito);
 
         return "redirect:/usuario/estadoDeCreditos";
