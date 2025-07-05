@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Todos los creditos Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: todos-table-content(creditos=${creditos})}"></div> -->
+<div th:fragment="todos-table-content(creditos)">
+    <div id="todosTable" class="table-switchable-table">
+        <table class="table">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span 
+                            th:text="${credito.estado}"
+                            th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}">
+                        </span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- Empty State -->
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos aceptados Table -->
+<div th:fragment="aceptados-table-content(creditos)">
+    <div id="aceptadosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+
+                    <!-- Acciones -->
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        
+                        <!-- Boton para ir a la pagina de cuotas del credito-->
+                        <a th:href="@{'/usuario/credito/cuotas/' + ${credito.id}}" class="btn btn-success btn-sm">
+                            <i class="fas fa-calendar-alt"></i> Ver cuotas
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos pendientes Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: pendientes-table-content(creditos=${creditosPendientes})}"></div> -->
+<div th:fragment="pendientes-table-content(creditos)">
+    <div id="pendientesTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos rechazados Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: rechazados-table-content(creditos=${creditosRechazados})}"></div> -->
+<div th:fragment="rechazados-table-content(creditos)">
+    <div id="rechazadosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos finalizados Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: finalizados-table-content(creditos=${creditosFinalizados})}"></div> -->
+<div th:fragment="finalizados-table-content(creditos)">
+    <div id="finalizadosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Table Switcher Scripts Fragment: include this ONCE per page after all tables -->
+<th:block th:fragment="table-switcher-scripts">
+<script>
+// Table switcher and pagination logic
+// This script will work for all tables on the page that use the .table-switchable-table pattern
+document.addEventListener('DOMContentLoaded', function() {
+    const tableButtons = document.querySelectorAll('[data-table-target]');
+    const tables = document.querySelectorAll('.table-switchable-table');
+    const rowsPerPage = 5;
+    let currentPage = {};
+
+    // Show the first table by default, hide others
+    tables.forEach((table, idx) => {
+        table.style.display = idx === 0 ? '' : 'none';
+        currentPage[table.id] = 1;
+        setupPagination(table, table.id);
+    });
+
+    tableButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = button.getAttribute('data-table-target').substring(1);
+            tables.forEach(table => {
+                table.style.display = (table.id === targetId) ? '' : 'none';
+            });
+            // Optionally, update button active state
+            tableButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            // Reset pagination to first page for the shown table
+            currentPage[targetId] = 1;
+            setupPagination(document.getElementById(targetId), targetId);
+            
+            // Clear search input when switching tables
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        });
+    });
+
+    function setupPagination(table, tableId) {
+        const tableRows = table.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.dataset.visible = 'true';
+        });
+        updatePagination(table, tableId, tableRows.length);
+    }
+
+    function updatePagination(table, tableId, totalRows) {
+        const tableRows = table.querySelectorAll('tbody tr');
+        const paginationContainer = table.querySelector('.pagination-container');
+        const totalPages = Math.ceil(totalRows / rowsPerPage);
+        if (currentPage[tableId] > totalPages) {
+            currentPage[tableId] = Math.max(1, totalPages);
+        }
+        const startRow = (currentPage[tableId] - 1) * rowsPerPage;
+        let visibleCount = 0;
+        tableRows.forEach((row, idx) => {
+            if (row.parentElement.tagName.toLowerCase() === 'tbody' && row.dataset.visible !== 'false') {
+                if (visibleCount >= startRow && visibleCount < startRow + rowsPerPage) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+                visibleCount++;
+            }
+        });
+        let paginationHTML = '';
+        paginationHTML += `<button class="btn btn-sm btn-outline-secondary mr-2" 
+                                onclick="changePage('${tableId}', ${currentPage[tableId] - 1})" 
+                                ${currentPage[tableId] <= 1 ? 'disabled' : ''}>
+                                &laquo; Anterior
+                            </button>`;
+        paginationHTML += `<span class="mx-2">
+                                Página ${currentPage[tableId]} de ${totalPages || 1}
+                            </span>`;
+        paginationHTML += `<button class="btn btn-sm btn-outline-secondary ml-2" 
+                                onclick="changePage('${tableId}', ${currentPage[tableId] + 1})" 
+                                ${currentPage[tableId] >= totalPages ? 'disabled' : ''}>
+                                Siguiente &raquo;
+                            </button>`;
+        paginationContainer.innerHTML = paginationHTML;
+    }
+
+    // Expose changePage globally for inline onclick
+    window.changePage = function(tableId, newPage) {
+        const table = document.getElementById(tableId);
+        const tableRows = table.querySelectorAll('tbody tr');
+        let visibleRows = 0;
+        tableRows.forEach(row => {
+            if (row.parentElement.tagName.toLowerCase() === 'tbody' && row.dataset.visible !== 'false') visibleRows++;
+        });
+        const totalPages = Math.ceil(visibleRows / rowsPerPage);
+        if (newPage < 1) newPage = 1;
+        if (newPage > totalPages) newPage = totalPages;
+        currentPage[tableId] = newPage;
+        updatePagination(table, tableId, visibleRows);
+    };
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const visibleTable = document.querySelector('.table-switchable-table[style*=""]') || 
+                               document.querySelector('.table-switchable-table:not([style*="none"])');
+            
+            if (visibleTable) {
+                const tableRows = visibleTable.querySelectorAll('tbody tr');
+                let visibleCount = 0;
+                
+                tableRows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const matches = text.includes(searchTerm);
+                    
+                    if (matches) {
+                        row.style.display = '';
+                        row.dataset.visible = 'true';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                        row.dataset.visible = 'false';
+                    }
+                });
+                
+                // Update pagination for the visible table
+                const tableId = visibleTable.id;
+                currentPage[tableId] = 1;
+                updatePagination(visibleTable, tableId, visibleCount);
+            }
+        });
+    }
+
+    // Clear search function
+    window.clearSearch = function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    };
+});
+</script>
+</th:block>
+
+<!-- Modal Content Fragment - Reusable across pages -->
+<div th:fragment="modal-content(creditos)">
+    <div style="display:none;">
+        <div th:each="credito : ${creditos}" th:id="'modal-content-' + ${credito.id}">
+            <div class="credito-detail">
+                <!-- Credit Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Resumen del Crédito
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid">
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto Solicitado</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}">$1,000.00</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Identificador</div>
+                                <div class="summary-value" th:text="${credito.id}">123</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Estado</div>
+                                <div class="summary-value">
+                                    <span class="status-badge" th:class="${'status-' + credito.estado}" th:text="${credito.estado}">Pendiente</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Plazo</div>
+                                <div class="summary-value" th:text="${credito.plazoMeses + ' meses'}">12 meses</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Fecha de Solicitud</div>
+                                <div class="summary-value" th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</div>
+                            </div>
+                            <div th:if="${credito.total != null}" class="summary-item financial-field total-highlight">
+                                <div class="summary-label">Monto Total</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.total, 1, 'COMMA', 2, 'POINT')}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sections Grid -->
+                <div class="sections-grid">
+                    <!-- Personal Information -->
+                    <div class="section-card" th:if="${credito.usuarioSolicitud != null}">
+                        <div class="section-header">
+                            <div class="section-header-left">
+                                <i class="fas fa-user"></i>
+                                Información Personal
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <div class="info-grid">
+                                <div class="info-item important-field">
+                                    <span class="info-label">Nombres</span>
+                                    <span class="info-value" th:text="${credito.usuarioSolicitud.nombres}">Juan Carlos</span>
+                                </div>
+                                <div class="info-item important-field">
+                                    <span class="info-label">Apellidos</span>
+                                    <span class="info-value" th:text="${credito.usuarioSolicitud.apellidos}">Pérez González</span>
+                                </div>
+                                <div class="info-item important-field">
+                                    <span class="info-label">Foto del DUI</span>
+                                    <div class="info-value">
+                                        <img th:src="@{${credito.usuarioSolicitud.dui}}" alt="Foto DUI" class="dui-thumbnail" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- User Account Information -->
+                    <div class="section-card" th:if="${credito.usuario != null}">
+                        <div class="section-header">
+                            <div class="section-header-left">
+                                <i class="fas fa-user-circle"></i>
+                                Información de la Cuenta
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <div class="info-grid">
+                                <div class="info-item important-field">
+                                    <span class="info-label">Nombre Completo</span>
+                                    <span class="info-value" th:text="${credito.usuario.nombre != null ? credito.usuario.nombre : 'N/A'}">Juan Pérez</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Correo Electrónico</span>
+                                    <span class="info-value" th:text="${credito.usuario.email != null ? credito.usuario.email : 'N/A'}">juan@email.com</span>
+                                    <div class="contact-info">
+                                        <i class="fas fa-envelope contact-icon"></i>
+                                        <span style="font-size: 12px; color: #6c757d;">Correo principal</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Work Information -->
+                <div class="section-card" th:if="${credito.usuarioSolicitud != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-briefcase"></i>
+                            Información Laboral
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Empresa o Institución</span>
+                                <span class="info-value" th:text="${credito.usuarioSolicitud.empresaTrabajo}">Tech Solutions S.A.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Cargo o Puesto</span>
+                                <span class="info-value" th:text="${credito.usuarioSolicitud.puesto}">Desarrollador Senior</span>
+                            </div>
+                            <div class="info-item financial-field">
+                                <span class="info-label">Ingreso Mensual</span>
+                                <span class="info-value amount-highlight" th:text="${'$' + credito.usuarioSolicitud.ingresoMensual}">$2,500.00</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tipo de Contrato</span>
+                                <span class="info-value" th:text="${credito.usuarioSolicitud.tipoContrato}">Indefinido</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contact Information -->
+                <div class="section-card" th:if="${credito.usuarioSolicitud != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-address-book"></i>
+                            Información de Contacto
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Teléfono de Contacto</span>
+                                <span class="info-value" th:text="${credito.usuarioSolicitud.telefono}">+503 1234-5678</span>
+                                <div class="contact-info">
+                                    <i class="fas fa-phone contact-icon"></i>
+                                    <span style="font-size: 12px; color: #6c757d;">Teléfono de la solicitud</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Correo Electrónico</span>
+                                <span class="info-value" th:text="${credito.usuarioSolicitud.email}">juan@email.com</span>
+                                <div class="contact-info">
+                                    <i class="fas fa-envelope contact-icon"></i>
+                                    <span style="font-size: 12px; color: #6c757d;">Email de la solicitud</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Dirección Residencial</span>
+                                <span class="info-value" th:text="${credito.usuarioSolicitud.direccion}">San Salvador, El Salvador</span>
+                                <div class="contact-info">
+                                    <i class="fas fa-map-marker-alt contact-icon"></i>
+                                    <span style="font-size: 12px; color: #6c757d;">Dirección de la solicitud</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Credit Details -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-info-circle"></i>
+                            Detalles del Crédito
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="info-item">
+                                <span class="info-label">Destino del Crédito</span>
+                                <span class="info-value" th:text="${credito.destino != null ? credito.destino : 'No especificado'}">Personal</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Forma de Pago</span>
+                                <span class="info-value" th:text="${credito.formaDePago != null ? credito.formaDePago : 'No especificado'}">Mensual</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Financial Charges Modal Content Fragment - Reusable across pages -->
+<div th:fragment="financial-charges-modal-content(creditos)">
+    <div style="display:none;">
+        <div th:each="credito : ${creditos}" th:id="'financial-charges-modal-content-' + ${credito.id}">
+            <div class="credito-detail">
+                <!-- Credit Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Configurar Cargos Financieros
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid">
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto Solicitado</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(credito.monto, 1, 'COMMA', 2, 'POINT')}">$1,000.00</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Identificador</div>
+                                <div class="summary-value" th:text="${credito.id}">123</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Plazo</div>
+                                <div class="summary-value" th:text="${credito.plazoMeses + ' meses'}">12 meses</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Solicitante</div>
+                                <div class="summary-value" th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}">Juan Pérez</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Financial Charges Configuration -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-calculator"></i>
+                            Cargos Financieros
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="info-item important-field">
+                                <span class="info-label">Porcentaje de Interés (%)</span>
+                                <input type="number" class="form-control" id="porcentajeInteres" name="porcentajeInteres" step="0.01" required value="12.00" style="margin-top: 5px;">
+                            </div>
+                            <div class="info-item important-field">
+                                <span class="info-label">Porcentaje de IVA (%)</span>
+                                <input type="number" class="form-control" id="porcentajeIva" name="porcentajeIva" step="0.01" required value="13.00" style="margin-top: 5px;">
+                            </div>
+                            <div class="info-item important-field">
+                                <span class="info-label">Comisión Fija</span>
+                                <input type="number" class="form-control" id="comisionFija" name="comisionFija" step="0.01" required value="50.00" style="margin-top: 5px;">
+                            </div>
+                            <div class="info-item important-field">
+                                <span class="info-label">Porcentaje de Mora (%)</span>
+                                <input type="number" class="form-control" id="porcentajeMora" name="porcentajeMora" step="0.01" required value="2.00" style="margin-top: 5px;">
+                            </div>
+                            <div class="info-item important-field" style="grid-column: 1 / -1;">
+                                <span class="info-label">Fecha de Primera Comisión</span>
+                                <input type="date" class="form-control" id="fechainicial" name="proximoPago" required style="margin-top: 5px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Real-time Calculations Section -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-chart-line"></i>
+                            Cálculos en Tiempo Real
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto;">
+                            <div class="summary-item financial-field" style="grid-column: 1 / 2;">
+                                <div class="summary-label">Monto Interés</div>
+                                <div class="summary-value" id="interesCalculado">$0.00</div>
+                            </div>
+                            <div class="summary-item financial-field" style="grid-column: 2 / 3;">
+                                <div class="summary-label">Monto IVA</div>
+                                <div class="summary-value" id="ivaCalculado">$0.00</div>
+                            </div>
+                            <div class="summary-item monto-highlight" style="grid-column: 3 / 4;">
+                                <div class="summary-label">Cuota Mensual</div>
+                                <div class="summary-value" id="cuotaMensualCalculada">$0.00</div>
+                            </div>
+                            <div class="summary-item monto-highlight" style="grid-column: 1 / -1; grid-row: 2;">
+                                <div class="summary-label">Monto Total</div>
+                                <div class="summary-value" id="totalCalculado">$0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================== -->
+<!-- CREDITO CUOTA ENTITY TABLE FRAGMENTS -->
+<!-- ======================================== -->
+
+<!-- Todos las cuotas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: todos-cuotas-table-content(cuotas=${cuotas})}"></div> -->
+<div th:fragment="todos-cuotas-table-content(cuotas)">
+    <div id="todosCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Mora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td th:text="${cuota.pagoMora != null ? '$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '$0.00'}">$0.00</td>
+                    <td>
+                        <span 
+                            th:text="${cuota.estado}"
+                            th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}">
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- Empty State -->
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No hay cuotas registradas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas pendientes Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: pendientes-cuotas-table-content(cuotas=${cuotasPendientes})}"></div> -->
+<div th:fragment="pendientes-cuotas-table-content(cuotas)">
+    <div id="pendientesCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button class="btn btn-success btn-sm" 
+                                th:onclick="'showCuotaPagarDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-credit-card"></i> Pagar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas pendientes</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas en revisión Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: enrevision-cuotas-table-content(cuotas=${cuotasEnRevision})}"></div> -->
+<div th:fragment="enrevision-cuotas-table-content(cuotas)">
+    <div id="enrevisionCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Fecha Pago</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${cuota.fechaPago != null ? #temporals.format(cuota.fechaPago, 'dd/MM/yyyy') : 'N/A'}">20/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas en revisión</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas pagadas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: pagadas-cuotas-table-content(cuotas=${cuotasPagadas})}"></div> -->
+<div th:fragment="pagadas-cuotas-table-content(cuotas)">
+    <div id="pagadasCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Fecha Pago</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${cuota.fechaPago != null ? #temporals.format(cuota.fechaPago, 'dd/MM/yyyy') : 'N/A'}">20/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas pagadas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas vencidas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/tables :: vencidas-cuotas-table-content(cuotas=${cuotasVencidas})}"></div> -->
+<div th:fragment="vencidas-cuotas-table-content(cuotas)">
+    <div id="vencidasCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Mora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td th:text="${cuota.pagoMora != null ? '$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '$0.00'}">$0.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas vencidas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuota Details Modal Content Fragment - Reusable across pages -->
+<div th:fragment="cuota-modal-content(cuotas)">
+    <div style="display:none;">
+        <div th:each="cuota : ${cuotas}" th:id="'cuota-modal-content-' + ${cuota.id}">
+            <div class="credito-detail">
+                <!-- Cuota Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-calendar-check"></i>
+                            Detalle de Cuota
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid">
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto de la Cuota</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Código</div>
+                                <div class="summary-value" th:text="${cuota.codigo}">CUOTA-001</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Estado</div>
+                                <div class="summary-value">
+                                    <span class="status-badge" th:class="${'status-' + cuota.estado}" th:text="${cuota.estado}">Pendiente</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Fecha de Vencimiento</div>
+                                <div class="summary-value" th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</div>
+                            </div>
+                            <div class="summary-item" th:if="${cuota.fechaPago != null}">
+                                <div class="summary-label">Fecha de Pago</div>
+                                <div class="summary-value" th:text="${#temporals.format(cuota.fechaPago, 'dd/MM/yyyy')}">20/01/2024</div>
+                            </div>
+                            <div class="summary-item financial-field" th:if="${cuota.pagoMora != null && cuota.pagoMora > 0}">
+                                <div class="summary-label">Mora</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credit Information -->
+                <div class="section-card full-width" th:if="${cuota.credito != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Información del Crédito
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">ID del Crédito</span>
+                                <span class="info-value" th:text="${cuota.credito.id}">123</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Estado del Crédito</span>
+                                <span class="info-value" th:text="${cuota.credito.estado != null ? cuota.credito.estado : 'N/A'}">Aceptado</span>
+                            </div>
+                            <div class="info-item financial-field">
+                                <span class="info-label">Monto Total del Crédito</span>
+                                <span class="info-value amount-highlight" th:text="${cuota.credito.total != null ? '$' + #numbers.formatDecimal(cuota.credito.total, 1, 'COMMA', 2, 'POINT') : 'N/A'}">$1,200.00</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Plazo</span>
+                                <span class="info-value" th:text="${cuota.credito.plazoMeses != null ? cuota.credito.plazoMeses + ' meses' : 'N/A'}">12 meses</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Information -->
+                <div class="section-card full-width" th:if="${cuota.credito != null && cuota.credito.usuario != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-user"></i>
+                            Información del Usuario
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item important-field">
+                                <span class="info-label">Nombre Completo</span>
+                                <span class="info-value" th:text="${cuota.credito.usuario.nombre != null && cuota.credito.usuario.apellido != null ? cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido : 'N/A'}">Juan Pérez</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Correo Electrónico</span>
+                                <span class="info-value" th:text="${cuota.credito.usuario.email != null ? cuota.credito.usuario.email : 'N/A'}">juan@email.com</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Código de Usuario</span>
+                                <span class="info-value" th:text="${cuota.credito.usuario.codigo != null ? cuota.credito.usuario.codigo : 'N/A'}">USR-001</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cuota Pagar Modal Content Fragment - Reusable across pages -->
+<div th:fragment="cuota-pagar-modal-content(cuotas)">
+    <div style="display:none;">
+        <div th:each="cuota : ${cuotas}" th:id="'cuota-pagar-modal-content-' + ${cuota.id}">
+            <div class="credito-detail">
+                <!-- Cuota Pagar Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-calendar-check"></i>
+                            Detalle de Cuota
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid">
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto de la Cuota</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</div>
+                            </div>
+                            <div class="summary-item financial-field" th:if="${cuota.pagoMora != null && cuota.pagoMora > 0}">
+                                <div class="summary-label">Mora</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                            </div>
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto a Pagar</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.monto + (cuota.pagoMora != null ? cuota.pagoMora : 0), 1, 'COMMA', 2, 'POINT')}">$100.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Information -->
+                <div class="section-card full-width" th:if="${cuota.credito != null && cuota.credito.usuario != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-user"></i>
+                            Medio de Pago
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item important-field">
+                                <img src="/images/qrDePago.svg" alt="QR Code para Pago" style="max-width: 300px; height: auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+
+                    <button type="button" class="btn btn-primary" onclick="payCuota()">
+                        <i class="fas fa-credit-card"></i> Pagar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html> 

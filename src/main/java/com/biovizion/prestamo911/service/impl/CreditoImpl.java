@@ -46,8 +46,8 @@ public class CreditoImpl implements CreditoService {
     }
 
     @Override
-    public List<CreditoEntity> findAceptadas() {
-        return creditoRepository.findAceptadas();
+    public List<CreditoEntity> findAceptados() {
+        return creditoRepository.findAceptados();
     }
 
     @Override
@@ -63,5 +63,25 @@ public class CreditoImpl implements CreditoService {
     @Override
     public List<CreditoEntity> findByUsuarioId(Long id) {
         return creditoRepository.findByUsuarioId(id);
+    }
+
+    @Override
+    public List<CreditoEntity> findPendientesByUsuarioId(Long id) {
+        return creditoRepository.findPendientesByUsuarioId(id);
+    }
+
+    @Override
+    public List<CreditoEntity> findAceptadosByUsuarioId(Long id) {
+        return creditoRepository.findAceptadosByUsuarioId(id);
+    }
+
+    @Override
+    public List<CreditoEntity> findRechazadosByUsuarioId(Long id) {
+        return creditoRepository.findRechazadosByUsuarioId(id);
+    }
+
+    @Override
+    public List<CreditoEntity> findFinalizadosByUsuarioId(Long id) {
+        return creditoRepository.findFinalizadosByUsuarioId(id);
     }
 }
