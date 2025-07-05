@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{appDashboard/user/layout :: layout(
-          pageTitle='Cuotas de Créditos',
-          pageSubtitle='Tus cuotas de crédito',
-          activePage='cuotasCreditos',
+      th:replace="~{appDashboard/admin/layout :: layout(
+          pageTitle='Cuotas de Créditos del usuario ' + ${usuario.nombre},
+          pageSubtitle='Gestión de cuotas de créditos del usuario',
+          activePage='creditoCuotas',
           content=~{::content},
           pageCss=~{::css},
           pageScripts=~{::scripts}
@@ -63,7 +63,6 @@
     
     <!-- Modal content for cuota details -->
     <div th:replace="~{fragments/cuotaModals :: cuota-modal-content(cuotas=${cuotas})}"></div>
-    <div th:replace="~{fragments/cuotaModals :: cuota-pagar-modal-content(cuotas=${cuotas})}"></div>
 </div>
 
 <th:block th:fragment="scripts">

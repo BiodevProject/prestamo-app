@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequestMapping("/auth")
-public class LoginController {
+public class AuthController {
 
     @GetMapping("/login")
     public String vistalogin() {
@@ -21,6 +21,11 @@ public class LoginController {
     public String vistaregistro(Model model) {
         model.addAttribute("usuario", new UsuarioEntity());
         return "auth/register";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        return "redirect:/auth/login?logout";
     }
 }
 

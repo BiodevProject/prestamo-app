@@ -16,54 +16,90 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker@3.1.0/daterangepicker.css" rel="stylesheet">
     <!-- bootstrap wysihtml5 - text editor -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-wysiwyg/0.3.3/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
-        <link href="/appDashboard/admin/dist/css/index.css" rel="stylesheet" type="text/css" />
     </th:block>
   </head>
 <body>
 
 <div th:fragment="content">
-    <!-- Small boxes (Stat box) -->
-    <div class="row">
+    <!-- Dashboard Stats Cards -->
+    <div class="dashboard-stats">
+        <div class="stats-grid">
+            <div class="stat-card stat-card-info">
+                <a href="/admin/usuarios" class="stat-link">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Usuarios</h3>
+                            <p>Usuarios registrados</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Mostrar tabla de usuarios</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
+                </a>
+            </div>
 
-        <div class="col-lg-3 col-6">
-            <a href="/admin/usuarios" class="text-decoration-none">
-                <div class="small-box bg-info">
-                    <div class="inner"><h3>Usuarios</h3><p>Usuarios registrados</p></div>
-                    <div class="icon"><i class="ion ion-bag"></i></div>
-                    <div class="small-box-footer">Mostrar tabla de usuarios <i class="fas fa-arrow-circle-right"></i></div>
+            <div class="stat-card stat-card-success">
+                <a href="/admin/trabajadores" class="stat-link">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Trabajadores</h3>
+                            <p>Trabajadores registrados</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Mostrar tabla de trabajadores</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="stat-card stat-card-warning">
+                <div class="stat-link" th:onclick="'showUsuarioDetails(' + ${usuario.id} + ')'" style="cursor: pointer;">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Editar Cuenta</h3>
+                            <p>Actualiza tu información</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Editar cuenta</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
                 </div>
-            </a>
-        </div>
+            </div>
 
-        <div class="col-lg-3 col-6">
-            <a href="/admin/trabajadores" class="text-decoration-none">
-                <div class="small-box bg-success">
-                    <div class="inner"><h3>Trabajadores</h3><p>Trabajadores registrados</p></div>
-                    <div class="icon"><i class="ion ion-stats-bars"></i></div>
-                    <div class="small-box-footer">Mostrar tabla de trabajadores <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-4 col-12 mb-4">
-            <a href="/usuario/cuenta" class="text-decoration-none">
-                <div class="small-box bg-warning">
-                    <div class="inner"><h3>Editar Cuenta</h3><p>Actualiza tu información</p></div>
-                    <div class="icon"><i class="fas fa-user-edit"></i></div>
-                    <div class="small-box-footer">Editar cuenta <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <a href="/admin/creditos/cobros" class="text-decoration-none">
-                <div class="small-box bg-danger">
-                    <div class="inner"><h3>Cobros</h3><p>Cobros pendientes</p></div>
-                    <div class="icon"><i class="ion ion-person-add"></i></div>
-                    <div class="small-box-footer">Mostrar tabla de cobros <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
-            </a>
+            <div class="stat-card stat-card-danger">
+                <a href="/admin/creditos/cobros" class="stat-link">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Cobros</h3>
+                            <p>Cobros pendientes</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Mostrar tabla de cobros</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
+    
+    <!-- Modal content for SweetAlert2 - needed for Editar Cuenta button -->
+    <div th:replace="~{fragments/usuarioModals :: modal-content(usuarios=${[usuario]})}"></div>
 </div>
 
 <th:block th:fragment="scripts">

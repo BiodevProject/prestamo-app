@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Modal Content Fragment - Reusable across pages -->
+<div th:fragment="modal-content(usuarios)">
+    <div style="display:none;">
+        <div th:each="usuario : ${usuarios}" th:id="'modal-content-' + ${usuario.id}">
+            <div class="credito-detail">
+                <!-- Usuario Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Resumen del Usuario
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <form th:id="'usuario-form-' + ${usuario.id}" th:action="@{/usuario/update}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id" th:value="${usuario.id}" />
+                            
+                            <div class="summary-grid">
+                                <div class="summary-item financial-field monto-highlight">
+                                    <div class="summary-label">Código</div>
+                                    <div class="summary-value" th:text="${usuario.codigo}">USUARIO-001</div>
+                                </div>
+                                <div class="summary-item financial-field monto-highlight">
+                                    <div class="summary-label">Nombres</div>
+                                    <div class="summary-value">
+                                        <input type="text" name="nombre" th:value="${usuario.nombre}" disabled class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-label">Apellidos</div>
+                                    <div class="summary-value">
+                                        <input type="text" name="apellido" th:value="${usuario.apellido}" disabled class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-label">Email</div>
+                                    <div class="summary-value">
+                                        <input type="email" name="email" th:value="${usuario.email}" disabled class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-label">Celular</div>
+                                    <div class="summary-value">
+                                        <input type="text" name="celular" th:value="${usuario.celular}" disabled class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="summary-label">Foto</div>
+                                    <div class="summary-value">
+                                        <input type="file" name="foto" accept="image/*" disabled class="form-control" th:onchange="|previewImage(event, 'foto-preview-${usuario.id}')|" />
+                                        <div class="mt-2">
+                                            <img th:id="'foto-preview-' + ${usuario.id}" th:src="${usuario.foto}" alt="Vista previa" style="max-width: 200px; display:block;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary usuario-editar-btn">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button type="button" class="btn btn-success usuario-guardar-btn" style="display: none;">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html> 

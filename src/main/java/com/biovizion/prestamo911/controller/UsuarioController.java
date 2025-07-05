@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/usuario")
@@ -107,51 +108,12 @@ public class UsuarioController {
         return "redirect:/verificacion/verificar?email=" + usuario.getEmail();
     }
 
-    @PostMapping("/save/trabajador")
-    public String saveTrabajador(@ModelAttribute UsuarioEntity usuario,Model model) {
-
-        // 2. Lógica normal si el captcha fue exitoso
-        System.out.println("Guardando usuario: " + usuario.getEmail());
-
-        if (usuarioService.findByEmail(usuario.getEmail()).isPresent()) {
-            model.addAttribute("error", "El email ya está registrado");
-            return "auth/registro";
-        }
-
-        String codigo;
-        int intentos = 0;
-        int maxIntentos = 10;
-        do {
-            codigo = generarCodigo(usuario.getNombre(), usuario.getApellido());
-            intentos++;
-            if (intentos > maxIntentos) {
-                model.addAttribute("error", "No se pudo generar un código único, intente más tarde");
-                return "auth/registro";
-            }
-        } while (usuarioService.existsByCodigo(codigo));
-
-        usuario.setCodigo(codigo);
-        usuario.setActivo(false);
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        usuario.setRol("ROLE_ADMIN");
-
-        usuarioService.save(usuario);
-        emailService.enviarCodigoVerificacion(usuario.getEmail(), codigo);
-
-        return "redirect:/usuario/dashboard";
-    }
-
-
-
     private String generarCodigo(String nombre, String apellido) {
         nombre = nombre.length() >= 2 ? nombre.substring(0, 2).toUpperCase() : nombre.toUpperCase();
         apellido = apellido.length() >= 1 ? apellido.substring(0, 1).toUpperCase() : "";
         int randomNum = (int)(Math.random() * 900000) + 100000; // 6 números aleatorios entre 100000 y 999999
         return nombre + apellido + randomNum;
     }
-
-
-
 
 
 
@@ -163,12 +125,16 @@ public class UsuarioController {
     
     @GetMapping("/dashboard")
     public String ShowListaUsuarios(Model model, Principal principal) {
-        // Get current user's name
-        String currentUserName = getCurrentUserName(principal);
-        model.addAttribute("currentUserName", currentUserName);
+        try {
+            if (principal != null) {
+                UsuarioEntity usuario = usuarioService.findByEmail(principal.getName())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                model.addAttribute("usuario", usuario);
+            }
+        } catch (Exception e) {
+            // Handle exception if user not found
+        }
         
-        List<UsuarioEntity> usuarios = usuarioService.findAll();
-        model.addAttribute("usuarios", usuarios);
         return "appDashboard/user/index";
     }
 
@@ -216,7 +182,7 @@ public class UsuarioController {
         model.addAttribute("creditosRechazados", creditosRechazados);
         model.addAttribute("creditosFinalizados", creditosFinalizados);
         
-        return "appDashboard/user/creditosPendientes-simple";
+        return "appDashboard/user/creditosPendientes";
     }
 
     @GetMapping("/pagarCredito")
@@ -229,11 +195,9 @@ public class UsuarioController {
         UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
-        List<CreditoCuotaEntity> cuotas = creditoCuotaService.findByUsuarioId(usuario.getId());
+        List<CreditoEntity> creditosAceptados = creditoService.findAceptadosByUsuarioId(usuario.getId());
         
-        model.addAttribute("creditos", creditos);
-        model.addAttribute("cuotas", cuotas);
+        model.addAttribute("creditosAceptados", creditosAceptados);
         return "appDashboard/user/pagarCredito";
     }
 
@@ -280,15 +244,27 @@ public class UsuarioController {
     }
 
     @PostMapping("/update")
-    public String updateUsuario(
+    public ResponseEntity<String> updateUsuario(
             @RequestParam("id") Long id,
             @RequestParam("nombre") String nombre,
             @RequestParam("email") String email,
             @RequestParam("celular") String celular,
-            @RequestParam(value = "foto", required = false) MultipartFile foto
+            @RequestParam(value = "foto", required = false) MultipartFile foto,
+            Principal principal
     ) {
         UsuarioEntity usuario = usuarioService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // Check if this is the current user updating their own profile
+        boolean isCurrentUser = principal != null && principal.getName().equals(usuario.getEmail());
+        
+        // If email is being changed, check if it's already taken by another user
+        if (!email.equals(usuario.getEmail())) {
+            Optional<UsuarioEntity> existingUser = usuarioService.findByEmail(email);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El email ya está en uso por otro usuario");
+            }
+        }
 
         usuario.setNombre(nombre);
         usuario.setEmail(email);
@@ -297,7 +273,7 @@ public class UsuarioController {
         if (foto != null && !foto.isEmpty()) {
             try {
                 String nombreArchivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
-                String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
+                String rutaFotos = "/home/user1/Documents/fotos/";
                 File destino = new File(rutaFotos + nombreArchivo);
                 foto.transferTo(destino);
                 usuario.setFoto("/fotos-usuarios/" + nombreArchivo);
@@ -307,7 +283,14 @@ public class UsuarioController {
         }
 
         usuarioService.update(usuario);
-        return "redirect:/usuario/edit/" + id;
+        
+        // If this is the current user and email was changed, we need to handle the session
+        if (isCurrentUser && !email.equals(principal.getName())) {
+            // Return a special response to indicate email change
+            return ResponseEntity.ok("emailChanged=true");
+        }
+        
+        return ResponseEntity.ok("Usuario actualizado correctamente");
     }
 
     @PostMapping("/delete/{id}")
@@ -356,13 +339,16 @@ public class UsuarioController {
         List<CreditoCuotaEntity> cuotasEnRevision = creditoCuotaService.findEnRevisionByCreditoId(id);
         List<CreditoCuotaEntity> cuotasPagadas = creditoCuotaService.findPagadasByCreditoId(id);
         List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.findVencidasByCreditoId(id);
+        List<CreditoCuotaEntity> cuotasAvencer = creditoCuotaService.findAVencerByCreditoId(id);
 
+        
         // Add all cuota lists to the model
         model.addAttribute("cuotas", cuotas);
         model.addAttribute("cuotasPendientes", cuotasPendientes);
         model.addAttribute("cuotasEnRevision", cuotasEnRevision);
         model.addAttribute("cuotasPagadas", cuotasPagadas);
         model.addAttribute("cuotasVencidas", cuotasVencidas);
+        model.addAttribute("cuotasAvencer", cuotasAvencer);
 
         return "appDashboard/user/creditoCuotas";
     }

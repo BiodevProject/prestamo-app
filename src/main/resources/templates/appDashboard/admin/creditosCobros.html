@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{appDashboard/admin/layout :: layout(
-          pageTitle='Cuotas en Revisión',
-          pageSubtitle='Listado de cuotas pendientes de aprobación',
+          pageTitle='Cuotas de los usuarios',
+          pageSubtitle='Gestión de cuotas de créditos del usuario',
           activePage='cobros',
           content=~{::content},
           pageCss=~{::css},
@@ -11,120 +11,64 @@
 
 <head>
     <th:block th:fragment="css">
-        <link href="/appDashboard/shared/css/creditos.css" rel="stylesheet" type="text/css" />
-        <link href="/appDashboard/admin/dist/css/creditoDetalle.css" rel="stylesheet" type="text/css" />
     </th:block>
 </head>
 
 <body>
 
 <div th:fragment="content">
-    <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs" id="cuotasTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="enrevision-tab" type="button" role="tab">Cuotas en Revisión</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="avencer-tab" type="button" role="tab">Cuotas A Vencer</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="vencidas-tab" type="button" role="tab">Cuotas Vencidas</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="cuotasTabsContent">
-            <div class="search-container">
-                <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar cuotas..." onkeyup="filterTable()">
-                    <span class="input-group-append"><button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button></span>
-                </div>
-            </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover" id="cuotaTable">
-                    <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Código</th>
-                        <th>Fecha Vencimiento</th>
-                        <th id="fechaPagoHeader">Fecha Pago</th>
-                        <th>Monto</th>
-                        <th>Estado</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody id="cuotaTableBody"></tbody>
-                </table>
-                <div id="cuotaData" style="display: none;"
-                     th:each="cuota : ${cuotas}"
-                     th:data-id="${cuota.id}"
-                     th:data-usuario="${cuota.credito.usuario?.nombre}"
-                     th:data-codigo="${cuota.codigo}"
-                     th:data-fecha-vencimiento="${cuota.fechaVencimiento}"
-                     th:data-fecha-pago="${cuota.fechaPago}"
-                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}"
-                     th:data-estado="${cuota.estado}">
-                </div>
-
-                <div id="cuotaDataAvencer" style="display: none;"
-                     th:each="cuota : ${cuotasAvencer}"
-                     th:data-id="${cuota.id}"
-                     th:data-usuario="${cuota.credito.usuario?.nombre}"
-                     th:data-codigo="${cuota.codigo}"
-                     th:data-fecha-vencimiento="${cuota.fechaVencimiento}"
-                     th:data-fecha-pago="${cuota.fechaPago}"
-                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}"
-                     th:data-estado="${cuota.estado}">
-                </div>
-
-                <div id="cuotaDataVencidas" style="display: none;"
-                     th:each="cuota : ${cuotasVencidas}"
-                     th:data-id="${cuota.id}"
-                     th:data-usuario="${cuota.credito.usuario?.nombre}"
-                     th:data-codigo="${cuota.codigo}"
-                     th:data-fecha-vencimiento="${cuota.fechaVencimiento}"
-                     th:data-fecha-pago="${cuota.fechaPago}"
-                     th:data-monto="${#numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}"
-                     th:data-estado="${cuota.estado}"
-                     th:data-pago-mora="${cuota.pagoMora != null ? #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '0.00'}">
-                </div>
-
-                <div class="pagination-container">
-                    <button class="btn btn-primary" onclick="previousPage()" id="prevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
-                    <span id="pageInfo">Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
-                    <button class="btn btn-primary" onclick="nextPage()" id="nextBtn">Siguiente <i class="fas fa-chevron-right"></i></button>
-                </div>
+    
+    <!-- Unified Table Interface -->
+    <div class="table-interface-wrapper">
+        <!-- Table Tab Switcher -->
+        <div class="table-tab-switcher">
+            <div>
+                <button type="button" class="table-switcher active" data-table-target="#enrevisionCuotasCobrosTable">
+                    En Revisión
+                </button>
+                <button type="button" class="table-switcher" data-table-target="#avencerCuotasCobrosTable">
+                    A Vencer
+                </button>
+                <button type="button" class="table-switcher" data-table-target="#vencidasCuotasCobrosTable">
+                    Vencidas
+                </button>
+                <button type="button" class="table-switcher" data-table-target="#pendientesCuotasCobrosTable">
+                    Pendientes
+                </button>
+                <button type="button" class="table-switcher" data-table-target="#pagadasCuotasCobrosTable">
+                    Pagadas
+                </button>
             </div>
         </div>
-    </div>
 
-    <!-- Modal for Cuota Details -->
-    <div class="modal fade" id="cuotaModal" tabindex="-1" aria-labelledby="cuotaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="background-color: #F4F6F9; border-radius: 15px;">
-                <div class="modal-header" style="border-bottom: none;">
-                    <h5 class="modal-title" id="cuotaModalLabel" style="font-weight: 600; color: #333;">Detalle de Cuota</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="cuotaModalBody"></div>
-                <div class="modal-footer" style="border-top: none;">
-                    <button type="button" class="btn btn-success" onclick="modalAceptarCuota()" style="border-radius: 20px;">
-                        <i class="fas fa-check"></i> Aceptar Cuota
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar cuotas..." />
+                <div class="input-group-append">
+                    <button class="btn" type="button" onclick="clearSearch()">
+                        <i class="fas fa-times"></i> Limpiar
                     </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px;">Cerrar</button>
                 </div>
             </div>
         </div>
+        
+        <!-- Table Containers - All cuota tables -->
+        <div th:replace="~{fragments/cuotaTables :: enrevision-cuotas-cobros-table-content(cuotas=${cuotasEnRevision})}"></div>
+        <div th:replace="~{fragments/cuotaTables :: avencer-cuotas-cobros-table-content(cuotas=${cuotasAvencer})}"></div>
+        <div th:replace="~{fragments/cuotaTables :: vencidas-cuotas-cobros-table-content(cuotas=${cuotasVencidas})}"></div>
+        <div th:replace="~{fragments/cuotaTables :: pendientes-cuotas-cobros-table-content(cuotas=${cuotasPendientes})}"></div>
+        <div th:replace="~{fragments/cuotaTables :: pagadas-cuotas-cobros-table-content(cuotas=${cuotasPagadas})}"></div>
     </div>
 
-    <!-- Context Menu -->
-    <div class="context-menu" id="contextMenu">
-        <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
-        <div class="context-menu-divider"></div>
-        <button class="context-menu-item success" onclick="contextMenuAceptarCuota()"><i class="fas fa-check"></i> Aceptar Cuota</button>
-    </div>
+    <!-- Table switcher scripts (include only once per page, at the end) -->
+    <div th:replace="~{fragments/tableScripts :: table-switcher-scripts}"></div>
+    
+    <!-- Modal content for cuota details -->
+    <div th:replace="~{fragments/cuotaModals :: cuota-modal-content(cuotas=${cuotas})}"></div>
 </div>
 
 <th:block th:fragment="scripts">
-    <script src="/appDashboard/admin/dist/js/creditosCobros.js" type="text/javascript"></script>
 </th:block>
 
 </body>

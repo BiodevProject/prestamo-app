@@ -21,46 +21,85 @@
 <body>
 
 <div th:fragment="content">
-    <div class="row">
-        <div class="col-lg-4 col-12 mb-4">
-            <a href="/usuario/solicitarCredito" class="text-decoration-none">
-                <div class="small-box bg-info">
-                    <div class="inner"><h3>Solicitar Crédito</h3><p>Solicita un nuevo crédito</p></div>
-                    <div class="icon"><i class="fas fa-file-signature"></i></div>
-                    <div class="small-box-footer">Ir al formulario <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
-            </a>
-        </div>
+    <!-- Dashboard Stats Cards -->
+    <div class="dashboard-stats">
+        <div class="stats-grid">
+            <div class="stat-card stat-card-info">
+                <a href="/usuario/solicitarCredito" class="stat-link">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-signature"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Solicitar Crédito</h3>
+                            <p>Solicita un nuevo crédito</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Ir al formulario</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
+                </a>
+            </div>
 
-        <div class="col-lg-4 col-12 mb-4">
-            <a href="/usuario/estadoDeCreditos" class="text-decoration-none">
-                <div class="small-box bg-success">
-                    <div class="inner"><h3>Mis de Créditos</h3><p>Ver tus solicitudes y estado</p></div>
-                    <div class="icon"><i class="fas fa-list-alt"></i></div>
-                    <div class="small-box-footer">Ver estado <i class="fas fa-arrow-circle-right"></i></div>
+            <div class="stat-card stat-card-success">
+                <a href="/usuario/estadoDeCreditos" class="stat-link">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-list-alt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Mis Créditos</h3>
+                            <p>Ver tus solicitudes y estado</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Ver estado</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-warning">
+                <div class="stat-link" th:onclick="'showUsuarioDetails(' + ${usuario.id} + ')'" style="cursor: pointer;">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Editar Cuenta</h3>
+                            <p>Actualiza tu información</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Editar cuenta</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
                 </div>
-            </a>
-        </div>
-        <div class="col-lg-4 col-12 mb-4">
-            <a href="/usuario/cuenta" class="text-decoration-none">
-                <div class="small-box bg-warning">
-                    <div class="inner"><h3>Editar Cuenta</h3><p>Actualiza tu información</p></div>
-                    <div class="icon"><i class="fas fa-user-edit"></i></div>
-                    <div class="small-box-footer">Editar cuenta <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-4 col-12 mb-4">
-            <a href="/usuario/pagarCredito" class="text-decoration-none">
-                <div class="small-box bg-warning">
-                    <div class="inner"><h3>Haz tus pagos aqui</h3><p>Actualiza tu información</p></div>
-                    <div class="icon"><i class="fas fa-user-edit"></i></div>
-                    <div class="small-box-footer">Editar cuenta <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
-            </a>
+            </div>
+
+            <div class="stat-card stat-card-danger">
+                <a href="/usuario/pagarCredito" class="stat-link">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Haz tus pagos aquí</h3>
+                            <p>Realiza tus pagos de créditos</p>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span>Realizar pago</span>
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-    <!-- Other dashboard content can go here -->
+
+    <!-- Modal content for SweetAlert2 - needed for Editar Cuenta button -->
+    <div th:replace="~{fragments/usuarioModals :: modal-content(usuarios=${[usuario]})}"></div>
 </div>
 
 <th:block th:fragment="scripts">

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{appDashboard/admin/layout :: layout(
-          pageTitle='Créditos Pendientes',
-          pageSubtitle='Gestión de créditos pendientes',
-          activePage='creditosPendientes',
+          pageTitle='Créditos',
+          pageSubtitle='Gestión de créditos',
+          activePage='creditos',
           content=~{::content},
           pageCss=~{::css},
           pageScripts=~{::scripts}
@@ -48,15 +48,15 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/tables :: pendientes-table-content(creditos=${creditosPendientes})}"></div>
-    <div th:replace="~{fragments/tables :: aceptados-table-content(creditos=${creditosAceptados})}"></div>
-    <div th:replace="~{fragments/tables :: rechazados-table-content(creditos=${creditosRechazados})}"></div>
-    <div th:replace="~{fragments/tables :: finalizados-table-content(creditos=${creditosFinalizados})}"></div>
+    <div th:replace="~{fragments/creditoTables :: pendientes-table-content(creditos=${creditosPendientes})}"></div>
+    <div th:replace="~{fragments/creditoTables :: aceptados-table-content(creditos=${creditosAceptados})}"></div>
+    <div th:replace="~{fragments/creditoTables :: rechazados-table-content(creditos=${creditosRechazados})}"></div>
+    <div th:replace="~{fragments/creditoTables :: finalizados-table-content(creditos=${creditosFinalizados})}"></div>
     
-    <div th:replace="~{fragments/tables :: table-switcher-scripts}"></div>
+    <div th:replace="~{fragments/tableScripts :: table-switcher-scripts}"></div>
 
-    <div th:replace="~{fragments/tables :: modal-content(creditos=${creditos})}"></div>
-    <div th:replace="~{fragments/tables :: financial-charges-modal-content(creditos=${creditos})}"></div>
+    <div th:replace="~{fragments/creditoModals :: modal-content(creditos=${creditos})}"></div>
+    <div th:replace="~{fragments/creditoModals :: financial-charges-modal-content(creditos=${creditos})}"></div>
 </div>
 
 </div>

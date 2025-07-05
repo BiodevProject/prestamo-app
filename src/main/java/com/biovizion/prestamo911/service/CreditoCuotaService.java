@@ -14,19 +14,19 @@ public interface CreditoCuotaService {
     void updateExpiredCuotas();
     void updateAboutToExpireCuotas();
     
-    List<CreditoCuotaEntity> findPendientes(Long creditoId);
-    List<CreditoCuotaEntity> findPagadas(Long creditoId);
-    List<CreditoCuotaEntity> findVencidas(Long creditoId);
-    List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId);
+    List<CreditoCuotaEntity> findPendientes();
     List<CreditoCuotaEntity> findEnRevision();
-    List<CreditoCuotaEntity> findAvencer();
+    List<CreditoCuotaEntity> findAVencer();
     List<CreditoCuotaEntity> findVencidas();
-    
+    List<CreditoCuotaEntity> findPagadas();
 
+    List<CreditoCuotaEntity> findByUsuarioId(Long usuarioId);
     List<CreditoCuotaEntity> findByUsuarioIdAndEstado(Long usuarioId, String estado);
+    
     List<CreditoCuotaEntity> findByCreditoId(Long creditoId);
     List<CreditoCuotaEntity> findPendientesByCreditoId(Long creditoId);
     List<CreditoCuotaEntity> findEnRevisionByCreditoId(Long creditoId);
     List<CreditoCuotaEntity> findPagadasByCreditoId(Long creditoId);
     List<CreditoCuotaEntity> findVencidasByCreditoId(Long creditoId);
+    List<CreditoCuotaEntity> findAVencerByCreditoId(Long creditoId);
 } 

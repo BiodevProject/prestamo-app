@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Cuota Details Modal Content Fragment - Reusable across pages -->
+<!-- Usage: <div th:replace="~{fragments/cuotaModals :: cuota-modal-content(cuotas=${cuotas})}"></div> -->
+<div th:fragment="cuota-modal-content(cuotas)">
+    <div style="display:none;">
+        <div th:each="cuota : ${cuotas}" th:id="'cuota-modal-content-' + ${cuota.id}">
+            <div class="credito-detail">
+                <!-- Cuota Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-calendar-check"></i>
+                            Detalle de Cuota
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid">
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto de la Cuota</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Código</div>
+                                <div class="summary-value" th:text="${cuota.codigo}">CUOTA-001</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Estado</div>
+                                <div class="summary-value">
+                                    <span class="status-badge" th:class="${'status-' + cuota.estado}" th:text="${cuota.estado}">Pendiente</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Fecha de Vencimiento</div>
+                                <div class="summary-value" th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</div>
+                            </div>
+                            <div class="summary-item" th:if="${cuota.fechaPago != null}">
+                                <div class="summary-label">Fecha de Pago</div>
+                                <div class="summary-value" th:text="${#temporals.format(cuota.fechaPago, 'dd/MM/yyyy')}">20/01/2024</div>
+                            </div>
+                            <div class="summary-item financial-field" th:if="${cuota.pagoMora != null && cuota.pagoMora > 0}">
+                                <div class="summary-label">Mora</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credit Information -->
+                <div class="section-card full-width" th:if="${cuota.credito != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Información del Crédito
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">ID del Crédito</span>
+                                <span class="info-value" th:text="${cuota.credito.id}">123</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Estado del Crédito</span>
+                                <span class="info-value" th:text="${cuota.credito.estado != null ? cuota.credito.estado : 'N/A'}">Aceptado</span>
+                            </div>
+                            <div class="info-item financial-field">
+                                <span class="info-label">Monto Total del Crédito</span>
+                                <span class="info-value amount-highlight" th:text="${cuota.credito.total != null ? '$' + #numbers.formatDecimal(cuota.credito.total, 1, 'COMMA', 2, 'POINT') : 'N/A'}">$1,200.00</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Plazo</span>
+                                <span class="info-value" th:text="${cuota.credito.plazoMeses != null ? cuota.credito.plazoMeses + ' meses' : 'N/A'}">12 meses</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Information -->
+                <div class="section-card full-width" th:if="${cuota.credito != null && cuota.credito.usuario != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-user"></i>
+                            Información del Usuario
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item important-field">
+                                <span class="info-label">Nombre Completo</span>
+                                <span class="info-value" th:text="${cuota.credito.usuario.nombre != null && cuota.credito.usuario.apellido != null ? cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido : 'N/A'}">Juan Pérez</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Correo Electrónico</span>
+                                <span class="info-value" th:text="${cuota.credito.usuario.email != null ? cuota.credito.usuario.email : 'N/A'}">juan@email.com</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Código de Usuario</span>
+                                <span class="info-value" th:text="${cuota.credito.usuario.codigo != null ? cuota.credito.usuario.codigo : 'N/A'}">USR-001</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cuota Pagar Modal Content Fragment - Reusable across pages -->
+<!-- Usage: <div th:replace="~{fragments/cuotaModals :: cuota-pagar-modal-content(cuotas=${cuotas})}"></div> -->
+<div th:fragment="cuota-pagar-modal-content(cuotas)">
+    <div style="display:none;">
+        <div th:each="cuota : ${cuotas}" th:id="'cuota-pagar-modal-content-' + ${cuota.id}">
+            <div class="credito-detail">
+                <!-- Cuota Pagar Summary -->
+                <div class="section-card full-width">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-calendar-check"></i>
+                            Detalle de Cuota
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="summary-grid">
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto de la Cuota</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</div>
+                            </div>
+                            <div class="summary-item financial-field" th:if="${cuota.pagoMora != null && cuota.pagoMora > 0}">
+                                <div class="summary-label">Mora</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                            </div>
+                            <div class="summary-item financial-field monto-highlight">
+                                <div class="summary-label">Monto a Pagar</div>
+                                <div class="summary-value" th:text="${'$' + #numbers.formatDecimal(cuota.monto + (cuota.pagoMora != null ? cuota.pagoMora : 0), 1, 'COMMA', 2, 'POINT')}">$100.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Information -->
+                <div class="section-card full-width" th:if="${cuota.credito != null && cuota.credito.usuario != null}">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fas fa-user"></i>
+                            Medio de Pago
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item important-field">
+                                <img src="/images/qrDePago.svg" alt="QR Code para Pago" style="max-width: 300px; height: auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+
+                    <button type="button" class="btn btn-primary" onclick="payCuota()">
+                        <i class="fas fa-credit-card"></i> Pagar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html> 

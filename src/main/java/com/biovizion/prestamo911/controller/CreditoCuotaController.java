@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +56,7 @@ public class CreditoCuotaController {
     }
 
     @PostMapping("/aceptar/{id}")
-    public String aceptarCuota(@PathVariable Long id) {
+    public ResponseEntity<String> aceptarCuota(@PathVariable Long id) {
         try {
             // Find the cuota
             CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
@@ -76,9 +77,10 @@ public class CreditoCuotaController {
 
             creditoService.save(credito);
 
-            return "redirect:/admin/creditos/cobros";
+            return ResponseEntity.ok("Cuota aceptada exitosamente");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error accepting cuota", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al aceptar la cuota: " + e.getMessage());
         }
     }
 

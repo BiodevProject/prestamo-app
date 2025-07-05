@@ -14,28 +14,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/flat/blue.css" rel="stylesheet" type="text/css" />
     <link href="/appDashboard/shared/css/tables.css" rel="stylesheet" type="text/css" />
     <link href="/appDashboard/shared/css/modals.css" rel="stylesheet" type="text/css" />
-    <style>
-        .user-panel p { color: #fff !important; font-weight: 500; }
-        .user-panel a { color: #ccc !important; }
-        .user-panel a:hover { color: #fff !important; }
-    </style>
 
     <!-- Page-specific CSS -->
     <th:block th:replace="${pageCss} ?: ~{}"></th:block>
 </head>
-<body class="skin-blue">
+<body class="modern-admin">
 <div class="wrapper">
 
     <!-- Header -->
     <header class="main-header">
+        <div class="header-container">
         <a href="/admin/dashboard" class="logo"><b>Admin</b>LTE</a>
-        <nav class="navbar navbar-expand-lg navbar-static-top" role="navigation">
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target=".sidebar-offcanvas" role="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-custom-menu ms-auto">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown user user-menu">
+            <div class="header-user-menu">
+                <div class="nav-item dropdown user user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img th:src="${usuario.foto != null ? usuario.foto : '/appDashboard/admin/dist/img/user2-160x160.jpg'}"
                                  class="rounded-circle me-2" alt="User Image" style="width: 30px; height: 30px;"/>
@@ -52,45 +43,18 @@
                                 <a href="/auth/logout" class="btn btn-default btn-flat">Sign out</a>
                             </li>
                         </ul>
-                    </li>
-                </ul>
+                </div>
             </div>
-        </nav>
+        </div>
     </header>
 
     <!-- Sidebar -->
     <aside class="main-sidebar">
         <section class="sidebar">
-            <div class="user-panel">
-                <div class="d-flex">
-                    <div class="me-3">
-                        <img th:src="${usuario.foto != null ? usuario.foto : '/appDashboard/admin/dist/img/user2-160x160.jpg'}"
-                             class="rounded-circle" alt="User Image" style="width: 40px; height: 40px;" />
-                    </div>
-                    <div>
-                        <p class="mb-0" th:text="${currentUserName != null ? currentUserName : 'Usuario'}">user1ander Pierce</p>
-                        <a href="#" class="text-decoration-none"><i class="fas fa-circle text-success"></i> Online</a>
-                    </div>
-                </div>
-            </div>
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search..."/>
-                    <button type='submit' name='search' id='search-btn' class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
-                </div>
-            </form>
             <ul class="sidebar-menu">
                 <li class="header">MAIN NAVIGATION</li>
                 <li th:classappend="${activePage == 'dashboard'} ? 'active' : ''"><a href="/admin/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li class="treeview" th:classappend="${#lists.contains({'creditosPendientes', 'creditosAceptados', 'creditosRechazados', 'creditosFinalizados'}, activePage)} ? 'active' : ''">
-                    <a href="#" class="nav-link"><i class="fas fa-money-check-alt"></i> <span>Creditos</span> <i class="fas fa-angle-left float-end"></i></a>
-                    <ul class="treeview-menu">
-                        <li th:classappend="${activePage == 'creditosPendientes'} ? 'active' : ''"><a href="/admin/creditos/pendientes" class="nav-link"><i class="fas fa-circle"></i> Solicitudes de Crédito</a></li>
-                        <li th:classappend="${activePage == 'creditosAceptados'} ? 'active' : ''"><a href="/admin/creditos/aceptados" class="nav-link"><i class="fas fa-circle"></i> Créditos Aceptados</a></li>
-                        <li th:classappend="${activePage == 'creditosRechazados'} ? 'active' : ''"><a href="/admin/creditos/rechazados" class="nav-link"><i class="fas fa-circle"></i> Créditos Rechazados</a></li>
-                        <li th:classappend="${activePage == 'creditosFinalizados'} ? 'active' : ''"><a href="/admin/creditos/finalizados" class="nav-link"><i class="fas fa-circle"></i> Créditos Finalizados</a></li>
-                    </ul>
-                </li>
+                <li th:classappend="${activePage == 'creditos'} ? 'active' : ''"><a href="/admin/creditos" class="nav-link"><i class="fa-solid fa-credit-card"></i> <span>Creditos</span></a></li>
                 <li th:classappend="${activePage == 'cobros'} ? 'active' : ''"><a href="/admin/creditos/cobros" class="nav-link"><i class="fa-solid fa-money-bill"></i> <span>Cobros</span></a></li>
                 <li th:classappend="${activePage == 'usuarios'} ? 'active' : ''"><a href="/admin/usuarios" class="nav-link"><i class="fas fa-users"></i> <span>Usuarios</span></a></li>
                 <li th:classappend="${activePage == 'trabajadores'} ? 'active' : ''"><a href="/admin/trabajadores" class="nav-link"><i class="fas fa-user-tie"></i> <span>Trabajadores</span></a></li>
@@ -125,6 +89,100 @@
 
 <!-- Global function for showing credit details with SweetAlert2 -->
 <script>
+window.showUsuarioDetails = function(usuarioId) {
+    const modalContent = document.getElementById('modal-content-' + usuarioId);
+    if (modalContent) {
+        Swal.fire({
+            title: 'Detalles del usuario',
+            html: modalContent.innerHTML,
+            width: '800px',
+            showCloseButton: true,
+            showConfirmButton: false,
+            customClass: {
+                container: 'swal-usuario-modal'
+            },
+            didOpen: () => {
+                const container = Swal.getHtmlContainer();
+                const form = container.querySelector('form');
+                const editBtn = container.querySelector('.usuario-editar-btn');
+                const saveBtn = container.querySelector('.usuario-guardar-btn');
+                const inputs = form.querySelectorAll('input:not([type="hidden"])');
+
+                editBtn.addEventListener('click', function() {
+                    inputs.forEach(input => input.removeAttribute('disabled'));
+                    editBtn.style.display = 'none';
+                    saveBtn.style.display = 'inline-block';
+                });
+
+                saveBtn.addEventListener('click', function() {
+                    const formData = new FormData(form);
+                    fetch('/usuario/update', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.text();
+                        } else if (response.status === 400) {
+                            return response.text().then(text => {
+                                throw new Error(text);
+                            });
+                        } else {
+                            throw new Error('Error al actualizar usuario');
+                        }
+                    })
+                    .then(result => {
+                        // Check if the response indicates email change
+                        if (result.includes('emailChanged=true')) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Email actualizado',
+                                text: 'Tu email ha sido actualizado. Serás redirigido al login para iniciar sesión con tu nuevo email.',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = '/auth/logout?emailChanged=true';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: 'Usuario actualizado correctamente'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message || 'No se pudo actualizar el usuario'
+                        });
+                    });
+                });
+
+                // Preview image logic
+                const fotoInput = form.querySelector('input[type="file"][name="foto"]');
+                if (fotoInput) {
+                    fotoInput.addEventListener('change', function(event) {
+                        const preview = form.querySelector('img[id^="foto-preview"]');
+                        const file = event.target.files[0];
+                        if (file && preview) {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                preview.src = reader.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        console.error('Modal content not found for usuario ID:', usuarioId);
+    }
+};
+
 window.showCreditoDetails = function(creditoId) {
     const modalContent = document.getElementById('modal-content-' + creditoId);
     if (modalContent) {
@@ -141,6 +199,76 @@ window.showCreditoDetails = function(creditoId) {
     } else {
         console.error('Modal content not found for credito ID:', creditoId);
     }
+};
+
+// Mostrar detalles de la cuota
+window.showCuotaDetails = function(cuotaId) {
+    const modalContent = document.getElementById('cuota-modal-content-' + cuotaId);
+    if (modalContent) {
+        Swal.fire({
+            title: 'Detalle de Cuota',
+            html: modalContent.innerHTML,
+            width: '800px',
+            showCloseButton: true,
+            showConfirmButton: false,
+            customClass: {
+                container: 'swal-cuota-modal'
+            }
+        });
+    } else {
+        console.error('Modal content not found for cuota ID:', cuotaId);
+    }
+};
+
+window.aceptarCuota = function(cuotaId) {
+    if (!cuotaId) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo identificar la cuota a aceptar'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Aceptar cuota',
+        text: '¿Está seguro que desea aceptar esta cuota?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, Aceptar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            // Send the form data to the controller
+            return fetch('/cuota/aceptar/' + cuotaId, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al aceptar la cuota');
+                }
+                return response.text();
+            })
+            .catch(error => {
+                Swal.showValidationMessage(`Error: ${error.message}`);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Cuota aceptada',
+                text: 'La cuota ha sido aceptada correctamente',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Close the modal
+                Swal.close();
+                // Optionally reload the page or update the table
+                window.location.reload();
+            });
+        }
+    });
 };
 
 window.rechazarCredito = function(creditoId) {
@@ -255,19 +383,31 @@ window.aceptarCreditoConCargos = function(creditoId) {
             formData.append('creditoId', creditoId);
             
             return fetch('/credito/accept-with-charges', { method: 'POST', body: formData })
-                .then(response => response.ok ? response.text() : Promise.reject('Error al aceptar el crédito'))
-                .catch(error => Swal.showValidationMessage(`Error: ${error}`));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al aceptar el crédito');
+                    }
+                    return response.text();
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(`Error: ${error.message || error}`);
+                    return false;
+                });
         },
         allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
         if (result.isConfirmed) {
+            // Close the current modal first
+            Swal.close();
+            
+            // Show success message
             Swal.fire({
                 icon: 'success',
                 title: 'Crédito aceptado',
                 text: 'El crédito ha sido aceptado con cargos financieros correctamente',
                 confirmButtonText: 'OK'
             }).then(() => {
-                Swal.close();
+                // Reload the page after showing success message
                 window.location.reload();
             });
         }
@@ -364,7 +504,6 @@ window.calculateFinancialCharges = function(event) {
     updateElement('#totalCalculado', total);
     updateElement('#moraCalculada', mora);
 };
-
 </script>
 
 <!-- Page-specific Scripts -->

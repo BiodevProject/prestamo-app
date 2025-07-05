@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Todos los creditos Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/creditoTables :: todos-table-content(creditos=${creditos})}"></div> -->
+<div th:fragment="todos-table-content(creditos)">
+    <div id="todosTable" class="table-switchable-table">
+        <table class="table">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th th:if="${usuario.rol == 'ROLE_ADMIN'}">Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td th:if="${usuario.rol == 'ROLE_ADMIN'}">
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span 
+                            th:text="${credito.estado}"
+                            th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}">
+                        </span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- Empty State -->
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td th:colspan="${usuario.rol == 'ROLE_ADMIN' ? 7 : 6}" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos aceptados Table -->
+<!-- Usage: <div th:replace="~{fragments/creditoTables :: aceptados-table-content(creditos=${creditosAceptados})}"></div> -->
+<div th:fragment="aceptados-table-content(creditos)">
+    <div id="aceptadosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th th:if="${usuario.rol == 'ROLE_ADMIN'}">Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td th:if="${usuario.rol == 'ROLE_ADMIN'}">
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+
+                    <!-- Acciones -->
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        
+                        <!-- Boton para ir a la pagina de cuotas del credito-->
+                        <a th:href="${usuario.rol == 'ROLE_ADMIN' ? '/admin/usuarios/' + credito.usuario.id + '/creditos/' + credito.id + '/cuotas' : '/usuario/credito/cuotas/' + credito.id}" class="btn btn-success btn-sm">
+                            <i class="fas fa-calendar-alt"></i> Ver cuotas
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td th:colspan="${usuario.rol == 'ROLE_ADMIN' ? 7 : 6}" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos pendientes Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/creditoTables :: pendientes-table-content(creditos=${creditosPendientes})}"></div> -->
+<div th:fragment="pendientes-table-content(creditos)">
+    <div id="pendientesTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th th:if="${usuario.rol == 'ROLE_ADMIN'}">Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td th:if="${usuario.rol == 'ROLE_ADMIN'}">
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button th:if="${usuario.rol == 'ROLE_ADMIN'}" class="btn btn-success btn-sm" 
+                                th:onclick="'aceptarCreditoConCargos(' + ${credito.id} + ')'">
+                            <i class="fas fa-check"></i> Aceptar
+                        </button>
+                        <button th:if="${usuario.rol == 'ROLE_ADMIN'}" class="btn btn-danger btn-sm" 
+                                th:onclick="'rechazarCredito(' + ${credito.id} + ')'">
+                            <i class="fas fa-times"></i> Rechazar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td th:colspan="${usuario.rol == 'ROLE_ADMIN' ? 6 : 5}" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos rechazados Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/creditoTables :: rechazados-table-content(creditos=${creditosRechazados})}"></div> -->
+<div th:fragment="rechazados-table-content(creditos)">
+    <div id="rechazadosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th th:if="${usuario.rol == 'ROLE_ADMIN'}">Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td th:if="${usuario.rol == 'ROLE_ADMIN'}">
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td th:colspan="${usuario.rol == 'ROLE_ADMIN' ? 6 : 5}" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Creditos finalizados Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/creditoTables :: finalizados-table-content(creditos=${creditosFinalizados})}"></div> -->
+<div th:fragment="finalizados-table-content(creditos)">
+    <div id="finalizadosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th th:if="${usuario.rol == 'ROLE_ADMIN'}">Usuario</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(creditos)}" th:each="credito : ${creditos}">
+                <tr>
+                    <td th:if="${usuario.rol == 'ROLE_ADMIN'}">
+                        <img 
+                            th:if="${credito.usuario.foto != null}" 
+                            th:src="${credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        <span th:text="${credito.usuario.nombre + ' ' + credito.usuario.apellido}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${credito.estado}"
+                              th:class="'estado-badge estado-' + ${credito.estado.toLowerCase()}"></span>
+                    </td>
+                    <td th:text="${credito.monto}"></td>
+                    <td th:text="${credito.plazoMeses}"></td>
+                    <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
+                    <td th:text="${credito.total}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(creditos)}">
+                <tr>
+                    <td th:colspan="${usuario.rol == 'ROLE_ADMIN' ? 7 : 6}" class="text-center text-muted">No tienes créditos registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+</html> 

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Todos las cuotas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: todos-cuotas-table-content(cuotas=${cuotas})}"></div> -->
+<div th:fragment="todos-cuotas-table-content(cuotas)">
+    <div id="todosCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Mora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td th:text="${cuota.pagoMora != null ? '$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '$0.00'}">$0.00</td>
+                    <td>
+                        <span 
+                            th:text="${cuota.estado}"
+                            th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}">
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- Empty State -->
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No hay cuotas registradas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas pendientes Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: pendientes-cuotas-table-content(cuotas=${cuotasPendientes})}"></div> -->
+<div th:fragment="pendientes-cuotas-table-content(cuotas)">
+    <div id="pendientesCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button th:if="${usuario.rol != 'ROLE_ADMIN'}" class="btn btn-success btn-sm"
+                                th:onclick="'showCuotaPagarDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-credit-card"></i> Pagar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas pendientes</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas en revisión Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: enrevision-cuotas-table-content(cuotas=${cuotasEnRevision})}"></div> -->
+<div th:fragment="enrevision-cuotas-table-content(cuotas)">
+    <div id="enrevisionCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Fecha Pago</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${cuota.fechaPago != null ? #temporals.format(cuota.fechaPago, 'dd/MM/yyyy') : 'N/A'}">20/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button th:if="${usuario.rol == 'ROLE_ADMIN'}" class="btn btn-success btn-sm" 
+                                th:onclick="'aceptarCuota(' + ${cuota.id} + ')'">
+                            <i class="fas fa-check"></i> Aceptar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas en revisión</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas pagadas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: pagadas-cuotas-table-content(cuotas=${cuotasPagadas})}"></div> -->
+<div th:fragment="pagadas-cuotas-table-content(cuotas)">
+    <div id="pagadasCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Fecha Pago</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${cuota.fechaPago != null ? #temporals.format(cuota.fechaPago, 'dd/MM/yyyy') : 'N/A'}">20/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas pagadas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas avencer Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: avencer-cuotas-table-content(cuotas=${cuotasAvencer})}"></div> -->
+<div th:fragment="avencer-cuotas-table-content(cuotas)">
+    <div id="avencerCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button th:if="${usuario.rol != 'ROLE_ADMIN'}" class="btn btn-success btn-sm"
+                                th:onclick="'showCuotaPagarDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-credit-card"></i> Pagar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas a vencer</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas vencidas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: vencidas-cuotas-table-content(cuotas=${cuotasVencidas})}"></div> -->
+<div th:fragment="vencidas-cuotas-table-content(cuotas)">
+    <div id="vencidasCuotasTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Mora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td th:text="${cuota.codigo}">CUOTA-001</td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td th:text="${cuota.pagoMora != null ? '$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '$0.00'}">$0.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button th:if="${usuario.rol != 'ROLE_ADMIN'}" class="btn btn-success btn-sm"
+                                th:onclick="'showCuotaPagarDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-credit-card"></i> Pagar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No hay cuotas vencidas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+
+<!-- Cuotas a cobrar pendientes Table Fragment (scalable) -->
+<div th:fragment="pendientes-cuotas-cobros-table-content(cuotas)">
+    <div id="pendientesCuotasCobrosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha de Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${cuota.credito.usuario.foto != null}" 
+                            th:src="${cuota.credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido}"></span>
+                    </td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas pendientes</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas a cobrar a vencer Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: avencer-cuotas-cobros-table-content(cuotas=${cuotasAvencer})}"></div> -->
+<div th:fragment="avencer-cuotas-cobros-table-content(cuotas)">
+    <div id="avencerCuotasCobrosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha de Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${cuota.credito.usuario.foto != null}" 
+                            th:src="${cuota.credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido}"></span>
+                    </td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas a vencer</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas a cobrar vencidas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: vencidas-cuotas-cobros-table-content(cuotas=${cuotasVencidas})}"></div> -->
+<div th:fragment="vencidas-cuotas-cobros-table-content(cuotas)">
+    <div id="vencidasCuotasCobrosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha de Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${cuota.credito.usuario.foto != null}" 
+                            th:src="${cuota.credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido}"></span>
+                    </td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas vencidas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas a cobrar en revisión Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: enrevision-cuotas-cobros-table-content(cuotas=${cuotasEnRevision})}"></div> -->
+<div th:fragment="enrevision-cuotas-cobros-table-content(cuotas)">
+    <div id="enrevisionCuotasCobrosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha de Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${cuota.credito.usuario.foto != null}" 
+                            th:src="${cuota.credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido}"></span>
+                    </td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button th:if="${usuario.rol == 'ROLE_ADMIN'}" class="btn btn-success btn-sm" 
+                                th:onclick="'aceptarCuota(' + ${cuota.id} + ')'">
+                            <i class="fas fa-check"></i> Aceptar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas a revisar</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+<!-- Cuotas a cobrar pagadas Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/cuotaTables :: pagadas-cuotas-cobros-table-content(cuotas=${cuotasPagadas})}"></div> -->
+<div th:fragment="pagadas-cuotas-cobros-table-content(cuotas)">
+    <div id="pagadasCuotasCobrosTable" class="table-switchable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha de Vencimiento</th>
+                    <th>Monto</th>
+                    <th>Mora</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody th:if="${not #lists.isEmpty(cuotas)}" th:each="cuota : ${cuotas}">
+                <tr>
+                    <td>
+                        <img 
+                            th:if="${cuota.credito.usuario.foto != null}" 
+                            th:src="${cuota.credito.usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                        
+                        <span th:text="${cuota.credito.usuario.nombre + ' ' + cuota.credito.usuario.apellido}"></span>
+                    </td>
+                    <td th:text="${cuota.fechaVencimiento != null ? #temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy') : 'N/A'}">15/01/2024</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(cuota.monto, 1, 'COMMA', 2, 'POINT')}">$100.00</td>
+                    <td th:text="${cuota.pagoMora != null ? '$' + #numbers.formatDecimal(cuota.pagoMora, 1, 'COMMA', 2, 'POINT') : '$0.00'}">$0.00</td>
+                    <td>
+                        <span th:text="${cuota.estado}"
+                              th:class="'estado-badge estado-' + ${cuota.estado.toLowerCase()}"></span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" 
+                                th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(cuotas)}">
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay cuotas pagadas</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+</html> 

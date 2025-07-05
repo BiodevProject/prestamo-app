@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Todos los usuarios Table Fragment (scalable) -->
+<!-- Usage: <div th:replace="~{fragments/usuarioTables :: todos-usuarios-table-content(usuarios=${usuarios})}"></div> -->
+<div th:fragment="todos-usuarios-table-content(usuarios)">
+    <div id="todosUsuariosTable" class="table-switchable-table">
+        <table class="table">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th></th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Email</th>
+                    <th>Celular</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody th:if="${not #lists.isEmpty(usuarios)}" th:each="usuario : ${usuarios}">
+                <tr>
+                    <td th:text="${usuario.codigo}">USUARIO-001</td>
+                    <td>
+                        <img 
+                            th:if="${usuario.foto != null}" 
+                            th:src="${usuario.foto}" 
+                            class="table-user-avatar" 
+                            alt="User Image" 
+                        />
+                    </td>
+                    <td th:text="${usuario.nombre}">Nombres</td>
+                    <td th:text="${usuario.apellido}">Apellidos</td>
+                    <td th:text="${usuario.email}">Email</td>
+                    <td th:text="${usuario.celular}">Celular</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" th:onclick="|showUsuarioDetails(${usuario.id})|">
+                            <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                         <!-- Boton para ir a la pagina de creditos del usuario-->
+                        <a th:href="@{'/admin/usuarios/' + ${usuario.id} + '/creditos'}" class="btn btn-success btn-sm">
+                            <i class="fas fa-credit-card"></i> Ver creditos
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- Empty State -->
+            <tbody th:if="${#lists.isEmpty(usuarios)}">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No hay usuarios registrados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-container"></div>
+    </div>
+</div>
+
+</html> 

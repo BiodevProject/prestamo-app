@@ -49,18 +49,23 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
     }
 
     @Override
-    public List<CreditoCuotaEntity> findPendientes(Long creditoId) {
-        return creditoCuotaRepository.findPendientes(creditoId);
+    public List<CreditoCuotaEntity> findPendientes() {
+        return creditoCuotaRepository.findPendientes();
     }
 
     @Override
-    public List<CreditoCuotaEntity> findPagadas(Long creditoId) {
-        return creditoCuotaRepository.findPagadas(creditoId);
+    public List<CreditoCuotaEntity> findPagadas() {
+        return creditoCuotaRepository.findPagadas();
     }
 
     @Override
-    public List<CreditoCuotaEntity> findVencidas(Long creditoId) {
-        return creditoCuotaRepository.findVencidas(creditoId);
+    public List<CreditoCuotaEntity> findVencidas() {
+        return creditoCuotaRepository.findVencidas();
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findAVencer() {
+        return creditoCuotaRepository.findAVencer();
     }
 
     @Override
@@ -71,16 +76,6 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
     @Override
     public List<CreditoCuotaEntity> findEnRevision() {
         return creditoCuotaRepository.findEnRevision();
-    }
-
-    @Override
-    public List<CreditoCuotaEntity> findAvencer() {
-        return creditoCuotaRepository.findAvencer();
-    }
-
-    @Override
-    public List<CreditoCuotaEntity> findVencidas() {
-        return creditoCuotaRepository.findVencidas();
     }
 
     @Override
@@ -101,6 +96,11 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
     @Override
     public List<CreditoCuotaEntity> findVencidasByCreditoId(Long creditoId) {
         return creditoCuotaRepository.findVencidasByCreditoId(creditoId);
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findAVencerByCreditoId(Long creditoId) {
+        return creditoCuotaRepository.findAVencerByCreditoId(creditoId);
     }
 
     @Override

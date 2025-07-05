@@ -101,7 +101,7 @@ public class CreditoController {
         UsuarioEntity usuario = usuarioService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
+        String rutaFotos = "/home/user1/Documents/fotos/";
 
         if (duiDelanteFile != null && !duiDelanteFile.isEmpty()) {
             String nombreArchivoDelante = UUID.randomUUID() + "_" + duiDelanteFile.getOriginalFilename();
@@ -239,6 +239,6 @@ public class CreditoController {
 
         creditoService.save(credito);
 
-        return "redirect:/admin/creditos/pendientes";
+        return "redirect:/admin/creditos";
     }
 }
