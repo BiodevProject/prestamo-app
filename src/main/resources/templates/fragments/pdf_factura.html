@@ -12,6 +12,7 @@
             font-size: 12px;
             line-height: 1.4;
             color: #333;
+            position: relative;
         }
 
         .invoice-container {
@@ -19,9 +20,8 @@
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #e0e0e0;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative;
             background-color: white;
+            position: relative;
         }
 
         .company-header {
@@ -51,23 +51,27 @@
 
         .invoice-details {
             margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
         }
 
         .detail-row {
-            display: flex;
+            display: table;
+            width: 100%;
             margin-bottom: 8px;
             padding-bottom: 8px;
             border-bottom: 1px solid #eee;
         }
 
         .detail-label {
+            display: table-cell;
             font-weight: bold;
             width: 150px;
             color: #555;
         }
 
         .detail-value {
-            flex: 1;
+            display: table-cell;
         }
 
         .amount-row {
@@ -76,19 +80,6 @@
             border-top: 2px solid #1a237e;
             font-weight: bold;
         }
-
-        .watermark {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 60px;
-            color: rgba(0, 0, 0, 0.1);
-            z-index: -1;
-            pointer-events: none;
-            font-weight: bold;
-        }
-
         .footer {
             margin-top: 40px;
             text-align: center;
@@ -96,13 +87,15 @@
             color: #777;
             border-top: 1px solid #eee;
             padding-top: 10px;
+            position: relative;
+            z-index: 2;
         }
     </style>
+
 </head>
 <body>
 
 <div class="invoice-container">
-    <div class="watermark">En revisión</div>
 
     <div class="company-header">
         <div class="company-name">Préstamos911</div>
@@ -130,6 +123,13 @@
         <div class="detail-row">
             <div class="detail-label">Mora Pagada:</div>
             <div class="detail-value">$<span th:text="${cuota.pagoMora != null ? cuota.pagoMora : 0.00}"></span></div>
+        </div>
+        <!-- NUEVO CAMPO -->
+        <div class="detail-row">
+            <div class="detail-label">Total Pagado:</div>
+            <div class="detail-value">
+                $<span th:text="${cuota.monto + (cuota.pagoMora != null ? cuota.pagoMora : 0.00)}"></span>
+            </div>
         </div>
         <div class="detail-row amount-row">
             <div class="detail-label">Estado:</div>
