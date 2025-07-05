@@ -142,148 +142,163 @@
 
 <!-- Global function for showing credit details with SweetAlert2 -->
 <script>
-window.showCreditoDetails = function(creditoId) {
-    const modalContent = document.getElementById('modal-content-' + creditoId);
-    if (modalContent) {
-        Swal.fire({
-            title: 'Detalles del crédito',
-            html: modalContent.innerHTML,
-            width: '800px',
-            showCloseButton: true,
-            showConfirmButton: false,
-            customClass: {
-                container: 'swal-credito-modal'
-            }
-        });
-    } else {
-        console.error('Modal content not found for credito ID:', creditoId);
-    }
-};
-
-// Global function for showing cuota details with SweetAlert2
-window.showCuotaDetails = function(cuotaId) {
-    const modalContent = document.getElementById('cuota-modal-content-' + cuotaId);
-    if (modalContent) {
-        Swal.fire({
-            title: 'Detalle de Cuota',
-            html: modalContent.innerHTML,
-            width: '800px',
-            showCloseButton: true,
-            showConfirmButton: false,
-            customClass: {
-                container: 'swal-cuota-modal'
-            }
-        });
-    } else {
-        console.error('Modal content not found for cuota ID:', cuotaId);
-    }
-};
-
-window.showCuotaPagarDetails = function(cuotaId) {
-    const modalContent = document.getElementById('cuota-pagar-modal-content-' + cuotaId);
-    if (modalContent) {
-        // Set the current cuota ID for the pay button
-        window.currentCuotaId = cuotaId;
-        
-        Swal.fire({
-            title: 'Detalle de Cuota',
-            html: modalContent.innerHTML,
-            width: '800px',
-            showCloseButton: true,
-            showConfirmButton: false,
-            customClass: {
-                container: 'swal-cuota-pagar-modal'
-            }
-        });
-    } else {
-        console.error('Modal content not found for cuota ID:', cuotaId);
-    }
-};
-
-// Function to pay a cuota using the CreditoCuotaController endpoint
-window.payCuota = function(cuotaId) {    
-    if (!cuotaId) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo identificar la cuota a pagar'
-        });
-        return;
-    }
-    
-    // Get the monto from the modal content
-    const modalContent = document.getElementById('cuota-pagar-modal-content-' + cuotaId);
-    if (!modalContent) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontró la información de la cuota'
-        });
-        return;
-    }
-    
-    // Extract the monto from the modal content
-    const montoElement = modalContent.querySelector('.summary-value');
-    let monto = 0;
-    if (montoElement) {
-        const montoText = montoElement.textContent;
-        // Extract number from "$100.00" format
-        monto = parseFloat(montoText.replace('$', '').replace(',', ''));
-    }
-    
-    // Show confirmation dialog
-    Swal.fire({
-        title: 'Confirmar Pago',
-        text: `¿Está seguro que desea pagar la cuota por $${monto.toFixed(2)}?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, Pagar',
-        cancelButtonText: 'Cancelar',
-        showLoaderOnConfirm: true,
-        preConfirm: () => {
-            // Create form data
-            const formData = new FormData();
-            formData.append('monto', monto);
-            
-            // Send POST request to the controller endpoint
-            return fetch(`/cuota/pagar/${cuotaId}`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en el pago');
-                }
-                return response.text();
-            })
-            .catch(error => {
-                Swal.showValidationMessage(`Error: ${error.message}`);
-            });
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-        if (result.isConfirmed) {
+    // Mostrar detalles del crédito con SweetAlert2
+    window.showCreditoDetails = function(creditoId) {
+        const modalContent = document.getElementById('modal-content-' + creditoId);
+        if (modalContent) {
             Swal.fire({
-                icon: 'success',
-                title: 'Pago Exitoso',
-                text: 'Su cuota esta ahora en revisión.',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                // Close the modal
-                Swal.close();
-                // Optionally reload the page or update the table
-                window.location.reload();
+                title: 'Detalles del crédito',
+                html: modalContent.innerHTML,
+                width: '800px',
+                showCloseButton: true,
+                showConfirmButton: false,
+                customClass: {
+                    container: 'swal-credito-modal'
+                }
             });
+        } else {
+            console.error('Modal content not found for credito ID:', creditoId);
         }
-    });
-};
+    };
 
-// Function to set the current cuota ID when opening the modal
-window.setCurrentCuotaId = function(cuotaId) {
-    window.currentCuotaId = cuotaId;
-};
+    // Mostrar detalles de la cuota
+    window.showCuotaDetails = function(cuotaId) {
+        const modalContent = document.getElementById('cuota-modal-content-' + cuotaId);
+        if (modalContent) {
+            Swal.fire({
+                title: 'Detalle de Cuota',
+                html: modalContent.innerHTML,
+                width: '800px',
+                showCloseButton: true,
+                showConfirmButton: false,
+                customClass: {
+                    container: 'swal-cuota-modal'
+                }
+            });
+        } else {
+            console.error('Modal content not found for cuota ID:', cuotaId);
+        }
+    };
 
+    // Mostrar modal para pagar cuota
+    window.showCuotaPagarDetails = function(cuotaId) {
+        const modalContent = document.getElementById('cuota-pagar-modal-content-' + cuotaId);
+        if (modalContent) {
+            window.currentCuotaId = cuotaId; // guardar el ID globalmente
+
+            Swal.fire({
+                title: 'Detalle de Cuota',
+                html: modalContent.innerHTML,
+                width: '800px',
+                showCloseButton: true,
+                showConfirmButton: false,
+                customClass: {
+                    container: 'swal-cuota-pagar-modal'
+                }
+            });
+        } else {
+            console.error('Modal content not found for cuota ID:', cuotaId);
+        }
+    };
+
+    // Pagar cuota y generar PDF
+    window.payCuota = function() {
+        const cuotaId = window.currentCuotaId;
+
+        if (!cuotaId) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo identificar la cuota a pagar'
+            });
+            return;
+        }
+
+        const modalContent = document.getElementById('cuota-pagar-modal-content-' + cuotaId);
+        if (!modalContent) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se encontró la información de la cuota'
+            });
+            return;
+        }
+
+        const montoElement = modalContent.querySelector('.summary-value');
+        let monto = 0;
+        if (montoElement) {
+            const montoText = montoElement.textContent;
+            monto = parseFloat(montoText.replace('$', '').replace(',', ''));
+        }
+
+        if (isNaN(monto) || monto <= 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Monto de pago inválido'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Confirmar Pago',
+            text: `¿Está seguro que desea pagar la cuota por $${monto.toFixed(2)}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, Pagar',
+            cancelButtonText: 'Cancelar',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                const encodedData = `monto=${encodeURIComponent(monto)}`;
+                return fetch(`/cuota/pagar/${cuotaId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/pdf'
+                    },
+                    body: encodedData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al realizar el pago');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `factura_cuota_${cuotaId}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(url);
+                    })
+                    .catch(error => {
+                        Swal.showValidationMessage(`Error: ${error.message}`);
+                    });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pago Exitoso',
+                    text: 'Factura descargada y cuota marcada como En Revisión',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        });
+    };
+
+    // Setear manualmente el ID si se necesita (no requerido en esta lógica)
+    window.setCurrentCuotaId = function(cuotaId) {
+        window.currentCuotaId = cuotaId;
+    };
 </script>
+
 <!--<script src="/appDashboard/user/js/alertasUser.js" type="text/javascript"></script>-->
 
 <!-- Page-specific Scripts -->
