@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.biovizion.prestamo911.entities.UsuarioEntity;
+import com.biovizion.prestamo911.service.PdfService;
 import com.biovizion.prestamo911.service.UsuarioService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -43,25 +45,39 @@ public class CreditoController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private PdfService pdfService;
 
 
     @PostMapping("/pagar/{id}")
-    public String realizarPago(@PathVariable Long id, @RequestParam("monto") BigDecimal montoPago) {
-        CreditoEntity credito = creditoService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Credito not found"));
+    public void pagarCuotaYGenerarPDF(@PathVariable Long id,
+                                      @RequestParam("monto") BigDecimal montoPago,
+                                      HttpServletResponse response) {
+        try {
+            CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota no encontrada"));
 
-        // Subtract payment amount from total
-        BigDecimal nuevoTotal = credito.getTotal().subtract(montoPago);
-        credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
+            CreditoEntity credito = cuota.getCredito();
 
-        // If total reaches zero or below, mark as finalized
-        if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
-            credito.setEstado("Finalizado");
+            BigDecimal nuevoTotal = credito.getTotal().subtract(cuota.getMonto());
+            credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
+
+            if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
+                credito.setEstado("Finalizado");
+            }
+
+            cuota.setEstado("EnRevision");
+            cuota.setFechaPago(LocalDateTime.now());
+            creditoCuotaService.save(cuota);
+
+            creditoService.save(credito);
+
+            // Generar y devolver PDF
+            pdfService.generarFacturaPDF(cuota, response);
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error procesando pago", e);
         }
-
-        creditoService.save(credito);
-
-        return "redirect:/usuario/estadoDeCreditos";
     }
 
 

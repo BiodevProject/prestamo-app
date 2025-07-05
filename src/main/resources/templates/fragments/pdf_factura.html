@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        @page {
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background-color: white;
+        }
+
+        .company-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1a237e;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a237e;
+            margin-bottom: 5px;
+        }
+
+        .invoice-title {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            color: #1a237e;
+            padding: 8px 0;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            width: 150px;
+            color: #555;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .amount-row {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px solid #1a237e;
+            font-weight: bold;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 60px;
+            color: rgba(0, 0, 0, 0.1);
+            z-index: -1;
+            pointer-events: none;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-container">
+    <div class="watermark">En revisión</div>
+
+    <div class="company-header">
+        <div class="company-name">Préstamos911</div>
+    </div>
+
+    <div class="invoice-title">Factura de Pago de Cuota</div>
+
+    <div class="invoice-details">
+        <div class="detail-row">
+            <div class="detail-label">Código de Cuota:</div>
+            <div class="detail-value" th:text="${cuota.codigo}"></div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Fecha de Vencimiento:</div>
+            <div class="detail-value" th:text="${#temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy HH:mm')}"></div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Fecha de Pago:</div>
+            <div class="detail-value" th:text="${#temporals.format(cuota.fechaPago, 'dd/MM/yyyy HH:mm')}"></div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Monto Pagado:</div>
+            <div class="detail-value">$<span th:text="${cuota.monto}"></span></div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Mora Pagada:</div>
+            <div class="detail-value">$<span th:text="${cuota.pagoMora != null ? cuota.pagoMora : 0.00}"></span></div>
+        </div>
+        <div class="detail-row amount-row">
+            <div class="detail-label">Estado:</div>
+            <div class="detail-value" th:text="${cuota.estado}"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Gracias por su pago. Para cualquier consulta, contacte con nuestro servicio al cliente.
+    </div>
+</div>
+
+</body>
+</html>
