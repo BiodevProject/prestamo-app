@@ -180,10 +180,15 @@
         <h2>Crear las cuenta para usuarios</h2>
     </div>
 
-    <form th:action="@{/usuario/save}" method="post">
+    <form th:action="@{/usuario/save/trabajador}" method="post">
         <div class="form-group">
             <label for="nombre">Nombres</label>
             <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="form-group">
+            <label for="apellido">apellidos</label>
+            <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ej: Pérez" required>
             <i class="fas fa-user"></i>
         </div>
 

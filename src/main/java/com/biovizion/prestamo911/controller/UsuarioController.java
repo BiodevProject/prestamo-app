@@ -107,12 +107,51 @@ public class UsuarioController {
         return "redirect:/verificacion/verificar?email=" + usuario.getEmail();
     }
 
+    @PostMapping("/save/trabajador")
+    public String saveTrabajador(@ModelAttribute UsuarioEntity usuario,Model model) {
+
+        // 2. Lógica normal si el captcha fue exitoso
+        System.out.println("Guardando usuario: " + usuario.getEmail());
+
+        if (usuarioService.findByEmail(usuario.getEmail()).isPresent()) {
+            model.addAttribute("error", "El email ya está registrado");
+            return "auth/registro";
+        }
+
+        String codigo;
+        int intentos = 0;
+        int maxIntentos = 10;
+        do {
+            codigo = generarCodigo(usuario.getNombre(), usuario.getApellido());
+            intentos++;
+            if (intentos > maxIntentos) {
+                model.addAttribute("error", "No se pudo generar un código único, intente más tarde");
+                return "auth/registro";
+            }
+        } while (usuarioService.existsByCodigo(codigo));
+
+        usuario.setCodigo(codigo);
+        usuario.setActivo(false);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setRol("ROLE_ADMIN");
+
+        usuarioService.save(usuario);
+        emailService.enviarCodigoVerificacion(usuario.getEmail(), codigo);
+
+        return "redirect:/usuario/dashboard";
+    }
+
+
+
     private String generarCodigo(String nombre, String apellido) {
         nombre = nombre.length() >= 2 ? nombre.substring(0, 2).toUpperCase() : nombre.toUpperCase();
         apellido = apellido.length() >= 1 ? apellido.substring(0, 1).toUpperCase() : "";
         int randomNum = (int)(Math.random() * 900000) + 100000; // 6 números aleatorios entre 100000 y 999999
         return nombre + apellido + randomNum;
     }
+
+
+
 
 
 

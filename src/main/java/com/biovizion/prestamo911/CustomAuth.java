@@ -22,14 +22,24 @@ public class CustomAuth implements AuthenticationSuccessHandler {
         String redirectURL = request.getContextPath();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        boolean matched = false;
+
         for (GrantedAuthority authority : authorities) {
+            System.out.println("ROL AUTENTICADO: " + authority.getAuthority());
             if (authority.getAuthority().equals("ROLE_ADMIN")) {
                 redirectURL += "/admin/dashboard";
+                matched = true;
                 break;
             } else if (authority.getAuthority().equals("ROLE_USER")) {
                 redirectURL += "/usuario/dashboard";
+                matched = true;
                 break;
             }
+        }
+
+        // Si no coincidió ningún rol, redirige a una página segura
+        if (!matched) {
+            redirectURL += "/default-dashboard"; // o cambia por cualquier página segura
         }
 
         response.sendRedirect(redirectURL);
