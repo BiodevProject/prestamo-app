@@ -12,8 +12,13 @@ public interface CreditoService {
     public void update(CreditoEntity producto);
     public void delete(Long id);
     List<CreditoEntity> findPendientes();
-    List<CreditoEntity> findAceptadas();
+    List<CreditoEntity> findAceptados();
     List<CreditoEntity> findRechazados();
     List<CreditoEntity> findFinalizados();
+
     List<CreditoEntity> findByUsuarioId(Long id);
+    List<CreditoEntity> findPendientesByUsuarioId(Long id);
+    List<CreditoEntity> findAceptadosByUsuarioId(Long id);
+    List<CreditoEntity> findRechazadosByUsuarioId(Long id);
+    List<CreditoEntity> findFinalizadosByUsuarioId(Long id);
 }

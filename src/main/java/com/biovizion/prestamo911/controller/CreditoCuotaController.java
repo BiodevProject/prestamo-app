@@ -35,25 +35,10 @@ public class CreditoCuotaController {
             CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota not found"));
 
-            // Get the associated credito
-            CreditoEntity credito = cuota.getCredito();
-
-            // Subtract the cuota amount from the credito total
-            BigDecimal nuevoTotal = credito.getTotal().subtract(cuota.getMonto());
-            credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
-
-            // If total reaches zero or below, mark as finalized
-            if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
-                credito.setEstado("Finalizado");
-            }
-
             // Update the cuota status to "EnRevision"
             cuota.setEstado("EnRevision");
             cuota.setFechaPago(LocalDateTime.now());
             creditoCuotaService.save(cuota);
-
-            // Save the updated credito
-            creditoService.save(credito);
 
             return "redirect:/usuario/pagarCredito";
         } catch (Exception e) {
@@ -68,9 +53,24 @@ public class CreditoCuotaController {
             CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota not found"));
 
+            // Get the associated credito
+            CreditoEntity credito = cuota.getCredito();
+
+            // Subtract the cuota amount from the credito total
+            BigDecimal nuevoTotal = credito.getTotal().subtract(cuota.getMonto());
+            credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
+
+            // If total reaches zero or below, mark as finalized
+            if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
+                credito.setEstado("Finalizado");
+            }
+
             // Change status from EnRevision to Pagado
             cuota.setEstado("Pagado");
             creditoCuotaService.save(cuota);
+
+            // Save the updated credito
+            creditoService.save(credito);
 
             return "redirect:/admin/creditos/cobros";
         } catch (Exception e) {

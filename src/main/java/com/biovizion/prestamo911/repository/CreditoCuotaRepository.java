@@ -62,8 +62,18 @@ public interface CreditoCuotaRepository extends JpaRepository<CreditoCuotaEntity
     @Transactional
     int updateCuotasToAVencer(@Param("ids") List<Long> ids);
 
-
     @Query("SELECT cc FROM CreditoCuotaEntity cc JOIN cc.credito c WHERE c.usuario.id = :usuarioId AND LOWER(cc.estado) = LOWER(:estado)")
     List<CreditoCuotaEntity> findCuotasByUsuarioIdAndEstado(@Param("usuarioId") Long usuarioId, @Param("estado") String estado);
 
+    @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.id = :creditoId AND LOWER(cc.estado) = 'pendiente'")
+    List<CreditoCuotaEntity> findPendientesByCreditoId(@Param("creditoId") Long creditoId);
+
+    @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.id = :creditoId AND LOWER(cc.estado) = 'enrevision'")
+    List<CreditoCuotaEntity> findEnRevisionByCreditoId(@Param("creditoId") Long creditoId);
+
+    @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.id = :creditoId AND LOWER(cc.estado) = 'pagado'")
+    List<CreditoCuotaEntity> findPagadasByCreditoId(@Param("creditoId") Long creditoId);
+
+    @Query("SELECT cc FROM CreditoCuotaEntity cc WHERE cc.credito.id = :creditoId AND LOWER(cc.estado) = 'vencido'")
+    List<CreditoCuotaEntity> findVencidasByCreditoId(@Param("creditoId") Long creditoId);
 } 

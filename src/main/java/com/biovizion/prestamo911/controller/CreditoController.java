@@ -104,7 +104,7 @@ public class CreditoController {
 
     @GetMapping("/dashboardAceptadas")
     public String creditoDashboardAceptados(Model model) {
-        List<CreditoEntity> creditos = creditoService.findAceptadas();
+        List<CreditoEntity> creditos = creditoService.findAceptados();
         model.addAttribute("creditos", creditos);
 
         return "credito/creditoDashboardAceptadas";

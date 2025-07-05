@@ -90,7 +90,14 @@ public class HomeController {
         model.addAttribute("currentUserName", currentUserName);
         
         List<CreditoEntity> creditos = creditoService.findPendientes();
+        List<CreditoEntity> creditosAceptados = creditoService.findAceptados();
+        List<CreditoEntity> creditosRechazados = creditoService.findRechazados();
+        List<CreditoEntity> creditosFinalizados = creditoService.findFinalizados();
+
         model.addAttribute("creditos", creditos);
+        model.addAttribute("creditosAceptados", creditosAceptados);
+        model.addAttribute("creditosRechazados", creditosRechazados);   
+        model.addAttribute("creditosFinalizados", creditosFinalizados);
         return "appDashboard/admin/creditosPendientes";
     }
 
@@ -101,7 +108,7 @@ public class HomeController {
         String currentUserName = getCurrentUserName(principal);
         model.addAttribute("currentUserName", currentUserName);
         
-        List<CreditoEntity> creditos = creditoService.findAceptadas();
+        List<CreditoEntity> creditos = creditoService.findAceptados();
         model.addAttribute("creditos", creditos);
         return "appDashboard/admin/creditosAceptados";
     }

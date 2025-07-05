@@ -83,13 +83,31 @@ public class CreditoCuotaImpl implements CreditoCuotaService {
         return creditoCuotaRepository.findVencidas();
     }
 
-
     @Override
-    public List<CreditoCuotaEntity> getCuotasByUsuarioAndEstado(Long usuarioId, String estado) {
-        return creditoCuotaRepository.findCuotasByUsuarioIdAndEstado(usuarioId, estado);
+    public List<CreditoCuotaEntity> findPendientesByCreditoId(Long creditoId) {
+        return creditoCuotaRepository.findPendientesByCreditoId(creditoId);
     }
 
     @Override
+    public List<CreditoCuotaEntity> findEnRevisionByCreditoId(Long creditoId) {
+        return creditoCuotaRepository.findEnRevisionByCreditoId(creditoId);
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findPagadasByCreditoId(Long creditoId) {
+        return creditoCuotaRepository.findPagadasByCreditoId(creditoId);
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findVencidasByCreditoId(Long creditoId) {
+        return creditoCuotaRepository.findVencidasByCreditoId(creditoId);
+    }
+
+    @Override
+    public List<CreditoCuotaEntity> findByUsuarioIdAndEstado(Long usuarioId, String estado) {
+        return creditoCuotaRepository.findCuotasByUsuarioIdAndEstado(usuarioId, estado);
+    }
+
     public void updateExpiredCuotas() {
         LocalDateTime currentDate = LocalDateTime.now();
         List<Long> expiredCuotaIds = creditoCuotaRepository.findExpiredCuotaIds(currentDate);

@@ -163,31 +163,21 @@ public class UsuarioController {
         UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
+        // Get all credits and filtered credits by state from service layer
         List<CreditoEntity> creditos = creditoService.findByUsuarioId(usuario.getId());
+        List<CreditoEntity> creditosAceptados = creditoService.findAceptadosByUsuarioId(usuario.getId());
+        List<CreditoEntity> creditosPendientes = creditoService.findPendientesByUsuarioId(usuario.getId());
+        List<CreditoEntity> creditosRechazados = creditoService.findRechazadosByUsuarioId(usuario.getId());
+        List<CreditoEntity> creditosFinalizados = creditoService.findFinalizadosByUsuarioId(usuario.getId());
+
+        // Add all credit lists to the model
+        model.addAttribute("creditos", creditos);
+        model.addAttribute("creditosAceptados", creditosAceptados);
+        model.addAttribute("creditosPendientes", creditosPendientes);
+        model.addAttribute("creditosRechazados", creditosRechazados);
+        model.addAttribute("creditosFinalizados", creditosFinalizados);
         
-        // Create simple DTOs to avoid circular references
-        List<Map<String, Object>> creditosDto = creditos.stream()
-            .map(credito -> {
-                Map<String, Object> dto = new HashMap<>();
-                dto.put("id", credito.getId());
-                dto.put("estado", credito.getEstado());
-                dto.put("monto", credito.getMonto());
-                dto.put("plazoMeses", credito.getPlazoMeses());
-                dto.put("total", credito.getTotal());
-                
-                // Handle nested objects safely
-                if (credito.getUsuarioSolicitud() != null) {
-                    Map<String, Object> solicitudDto = new HashMap<>();
-                    solicitudDto.put("fechaSolicitud", credito.getUsuarioSolicitud().getFechaSolicitud());
-                    dto.put("usuarioSolicitud", solicitudDto);
-                }
-                
-                return dto;
-            })
-            .collect(Collectors.toList());
-        
-        model.addAttribute("creditos", creditosDto);
-        return "appDashboard/user/creditosPendientes";
+        return "appDashboard/user/creditosPendientes-simple";
     }
 
     @GetMapping("/pagarCredito")
@@ -268,7 +258,7 @@ public class UsuarioController {
         if (foto != null && !foto.isEmpty()) {
             try {
                 String nombreArchivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
-                String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
+                String rutaFotos = "/home/user1/Documents/fotos/";
                 File destino = new File(rutaFotos + nombreArchivo);
                 foto.transferTo(destino);
                 usuario.setFoto("/fotos-usuarios/" + nombreArchivo);
@@ -280,9 +270,6 @@ public class UsuarioController {
         usuarioService.update(usuario);
         return "redirect:/usuario/edit/" + id;
     }
-
-
-
 
     @PostMapping("/delete/{id}")
     public String deleteUsuario(@PathVariable Long id) {
@@ -308,7 +295,12 @@ public class UsuarioController {
 
     @GetMapping("/credito/cuotas/{id}")
     public String creditoCuotas(@PathVariable Long id, Model model, Principal principal) {
+        // Get current user's name
+        String currentUserName = getCurrentUserName(principal);
+        model.addAttribute("currentUserName", currentUserName);
+        
         String emailUsuario = principal.getName();
+
         UsuarioEntity usuario = usuarioService.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
@@ -321,12 +313,18 @@ public class UsuarioController {
         }
         
         List<CreditoCuotaEntity> cuotas = creditoCuotaService.findByCreditoId(id);
-        
-        // Get current user's name for the template
-        String currentUserName = getCurrentUserName(principal);
-        model.addAttribute("currentUserName", currentUserName);
-        model.addAttribute("credito", credito);
+        List<CreditoCuotaEntity> cuotasPendientes = creditoCuotaService.findPendientesByCreditoId(id);
+        List<CreditoCuotaEntity> cuotasEnRevision = creditoCuotaService.findEnRevisionByCreditoId(id);
+        List<CreditoCuotaEntity> cuotasPagadas = creditoCuotaService.findPagadasByCreditoId(id);
+        List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.findVencidasByCreditoId(id);
+
+        // Add all cuota lists to the model
         model.addAttribute("cuotas", cuotas);
+        model.addAttribute("cuotasPendientes", cuotasPendientes);
+        model.addAttribute("cuotasEnRevision", cuotasEnRevision);
+        model.addAttribute("cuotasPagadas", cuotasPagadas);
+        model.addAttribute("cuotasVencidas", cuotasVencidas);
+
         return "appDashboard/user/creditoCuotas";
     }
 }

@@ -28,9 +28,6 @@ public class GlobalAlertas {
     private UsuarioService usuarioService;
 
     @Autowired
-    private CreditoService creditoService;
-
-    @Autowired
     private CreditoCuotaService creditoCuotaService;
 
     @ModelAttribute
@@ -52,24 +49,20 @@ public class GlobalAlertas {
                 UsuarioEntity usuario = optionalUsuario.get();
 
                 // Ahora podés hacer llamadas con diferentes estados según la alerta que quieras validar
-                List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.getCuotasByUsuarioAndEstado(usuario.getId(), "vencido");
+                List<CreditoCuotaEntity> cuotasVencidas = creditoCuotaService.findByUsuarioIdAndEstado(usuario.getId(), "vencido");
                 if (!cuotasVencidas.isEmpty()) {
                     model.addAttribute("PAGO_RETRASADO", alertaService.findById(3L).orElse(null));
                 }
 
-                List<CreditoCuotaEntity> cuotasPagadas = creditoCuotaService.getCuotasByUsuarioAndEstado(usuario.getId(), "EnRevision");
-                if (!cuotasPagadas.isEmpty()) {
+                List<CreditoCuotaEntity> cuotasEnRevision = creditoCuotaService.findByUsuarioIdAndEstado(usuario.getId(), "enrevision");
+                if (!cuotasEnRevision.isEmpty()) {
                     model.addAttribute("PAGO_EN_REVISION", alertaService.findById(5L).orElse(null));
                 }
 
                 model.addAttribute("alerta5", alertaService.findById(5L).orElse(null));
                 model.addAttribute("alerta5", alertaService.findById(5L).orElse(null));
 
-
-
-                // Y así para las demás alertas...
             }
         }
-
     }
-    }
+}
