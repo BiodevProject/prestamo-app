@@ -23,6 +23,13 @@
             </li>
         </ul>
         <div class="tab-content" id="trabajadoresTabsContent">
+
+            <div class="d-flex justify-content-end mb-3">
+                <a href="/trabajador/create" class="btn btn-success">
+                    <i class="fas fa-user-plus"></i> Nuevo trabajador
+                </a>
+            </div>
+
             <div class="search-container">
                 <div class="input-group">
                     <input type="text" id="searchInput" class="form-control" placeholder="Buscar trabajadores..." onkeyup="filterTable()">
@@ -35,12 +42,11 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Email</th>
-                        <th>Rol</th>
+                        <th>Acciones</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody id="workerTableBody">
-                    <!-- Data will be populated by JS -->
                     </tbody>
                 </table>
                 <div id="workerData" style="display: none;"
@@ -60,7 +66,6 @@
         </div>
     </div>
 
-    <!-- Context Menu -->
     <div class="context-menu" id="contextMenu">
         <button class="context-menu-item primary" onclick="contextMenuVerDetalles()"><i class="fas fa-eye"></i> Ver Detalles</button>
         <button class="context-menu-item warning" onclick="contextMenuEditarTrabajador()"><i class="fas fa-edit"></i> Editar Trabajador</button>
@@ -68,7 +73,6 @@
         <button class="context-menu-item danger" onclick="contextMenuEliminarTrabajador()"><i class="fas fa-trash"></i> Eliminar Trabajador</button>
     </div>
 
-    <!-- Modal for Worker Details -->
     <div class="modal fade" id="trabajadorModal" tabindex="-1" aria-labelledby="trabajadorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="background-color: #F4F6F9; border-radius: 15px;">
@@ -77,9 +81,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="trabajadorForm" th:action="@{/admin/trabajadores/update}" method="post">
+                    <form id="trabajadorForm" th:action="@{/trabajador/update}" method="post">
                         <input type="hidden" id="trabajadorId" name="id" value="">
-                        
+
                         <div class="info-section">
                             <div class="subheader mb-3">
                                 <p>ID del Trabajador: <strong id="trabajadorIdDisplay">-</strong></p>
@@ -94,14 +98,10 @@
                                     <label for="modalEmail" class="form-label">Correo electrónico</label>
                                     <input type="email" id="modalEmail" name="email" class="form-control" disabled required />
                                 </div>
+
                                 <div class="info-block">
-                                    <label for="modalRol" class="form-label">Rol en el sistema</label>
-                                    <select id="modalRol" name="rol" class="form-select" disabled required>
-                                        <option value="" disabled>Seleccione un rol</option>
-                                        <option value="TRABAJADOR">Trabajador</option>
-                                        <option value="ADMIN">Administrador</option>
-                                        <option value="USER">Usuario</option>
-                                    </select>
+                                    <label for="modalPassword" class="form-label">Nueva contraseña</label>
+                                    <input type="password" id="modalPassword" name="password" class="form-control" placeholder="Escriba una nueva contraseña" disabled />
                                 </div>
                             </div>
                         </div>
@@ -126,4 +126,4 @@
 </th:block>
 
 </body>
-</html> 
+</html>

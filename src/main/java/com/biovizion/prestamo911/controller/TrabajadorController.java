@@ -2,6 +2,7 @@ package com.biovizion.prestamo911.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,17 @@ public class TrabajadorController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+
+    @GetMapping("/register")
+    public String registrarTrabajador(Model model) {
+
+        return "auth/trabajadorRegister";
+    }
+
+
+
 
     @GetMapping("/create")
     public String createTrabajador(Model model) {
@@ -45,31 +57,41 @@ public class TrabajadorController {
     }
 
     @PostMapping("/save")
-    public String saveTrabajador(@ModelAttribute TrabajadorEntity trabajador, Model model) {
-        System.out.println("Guardando trabajador: " + trabajador.getEmail());
+    @ResponseBody
+    public ResponseEntity<?> saveTrabajador(@RequestBody TrabajadorEntity trabajador) {
         if (trabajadorService.findByEmail(trabajador.getEmail()).isPresent()) {
-            model.addAttribute("error", "El email ya está registrado");
-            return "auth/registro";
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("El email ya está registrado");
         }
 
         trabajador.setPassword(passwordEncoder.encode(trabajador.getPassword()));
-
         trabajadorService.save(trabajador);
-        return "redirect:/auth/login";
+
+        return ResponseEntity.ok().build(); // solo confirmación de éxito
     }
+
 
     @PostMapping("/update")
-    public String updateTrabajador(@ModelAttribute TrabajadorEntity trabajador) {
+    public String updateTrabajador(@ModelAttribute TrabajadorEntity trabajadorForm) {
 
-        // Obtener el trabajador existente y conservar la contraseña
-        TrabajadorEntity trabajadorExistente = trabajadorService.findById(trabajador.getId())
+        // Obtener el trabajador existente
+        TrabajadorEntity trabajadorExistente = trabajadorService.findById(trabajadorForm.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        trabajador.setPassword(trabajadorExistente.getPassword());
+        // Copiar los datos actualizados
+        trabajadorExistente.setNombre(trabajadorForm.getNombre());
+        trabajadorExistente.setEmail(trabajadorForm.getEmail());
 
-        trabajadorService.update(trabajador);
+        // Solo actualizar la contraseña si se escribió una nueva
+        if (trabajadorForm.getPassword() != null && !trabajadorForm.getPassword().trim().isEmpty()) {
+            trabajadorExistente.setPassword(passwordEncoder.encode(trabajadorForm.getPassword()));
+        }
+
+        trabajadorService.update(trabajadorExistente);
+
         return "redirect:/trabajador/dashboard";
     }
+
 
     @PostMapping("/delete/{id}")
     public String deleteTrabajador(@PathVariable Long id) {

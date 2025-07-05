@@ -22,7 +22,6 @@ function loadTrabajadorData() {
             id: div.getAttribute('data-id'),
             nombre: div.getAttribute('data-nombre') || '',
             email: div.getAttribute('data-email') || '',
-            rol: div.getAttribute('data-rol') || ''
         });
     });
     filteredData = [...allTrabajadores];
@@ -33,8 +32,7 @@ function filterTable() {
     var filter = input.value.toLowerCase();
     filteredData = allTrabajadores.filter(function(trabajador) {
         return trabajador.nombre.toLowerCase().includes(filter) ||
-               trabajador.email.toLowerCase().includes(filter) ||
-               trabajador.rol.toLowerCase().includes(filter);
+               trabajador.email.toLowerCase().includes(filter);
     });
     currentPage = 1;
     updateTable();
@@ -62,7 +60,6 @@ function updateTable() {
         row.innerHTML = `
             <td>${trabajador.nombre}</td>
             <td>${trabajador.email}</td>
-            <td>${trabajador.rol}</td>
             <td><a href="#" class="btn btn-info btn-sm" onclick="showTrabajadorDetails('${trabajador.id}')">Ver Detalles</a></td>
         `;
         
@@ -129,7 +126,6 @@ function showTrabajadorDetails(trabajadorId) {
     document.getElementById('trabajadorIdDisplay').textContent = trabajador.id;
     document.getElementById('modalNombre').value = trabajador.nombre;
     document.getElementById('modalEmail').value = trabajador.email;
-    document.getElementById('modalRol').value = trabajador.rol;
     
     // Reset form state (all fields disabled, edit button visible)
     var modalInputs = document.querySelectorAll('#trabajadorModal input:not([type="hidden"]), #trabajadorModal select');
@@ -168,7 +164,7 @@ function setupModalEditFunctionality() {
         const formData = new FormData(form);
         
         // Send update request
-        fetch('/admin/trabajadores/update', {
+        fetch('/trabajador/update', {
             method: 'POST',
             body: formData
         })
@@ -186,7 +182,6 @@ function setupModalEditFunctionality() {
             if (trabajador) {
                 trabajador.nombre = formData.get('nombre');
                 trabajador.email = formData.get('email');
-                trabajador.rol = formData.get('rol');
                 
                 // Refresh table
                 updateTable();
@@ -201,7 +196,7 @@ function setupModalEditFunctionality() {
             alert('Error al actualizar trabajador: ' + error.message);
         });
     }
-    
+
     editBtn.addEventListener('click', editHandler);
     form.addEventListener('submit', submitHandler);
 }
