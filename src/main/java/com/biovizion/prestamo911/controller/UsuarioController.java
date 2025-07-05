@@ -258,7 +258,7 @@ public class UsuarioController {
         if (foto != null && !foto.isEmpty()) {
             try {
                 String nombreArchivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
-                String rutaFotos = "/home/user1/Documents/fotos/";
+                String rutaFotos = "/home/alex/Documentos/fotosdeApp/";
                 File destino = new File(rutaFotos + nombreArchivo);
                 foto.transferTo(destino);
                 usuario.setFoto("/fotos-usuarios/" + nombreArchivo);

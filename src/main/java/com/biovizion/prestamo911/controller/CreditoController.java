@@ -44,6 +44,27 @@ public class CreditoController {
     @Autowired
     private UsuarioService usuarioService;
 
+
+    @PostMapping("/pagar/{id}")
+    public String realizarPago(@PathVariable Long id, @RequestParam("monto") BigDecimal montoPago) {
+        CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Credito not found"));
+
+        // Subtract payment amount from total
+        BigDecimal nuevoTotal = credito.getTotal().subtract(montoPago);
+        credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
+
+        // If total reaches zero or below, mark as finalized
+        if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
+            credito.setEstado("Finalizado");
+        }
+
+        creditoService.save(credito);
+
+        return "redirect:/usuario/estadoDeCreditos";
+    }
+
+
     @GetMapping("/form")
     public String creditoForm(Model model) {
         CreditoEntity credito = new CreditoEntity();
@@ -203,27 +224,5 @@ public class CreditoController {
         creditoService.save(credito);
 
         return "redirect:/admin/creditos/pendientes";
-    }
-
-
-
-
-    @PostMapping("/pagar/{id}")
-    public String realizarPago(@PathVariable Long id, @RequestParam("monto") BigDecimal montoPago) {
-        CreditoEntity credito = creditoService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Credito not found"));
-        
-        // Subtract payment amount from total
-        BigDecimal nuevoTotal = credito.getTotal().subtract(montoPago);
-        credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
-        
-        // If total reaches zero or below, mark as finalized
-        if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
-            credito.setEstado("Finalizado");
-        }
-        
-        creditoService.save(credito);
-        
-        return "redirect:/usuario/estadoDeCreditos";
     }
 }

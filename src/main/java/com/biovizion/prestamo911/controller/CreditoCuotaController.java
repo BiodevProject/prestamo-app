@@ -4,6 +4,8 @@ import com.biovizion.prestamo911.entities.CreditoCuotaEntity;
 import com.biovizion.prestamo911.entities.CreditoEntity;
 import com.biovizion.prestamo911.service.CreditoCuotaService;
 import com.biovizion.prestamo911.service.CreditoService;
+import com.biovizion.prestamo911.service.PdfService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -28,21 +30,27 @@ public class CreditoCuotaController {
     @Autowired
     private CreditoService creditoService;
 
-    @PostMapping("/pagar/{id}")
-    public String pagarCuota(@PathVariable Long id, @RequestParam("monto") BigDecimal montoPago) {
-        try {
-            // Find the cuota
-            CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota not found"));
+    @Autowired
+    private PdfService pdfService;
 
-            // Update the cuota status to "EnRevision"
+
+    @PostMapping("/pagar/{id}")
+    public void pagarCuotaYGenerarPDF(@PathVariable Long id,
+                                      @RequestParam("monto") BigDecimal montoPago,
+                                      HttpServletResponse response) {
+        try {
+            CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota no encontrada"));
+
             cuota.setEstado("EnRevision");
             cuota.setFechaPago(LocalDateTime.now());
             creditoCuotaService.save(cuota);
 
-            return "redirect:/usuario/pagarCredito";
+            // Generar y devolver PDF
+            pdfService.generarFacturaPDF(cuota, response);
+
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing payment", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error procesando pago", e);
         }
     }
 
@@ -53,14 +61,11 @@ public class CreditoCuotaController {
             CreditoCuotaEntity cuota = creditoCuotaService.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuota not found"));
 
-            // Get the associated credito
             CreditoEntity credito = cuota.getCredito();
 
-            // Subtract the cuota amount from the credito total
             BigDecimal nuevoTotal = credito.getTotal().subtract(cuota.getMonto());
             credito.setTotal(nuevoTotal.setScale(2, RoundingMode.HALF_UP));
 
-            // If total reaches zero or below, mark as finalized
             if (nuevoTotal.compareTo(BigDecimal.ZERO) <= 0) {
                 credito.setEstado("Finalizado");
             }
@@ -69,7 +74,6 @@ public class CreditoCuotaController {
             cuota.setEstado("Pagado");
             creditoCuotaService.save(cuota);
 
-            // Save the updated credito
             creditoService.save(credito);
 
             return "redirect:/admin/creditos/cobros";

@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="info-item important-field">
                                     <span class="info-label">Foto del DUI</span>
                                     <div class="info-value">
-                                        <img th:src="@{${credito.usuarioSolicitud.dui}}" alt="Foto DUI" class="dui-thumbnail" />
+                                        <img th:src="@{${credito.usuarioSolicitud.duiDelante}}" alt="Foto DUI" class="dui-thumbnail" />
                                     </div>
                                 </div>
                             </div>
@@ -944,6 +944,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button class="btn btn-primary btn-sm" 
                                 th:onclick="'showCuotaDetails(' + ${cuota.id} + ')'">
                             <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button class="btn btn-success btn-sm"
+                                th:onclick="'showCuotaPagarDetails(' + ${cuota.id} + ')'">
+                            <i class="fas fa-credit-card"></i> Pagar
                         </button>
                     </td>
                 </tr>
