@@ -2,6 +2,7 @@ package com.biovizion.prestamo911.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +90,42 @@ public class AdminController {
             return "success";
         } catch (Exception e) {
             return "error: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/creditos/{id}/aceptar")
+    @ResponseBody
+    public ResponseEntity<String> aceptarCredito(@PathVariable Long id) {
+        try {
+            CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            
+            // Update the credit status to "Aceptado"
+            credito.setEstado("Aceptado");
+            creditoService.update(credito);
+            
+            return ResponseEntity.ok("Crédito aceptado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al aceptar el crédito: " + e.getMessage());
+        }
+    }
+    
+    @PostMapping("/creditos/{id}/rechazar")
+    @ResponseBody
+    public ResponseEntity<String> rechazarCredito(@PathVariable Long id) {
+        try {
+            CreditoEntity credito = creditoService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            
+            // Update the credit status to "Rechazado"
+            credito.setEstado("Rechazado");
+            creditoService.update(credito);
+            
+            return ResponseEntity.ok("Crédito rechazado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al rechazar el crédito: " + e.getMessage());
         }
     }
 

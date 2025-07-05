@@ -135,7 +135,6 @@
                     <th>Monto</th>
                     <th>Plazo</th>
                     <th>Fecha de Solicitud</th>
-                    <th>Total</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -157,11 +156,18 @@
                     <td th:text="${credito.monto}"></td>
                     <td th:text="${credito.plazoMeses}"></td>
                     <td th:text="${credito.usuarioSolicitud != null ? #temporals.format(credito.usuarioSolicitud.fechaSolicitud, 'dd/MM/yyyy') : 'N/A'}"></td>
-                    <td th:text="${credito.total}"></td>
                     <td>
                         <button class="btn btn-primary btn-sm" 
                                 th:onclick="'showCreditoDetails(' + ${credito.id} + ')'">
                             <i class="fas fa-eye"></i> Ver detalles
+                        </button>
+                        <button class="btn btn-success btn-sm" 
+                                th:onclick="'aceptarCreditoConCargos(' + ${credito.id} + ')'">
+                            <i class="fas fa-check"></i> Aceptar
+                        </button>
+                        <button class="btn btn-danger btn-sm" 
+                                th:onclick="'rechazarCredito(' + ${credito.id} + ')'">
+                            <i class="fas fa-times"></i> Rechazar
                         </button>
                     </td>
                 </tr>
@@ -721,12 +727,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 </div>
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="Swal.close()">
-                        <i class="fas fa-times"></i> Cerrar
-                    </button>
-                </div>
+                <!-- Modal Footer - Removed since SweetAlert2 handles the buttons -->
             </div>
         </div>
     </div>

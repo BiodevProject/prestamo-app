@@ -89,12 +89,14 @@ public class HomeController {
         String currentUserName = getCurrentUserName(principal);
         model.addAttribute("currentUserName", currentUserName);
         
-        List<CreditoEntity> creditos = creditoService.findPendientes();
+        List<CreditoEntity> creditos = creditoService.findAll();
+        List<CreditoEntity> creditosPendientes = creditoService.findPendientes();
         List<CreditoEntity> creditosAceptados = creditoService.findAceptados();
         List<CreditoEntity> creditosRechazados = creditoService.findRechazados();
         List<CreditoEntity> creditosFinalizados = creditoService.findFinalizados();
-
+        
         model.addAttribute("creditos", creditos);
+        model.addAttribute("creditosPendientes", creditosPendientes);
         model.addAttribute("creditosAceptados", creditosAceptados);
         model.addAttribute("creditosRechazados", creditosRechazados);   
         model.addAttribute("creditosFinalizados", creditosFinalizados);
@@ -147,61 +149,6 @@ public class HomeController {
         return "appDashboard/admin/creditoDetalle";
     }
     
-    // ADMIN: Finalize Credit
-    @PostMapping("/admin/creditos/{id}/finalizar")
-    @ResponseBody
-    public ResponseEntity<String> finalizarCredito(@PathVariable Long id) {
-        try {
-            CreditoEntity credito = creditoService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            
-            // Update the credit status to "Finalizado" and set finalization date
-            credito.setEstado("Finalizado");
-            credito.setFechaFinalizado(LocalDateTime.now());
-            creditoService.update(credito);
-            
-            return ResponseEntity.ok("Crédito finalizado exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al finalizar el crédito: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/admin/creditos/{id}/pendiente")
-    @ResponseBody
-    public ResponseEntity<String> marcarPendiente(@PathVariable Long id) {
-        try {
-            CreditoEntity credito = creditoService.findById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-            // Update the credit status to "Pendiente"
-            credito.setEstado("Pendiente");
-            creditoService.update(credito);
-
-            return ResponseEntity.ok("Crédito marcado como pendiente exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al marcar el crédito como pendiente: " + e.getMessage());
-        }
-    }
-    // ADMIN: Reject Credit
-    @PostMapping("/admin/creditos/{id}/rechazar")
-    @ResponseBody
-    public ResponseEntity<String> rechazarCredito(@PathVariable Long id) {
-        try {
-            CreditoEntity credito = creditoService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            
-            // Update the credit status to "Rechazado"
-            credito.setEstado("Rechazado");
-            creditoService.update(credito);
-            
-            return ResponseEntity.ok("Crédito rechazado exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al rechazar el crédito: " + e.getMessage());
-        }
-    }
     // Helper method to get current user's name
     private String getCurrentUserName(Principal principal) {
         if (principal == null) {
