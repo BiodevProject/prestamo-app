@@ -20,45 +20,45 @@
     
     <!-- Unified Table Interface -->
     <div class="table-interface-wrapper">
-        <!-- Table Tab Switcher -->
-        <div class="table-tab-switcher">
-            <div>
-                <button type="button" class="table-switcher active" data-table-target="#enrevisionCuotasCobrosTable">
-                    En Revisión
-                </button>
-                <button type="button" class="table-switcher" data-table-target="#avencerCuotasCobrosTable">
-                    A Vencer
-                </button>
-                <button type="button" class="table-switcher" data-table-target="#vencidasCuotasCobrosTable">
-                    Vencidas
-                </button>
-                <button type="button" class="table-switcher" data-table-target="#pendientesCuotasCobrosTable">
-                    Pendientes
-                </button>
-                <button type="button" class="table-switcher" data-table-target="#pagadasCuotasCobrosTable">
-                    Pagadas
-                </button>
-            </div>
+    <!-- Table Tab Switcher -->
+    <div class="table-tab-switcher">
+        <div>
+            <button type="button" class="table-switcher active" data-table-target="#enrevisionCuotasCobrosTable">
+                En Revisión
+            </button>
+            <button type="button" class="table-switcher" data-table-target="#avencerCuotasCobrosTable">
+                A Vencer
+            </button>
+            <button type="button" class="table-switcher" data-table-target="#vencidasCuotasCobrosTable">
+                Vencidas
+            </button>
+            <button type="button" class="table-switcher" data-table-target="#pendientesCuotasCobrosTable">
+                Pendientes
+            </button>
+            <button type="button" class="table-switcher" data-table-target="#pagadasCuotasCobrosTable">
+                Pagadas
+            </button>
         </div>
+    </div>
 
-        <!-- Search Bar -->
+    <!-- Search Bar -->
         <div class="search-container">
-            <div class="input-group">
-                <input type="text" id="searchInput" class="form-control" placeholder="Buscar cuotas..." />
-                <div class="input-group-append">
+        <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar cuotas..." />
+            <div class="input-group-append">
                     <button class="btn" type="button" onclick="clearSearch()">
-                        <i class="fas fa-times"></i> Limpiar
-                    </button>
-                </div>
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
             </div>
         </div>
-        
-        <!-- Table Containers - All cuota tables -->
-        <div th:replace="~{fragments/cuotaTables :: enrevision-cuotas-cobros-table-content(cuotas=${cuotasEnRevision})}"></div>
-        <div th:replace="~{fragments/cuotaTables :: avencer-cuotas-cobros-table-content(cuotas=${cuotasAvencer})}"></div>
-        <div th:replace="~{fragments/cuotaTables :: vencidas-cuotas-cobros-table-content(cuotas=${cuotasVencidas})}"></div>
-        <div th:replace="~{fragments/cuotaTables :: pendientes-cuotas-cobros-table-content(cuotas=${cuotasPendientes})}"></div>
-        <div th:replace="~{fragments/cuotaTables :: pagadas-cuotas-cobros-table-content(cuotas=${cuotasPagadas})}"></div>
+    </div>
+    
+    <!-- Table Containers - All cuota tables -->
+    <div th:replace="~{fragments/cuotaTables :: enrevision-cuotas-cobros-table-content(cuotas=${cuotasEnRevision})}"></div>
+    <div th:replace="~{fragments/cuotaTables :: avencer-cuotas-cobros-table-content(cuotas=${cuotasAvencer})}"></div>
+    <div th:replace="~{fragments/cuotaTables :: vencidas-cuotas-cobros-table-content(cuotas=${cuotasVencidas})}"></div>
+    <div th:replace="~{fragments/cuotaTables :: pendientes-cuotas-cobros-table-content(cuotas=${cuotasPendientes})}"></div>
+    <div th:replace="~{fragments/cuotaTables :: pagadas-cuotas-cobros-table-content(cuotas=${cuotasPagadas})}"></div>
     </div>
 
     <!-- Table switcher scripts (include only once per page, at the end) -->

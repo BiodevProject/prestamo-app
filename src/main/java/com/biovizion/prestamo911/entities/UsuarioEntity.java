@@ -40,7 +40,6 @@ public class UsuarioEntity {
     @Column(name = "activo")
     private boolean activo;
 
-
     private String foto;
 
     @Column(name = "dui_delante")
@@ -50,10 +49,6 @@ public class UsuarioEntity {
     private String duiAtras;
 
     private String nit;
-
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<HistorialPagoEntity> pagos = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<CreditoEntity> creditos = new ArrayList<>();

@@ -138,7 +138,7 @@ public class UsuarioController {
         return "appDashboard/user/index";
     }
 
-    @GetMapping("/solicitarCredito")
+    @GetMapping("/solicitar")
     public String solicitarCreditoForm(Model model, Principal principal) {
         String currentUserName = principal.getName();
         UsuarioEntity usuario = usuarioService.findByEmail(currentUserName)
@@ -154,11 +154,11 @@ public class UsuarioController {
         credito.setUsuarioSolicitud(solicitud);
 
         model.addAttribute("credito", credito);
-        return "appDashboard/user/solicitarCredito";
+        return "appDashboard/user/solicitar";
     }
 
 
-    @GetMapping("/estadoDeCreditos")
+    @GetMapping("/creditos")
     public String estadoDeCreditos(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
@@ -182,10 +182,10 @@ public class UsuarioController {
         model.addAttribute("creditosRechazados", creditosRechazados);
         model.addAttribute("creditosFinalizados", creditosFinalizados);
         
-        return "appDashboard/user/creditosPendientes";
+        return "appDashboard/user/misCreditos";
     }
 
-    @GetMapping("/pagarCredito")
+    @GetMapping("/pagar")
     public String pagarCredito(Model model, Principal principal) {
         // Get current user's name
         String currentUserName = getCurrentUserName(principal);
@@ -198,7 +198,7 @@ public class UsuarioController {
         List<CreditoEntity> creditosAceptados = creditoService.findAceptadosByUsuarioId(usuario.getId());
         
         model.addAttribute("creditosAceptados", creditosAceptados);
-        return "appDashboard/user/pagarCredito";
+        return "appDashboard/user/pagar";
     }
 
     @GetMapping("/creditos/detalle/{id}/modal")
@@ -350,6 +350,6 @@ public class UsuarioController {
         model.addAttribute("cuotasVencidas", cuotasVencidas);
         model.addAttribute("cuotasAvencer", cuotasAvencer);
 
-        return "appDashboard/user/creditoCuotas";
+        return "appDashboard/user/cuotas";
     }
 }

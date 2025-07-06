@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/appDashboard/admin/dist/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/appDashboard/shared/css/layout.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/flat/blue.css" rel="stylesheet" type="text/css" />
     <link href="/appDashboard/shared/css/tables.css" rel="stylesheet" type="text/css" />
     <link href="/appDashboard/shared/css/modals.css" rel="stylesheet" type="text/css" />
@@ -29,17 +29,17 @@
     <!-- Header -->
     <header class="main-header">
         <div class="header-container">
-            <a href="/usuario/dashboard" class="logo"><b>Usuario</b>LTE</a>
+            <a href="/usuario/dashboard" class="logo"><b>Prestamo&nbsp;</b>911</a>
             <div class="header-user-menu">
                 <div class="nav-item dropdown user user-menu">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <img th:src="${usuario.foto != null ? usuario.foto : '/appDashboard/admin/dist/img/user2-160x160.jpg'}"
+                        <img th:src="${usuario.foto != null ? usuario.foto : '/appDashboard/shared/img/user2-160x160.jpg'}"
                              class="rounded-circle me-2" alt="User Image" style="width: 30px; height: 30px;"/>
                         <span class="d-none d-md-inline" th:text="${currentUserName != null ? currentUserName : 'Usuario'}">Alexander Pierce</span>
                     </a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">
-                            <img th:src="${usuario.foto != null ? usuario.foto : '/appDashboard/admin/dist/img/user2-160x160.jpg'}"
+                            <img th:src="${usuario.foto != null ? usuario.foto : '/appDashboard/shared/img/user2-160x160.jpg'}"
                                  class="rounded-circle mb-2" alt="User Image" style="width: 90px; height: 90px;" />
                             <p th:text="${currentUserName != null ? currentUserName : 'Usuario'} + ' - Usuario'">Alexander Pierce - Web Developer<small>Member since Nov. 2012</small></p>
                         </li>
@@ -60,8 +60,10 @@
             <ul class="sidebar-menu">
                 <li class="header">MENÚ PRINCIPAL</li>
                 <li th:classappend="${activePage == 'dashboard'} ? 'active' : ''"><a href="/usuario/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> <span>Inicio</span></a></li>
-                <li th:classappend="${activePage == 'estadoDeCreditos'} ? 'active' : ''"><a href="/usuario/estadoDeCreditos" class="nav-link"><i class="fas fa-money-check-alt"></i> <span>Mis Créditos</span></a></li>
-                <li th:classappend="${activePage == 'cuenta'} ? 'active' : ''"><a href="/usuario/cuenta" class="nav-link"><i class="fas fa-user"></i> <span>Cuenta</span></a></li>
+                <li th:classappend="${activePage == 'solicitar'} ? 'active' : ''"><a href="/usuario/solicitar" class="nav-link"><i class="fas fa-file-alt"></i> <span>Solicitar Crédito</span></a></li>
+                <li th:classappend="${activePage == 'creditos'} ? 'active' : ''"><a href="/usuario/creditos" class="nav-link"><i class="fas fa-money-check-alt"></i> <span>Mis Créditos</span></a></li>
+                <li th:classappend="${activePage == 'pagar'} ? 'active' : ''"><a href="/usuario/pagar" class="nav-link"><i class="fas fa-money-bill-wave"></i> <span>Pagar Créditos</span></a></li>
+                <li th:classappend="${activePage == 'cuenta'} ? 'active' : ''"><a th:onclick="'showUsuarioDetails(' + ${usuario.id} + ')'" style="cursor: pointer;" class="nav-link"><i class="fas fa-user"></i> <span>Cuenta</span></a></li>
             </ul>
         </section>
     </aside>
@@ -85,6 +87,9 @@
 
 <div th:replace="~{fragments/alertas/PAGO_RETRASADO.html :: mostrar(${PAGO_RETRASADO})}"></div>
 <!--<div th:replace="~{fragments/alertas/plantilla_para_alertas.html :: mostrar(${PAGO_EN_REVISION})}"></div>-->
+
+<!-- Modal content for SweetAlert2 - needed for Editar Cuenta button -->
+<div th:replace="~{fragments/usuarioModals :: modal-content(usuarios=${[usuario]})}"></div>
 
 
 <!-- Botón flotante de WhatsApp con mensaje -->
@@ -112,7 +117,7 @@
 <script>$.widget.bridge('uibutton', $.ui.button);</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/appDashboard/admin/dist/js/app.min.js" type="text/javascript"></script>
+<script src="/appDashboard/shared/js/app.min.js" type="text/javascript"></script>
 
 <!-- Global function for showing credit details with SweetAlert2 -->
 <script>

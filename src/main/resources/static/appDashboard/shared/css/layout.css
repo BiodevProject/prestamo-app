@@ -109,9 +109,8 @@ a:hover, a:active, a:focus {
 }
 
 .main-header .logo {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    background: transparent !important;
     color: #ffffff !important;
-    border-bottom: 0px solid transparent;
     font-family: 'Baloo Chettan', cursive;
     font-weight: bold;
     font-size: 20px;
@@ -120,15 +119,15 @@ a:hover, a:active, a:focus {
     align-items: center;
     text-decoration: none;
     transition: all 0.3s ease;
-    border-radius: 0 8px 8px 0;
-    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    margin-left: 0;
+    height: 100%;
+    margin-left: 10px;
 }
 
 .main-header .logo:hover {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    background: transparent !important;
     color: #3b82f6 !important;
     text-decoration: none;
-    border-color: rgba(59, 130, 246, 0.6) !important;
 }
 
 .main-header .logo b {
